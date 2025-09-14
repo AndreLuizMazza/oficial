@@ -1,0 +1,5 @@
+:root{
+  /* Estes valores serão sobrescritos dinamicamente por tenant */
+  --c-primary: #0ea5e9;
+  --c-primary-contrast: #ffffff;
+}

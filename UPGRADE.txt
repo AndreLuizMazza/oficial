@@ -1,0 +1,7 @@
+Fixes included:
+- Added 'dotenv' to dependencies to resolve ERR_MODULE_NOT_FOUND in server/index.js
+- Corrected JSX closing tags in src/components/Header.jsx (NavLink)
+
+After replacing files, run:
+npm install
+npm run dev
