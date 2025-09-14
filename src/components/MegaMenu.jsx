@@ -11,7 +11,8 @@ import {
   BadgeDollarSign,
   Wand2,
   BarChart3,
-  Newspaper
+  Newspaper,
+  Database,            // ✅ novo ícone
 } from 'lucide-react'
 
 const cols = [
@@ -75,19 +76,26 @@ const cols = [
         icon: Globe,
         label: 'Site Premium (Whitelabel)',
         desc: 'SEO, domínio próprio e identidade visual da sua marca.',
-        to: '/solucoes#site',
+        to: '/site-premium',
       },
       {
         icon: Users,
         label: 'App do Associado (Whitelabel)',
         desc: '2ª via, pagamentos, extratos, notificações e Carteirinha Digital.',
-        to: '/solucoes#app-associado',
+        to: '/app-associado',
       },
       {
         icon: Wand2,
         label: 'Personalizações',
         desc: 'Temas, telas e integrações sob medida.',
         to: '/solucoes#custom',
+      },
+      // ✅ novo item
+      {
+        icon: Database,
+        label: 'Migração de Dados',
+        desc: 'Importação de clientes, contratos, carnês/boletos e histórico.',
+        to: '/migracao',
       },
       {
         icon: Globe,

@@ -1,4 +1,6 @@
-import { CreditCard, Globe, Smartphone, Users, BadgeDollarSign, Wand2, Handshake, Newspaper, BarChart3 } from "lucide-react"
+// src/components/Solutions.jsx
+import { Link } from "react-router-dom"
+import { CreditCard, Globe, Smartphone, Handshake, Wand2, BarChart3 } from "lucide-react"
 
 const items = [
   {
@@ -26,7 +28,7 @@ const items = [
     id:'clubes', icon: Handshake,
     title: "Clubes de Benefícios",
     subtitle: "Rede de parceiros & descontos",
-    desc: "Crie sua rede de parceiros locais (farmácias, clínicas, academias) ou integre com plataformas de clubes de descontos para dar valor contínuo ao associado.",
+    desc: "Crie sua rede de parceiros locais ou integre com plataformas de clubes de descontos para dar valor contínuo ao associado.",
     tag: "Fidelização"
   },
   {
@@ -44,6 +46,18 @@ const items = [
     tag: "Sob medida"
   }
 ]
+
+// mapeia para rotas internas
+function getCtaLink(id){
+  switch(id){
+    case "site": return "/site-premium"
+    case "app-associado": return "/app-associado"
+    // ajuste aqui se criar outras páginas específicas:
+    // case "analytics": return "/analytics"
+    // case "clubes": return "/clubes"
+    default: return "/contato"
+  }
+}
 
 export default function Solutions(){
   return (
@@ -63,14 +77,15 @@ export default function Solutions(){
                   </span>
                   <div>
                     <h3 className="font-semibold">{title}</h3>
-                    <div className="text-sm text-[color:var(--c-muted)]">{subtitle}</div>
+                    <div className="text-sm text-[color:var(--c-m
+uted)]">{subtitle}</div>
                   </div>
                 </div>
                 <span className="badge">{tag}</span>
               </div>
               <p className="mt-4 muted">{desc}</p>
               <div className="mt-5">
-                <a href="#contato" className="btn btn-primary">Quero saber mais</a>
+                <Link to={getCtaLink(id)} className="btn btn-primary">Quero saber mais</Link>
               </div>
             </article>
           ))}
