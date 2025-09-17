@@ -1,4 +1,6 @@
 import { useEffect } from "react"
+import placeholder from "@/assets/img/placeholder.png"
+
 import { Link } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
@@ -51,7 +53,7 @@ export default function SitePremium(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src="https://source.unsplash.com/1200x800/?website,design"
+               src={placeholder}
               alt="Mockup de website premium"
               className="w-full h-full object-cover"
               loading="lazy"
@@ -102,12 +104,12 @@ export default function SitePremium(){
             </ul>
           </div>
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-            <img
-              src="https://source.unsplash.com/1200x800/?landingpage,seo"
-              alt="Landing page e SEO"
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
+<img
+  src={placeholder}
+  alt="Mockup de website premium"
+  className="w-full h-full object-cover"
+  loading="lazy"
+/>
           </div>
         </section>
 

@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
+import placeholder from "@/assets/img/placeholder.png"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
@@ -50,7 +51,7 @@ export default function AppAssociado(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src="https://source.unsplash.com/900x1200/?mobile,app"
+                src={placeholder}
               alt="Mockup do app do associado"
               className="w-full h-full object-cover"
               loading="lazy"
@@ -102,7 +103,7 @@ export default function AppAssociado(){
           </div>
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src="https://source.unsplash.com/1200x800/?ui,ux"
+                  src={placeholder}
               alt="UI do aplicativo do associado"
               className="w-full h-full object-cover"
               loading="lazy"

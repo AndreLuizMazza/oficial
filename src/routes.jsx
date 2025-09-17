@@ -10,6 +10,9 @@ import BlogPost from "@/pages/BlogPost"
 import Migracao from './pages/Migracao'
 import AppAssociado from './pages/AppAssociado'
 import SitePremium from './pages/SitePremium'
+import Taxas from './pages/Taxas'
+import QuemSomos from './pages/QuemSomos'
+import GestaoWeb from './pages/GestaoWeb'
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home/> },
@@ -22,6 +25,9 @@ export const router = createBrowserRouter([
   { path: "/blog/:id", element: <BlogPost/> },
    { path: "/migracao", element: <Migracao/> },
   { path: '/developers', element: <Developers/> },
+   { path: '/taxas', element: <Taxas/> },
+    { path: '/gestao-web', element: <GestaoWeb/> },
+    { path: '/quem-somos', element: <QuemSomos/> },
    { path: "/site-premium", element: <SitePremium/> },
   { path: "/app-associado", element: <AppAssociado/> }
 ])

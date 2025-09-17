@@ -1,4 +1,6 @@
 import { ShieldCheck, CreditCard, BarChart3, Users, Newspaper, Globe } from 'lucide-react'
+import CardMotion from "@/components/CardMotion"
+
 const features = [
   {icon:ShieldCheck, title:'Contratos & Cobranças', desc:'Gestão completa de contratos, carnês, boletos e recorrência, com visão de inadimplência.'},
   {icon:CreditCard, title:'Vendas Online', desc:'Checkout de planos com cálculo automático e políticas de dependentes.'},
@@ -7,17 +9,18 @@ const features = [
   {icon:BarChart3, title:'Analytics', desc:'KPIs, receita, churn e relatórios executivos.'},
   {icon:Globe, title:'Integrações', desc:'APIs Progem Oficial + NaLápide e Clubes de Descontos'}
 ]
+
 export default function FeatureGrid(){
   return (
     <section id="funcionalidades" className="py-8 md:py-16">
       <div className="mx-auto max-w-7xl px-4">
         <div className="grid md:grid-cols-3 gap-6">
           {features.map(({icon:Icon,title,desc})=> (
-            <div key={title} className="card p-6">
+            <CardMotion key={title} className="card p-6" tabIndex={0}>
               <Icon className="w-6 h-6 text-[color:var(--c-muted)] mb-3"/>
               <h3 className="font-semibold text-lg">{title}</h3>
               <p className="muted mt-1">{desc}</p>
-            </div>
+            </CardMotion>
           ))}
         </div>
       </div>

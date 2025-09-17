@@ -82,7 +82,7 @@ export default function Contato(){
                   <input
                     className="input"
                     name="empresa"
-                    placeholder="Ex.: Pax Center Ltda"
+                    placeholder="Ex.: Minha Empresa Ltda"
                     value={form.empresa}
                     onChange={onChange}
                     required

@@ -1,6 +1,6 @@
-// src/components/Solutions.jsx
 import { Link } from "react-router-dom"
 import { CreditCard, Globe, Smartphone, Handshake, Wand2, BarChart3 } from "lucide-react"
+import CardMotion from "@/components/CardMotion"
 
 const items = [
   {
@@ -50,6 +50,7 @@ const items = [
 // mapeia para rotas internas
 function getCtaLink(id){
   switch(id){
+    case "gestao": return "/gestao-web"
     case "site": return "/site-premium"
     case "app-associado": return "/app-associado"
     // ajuste aqui se criar outras páginas específicas:
@@ -69,7 +70,7 @@ export default function Solutions(){
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map(({id,icon:Icon, title, subtitle, desc, tag}) => (
-            <article key={id} id={id} className="card p-6">
+            <CardMotion key={id} className="card p-6" tabIndex={0} id={id}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-[var(--c-border)]">
@@ -77,8 +78,7 @@ export default function Solutions(){
                   </span>
                   <div>
                     <h3 className="font-semibold">{title}</h3>
-                    <div className="text-sm text-[color:var(--c-m
-uted)]">{subtitle}</div>
+                    <div className="text-sm text-[color:var(--c-muted)]">{subtitle}</div>
                   </div>
                 </div>
                 <span className="badge">{tag}</span>
@@ -87,7 +87,7 @@ uted)]">{subtitle}</div>
               <div className="mt-5">
                 <Link to={getCtaLink(id)} className="btn btn-primary">Quero saber mais</Link>
               </div>
-            </article>
+            </CardMotion>
           ))}
         </div>
       </div>

@@ -4,6 +4,8 @@ export default function Footer(){
       <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-[color:var(--c-muted)] flex flex-col md:flex-row items-center justify-between gap-4">
         <p>© {new Date().getFullYear()} Progem. Todos os direitos reservados.</p>
         <nav className="flex items-center gap-4">
+          <a href="/quem-somos">Quem somos</a>
+          <a href="/taxas">Taxas & Cobrança</a>
           <a href="#">Termos</a>
           <a href="#">Privacidade</a>
           <a href="#">Suporte</a>
