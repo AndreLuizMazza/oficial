@@ -14,17 +14,17 @@ export const cols = [
   {
     title: 'Soluções',
     items: [
-      { icon: ShieldCheck,      label: 'Gestão Recorrente', desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
+      { icon: ShieldCheck,      label: 'Software de Gestão', desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
       { icon: CreditCard,       label: 'Pagamentos',        desc: 'Cartão, Pix, Boleto, conciliação e baixa automática.', to: '/funcionalidades#vendas' },
-      { icon: Users,            label: 'App do Vendedor',   desc: 'Leads, propostas e fechamento de contratos.', to: '/solucoes#app-vendedor' },
-      { icon: BadgeDollarSign,  label: 'App do Cobrador',   desc: 'Rota, baixa de pagamentos e recibos digitais.', to: '/solucoes#app-cobrador' },
+      { icon: Users,            label: 'App do Vendedor',   desc: 'Leads, propostas e fechamento de contratos.', to: '/app-vendedor' },
+      { icon: BadgeDollarSign,  label: 'App do Cobrador',   desc: 'Rota, baixa de pagamentos e recibos digitais.', to: '/app-cobrador' },
       { icon: Building2,  label: 'Quem somos',                    desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
   },
   {
     title: 'Clube & Integrações',
     items: [
-      { icon: Handshake,      label: 'Clubes de Benefícios',  desc: 'Monte sua rede local de parceiros e descontos ou conecte com plataformas de Clubes de Descontos.', to: '/gestao-web' },
+      { icon: Handshake,      label: 'Clubes de Benefícios',  desc: 'Monte sua rede local de parceiros e descontos ou conecte com plataformas de Clubes de Descontos.', to: '/clube' },
       { icon: Newspaper,      label: 'Obituário Digital',     desc: 'Memorial com homenagens e captação de leads.', href: 'https://nalapide.com/' },
       { icon: BarChart3,      label: 'Analytics',             desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
       { icon: CreditCard,     label: 'Taxas & Cobrança',      desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },

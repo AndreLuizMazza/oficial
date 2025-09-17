@@ -25,7 +25,7 @@ const items = [
     tag: "Whitelabel"
   },
   {
-    id:'clubes', icon: Handshake,
+    id:'clube', icon: Handshake,
     title: "Clubes de Benefícios",
     subtitle: "Rede de parceiros & descontos",
     desc: "Crie sua rede de parceiros locais ou integre com plataformas de clubes de descontos para dar valor contínuo ao associado.",
@@ -53,9 +53,10 @@ function getCtaLink(id){
     case "gestao": return "/gestao-web"
     case "site": return "/site-premium"
     case "app-associado": return "/app-associado"
-    // ajuste aqui se criar outras páginas específicas:
-    // case "analytics": return "/analytics"
-    // case "clubes": return "/clubes"
+    case "app-cobrador": return "/app-cobrador"
+    case "app-vendedor": return "/app-vendedor"
+
+    case "clube": return "/clube"
     default: return "/contato"
   }
 }

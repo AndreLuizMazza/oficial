@@ -13,6 +13,9 @@ import SitePremium from './pages/SitePremium'
 import Taxas from './pages/Taxas'
 import QuemSomos from './pages/QuemSomos'
 import GestaoWeb from './pages/GestaoWeb'
+import AppDoCobradorPage from './pages/AppDoCobradorPage'
+import AppDoVendedorPage from './pages/AppDoVendedorPage'
+import ClubeBeneficios from './pages/ParceriasBeneficios'
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home/> },
@@ -23,11 +26,14 @@ export const router = createBrowserRouter([
   { path: '/contato', element: <Contato/> },
     { path: "/demo", element: <Demo/> }, 
   { path: "/blog/:id", element: <BlogPost/> },
-   { path: "/migracao", element: <Migracao/> },
+  { path: "/migracao", element: <Migracao/> },
   { path: '/developers', element: <Developers/> },
-   { path: '/taxas', element: <Taxas/> },
-    { path: '/gestao-web', element: <GestaoWeb/> },
-    { path: '/quem-somos', element: <QuemSomos/> },
+  { path: '/taxas', element: <Taxas/> },
+  { path: '/gestao-web', element: <GestaoWeb/> },
+  { path: '/quem-somos', element: <QuemSomos/> },
    { path: "/site-premium", element: <SitePremium/> },
+  { path: "/app-cobrador", element: <AppDoCobradorPage/> },
+  { path: "/app-vendedor", element: <AppDoVendedorPage/> },
+  { path: "/clube", element: <ClubeBeneficios/> },
   { path: "/app-associado", element: <AppAssociado/> }
 ])
