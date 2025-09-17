@@ -1,5 +1,5 @@
 export default function LogosBar(){
-  const logos = ['Patense','Bom Jesus','Pax Center','Memorial X','Crematório Y']
+  const logos = ['Grupo Patense','Pax Center','Brandas','Zelar Assistencial','Amorim Filho']
   return (
     <section className="py-8">
       <div className="mx-auto max-w-7xl px-4 opacity-80">

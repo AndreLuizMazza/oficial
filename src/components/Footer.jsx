@@ -31,13 +31,23 @@ export default function Footer(){
           <h4 className="font-semibold mb-2">Contato</h4>
           <ul className="space-y-2 text-[color:var(--c-muted)]">
             <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4"/> contato@progem.com.br
+              <Mail className="w-4 h-4"/>
+              <a href="mailto:contato@progem.com.br" className="hover:underline">contato@progem.com.br</a>
             </li>
             <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4"/> (46) 2604-0880
+              <Phone className="w-4 h-4"/>
+              <a href="tel:+554626040880" className="hover:underline">(46) 2604-0880</a>
             </li>
             <li className="flex items-center gap-2">
-              <Globe className="w-4 h-4"/> www.awis.com.br
+              <Globe className="w-4 h-4"/>
+              <a
+                href="https://www.awis.com.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                www.awis.com.br
+              </a>
             </li>
           </ul>
         </div>
@@ -46,17 +56,41 @@ export default function Footer(){
         <div>
           <h4 className="font-semibold mb-2">Siga-nos</h4>
           <div className="flex gap-4">
-            <a href="https://www.instagram.com/progemsoftware" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--c-primary)]">
+            <a
+              href="https://www.instagram.com/progemsoftware"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram da Progem"
+              className="hover:text-[var(--c-primary)]"
+            >
               <Instagram className="w-5 h-5"/>
             </a>
-            <a href="https://www.facebook.com/profile.php?id=61557184553857&locale=pt_BR" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--c-primary)]">
+            <a
+              href="https://www.facebook.com/profile.php?id=61557184553857&locale=pt_BR"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook da Progem"
+              className="hover:text-[var(--c-primary)]"
+            >
               <Facebook className="w-5 h-5"/>
             </a>
-            <a href="https://www.youtube.com/@progem5998" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--c-primary)]">
+            <a
+              href="https://www.youtube.com/@progem5998"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube da Progem"
+              className="hover:text-[var(--c-primary)]"
+            >
               <Youtube className="w-5 h-5"/>
             </a>
-            <a href="https://www.tiktok.com/@progemsoftware" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--c-primary)]">
-              <Music className="w-5 h-5"/> {/* usado como TikTok */}
+            <a
+              href="https://www.tiktok.com/@progemsoftware"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok da Progem"
+              className="hover:text-[var(--c-primary)]"
+            >
+              <Music className="w-5 h-5"/>
             </a>
           </div>
         </div>
