@@ -66,7 +66,7 @@ export default function GestaoWeb(){
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
-              Gestão recorrente completa — contratos, cobranças, financeiro e operação.
+              Gestão completa — contratos, cobranças, financeiro e operação.
             </h1>
             <p className="muted mt-3 text-lg">
               Reduza inadimplência, padronize processos e integre sua operação de ponta a ponta.

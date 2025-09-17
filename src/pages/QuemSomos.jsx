@@ -51,7 +51,7 @@ export default function QuemSomos(){
                 <Building2 className="w-4 h-4 text-[color:var(--c-muted)]"/> Quem somos
               </span>
               <span className="inline-flex items-center px-3 py-1.5 rounded-xl bg-[var(--c-primary)] text-[var(--c-primary-contrast)] text-sm font-medium">
-                Desde 2019
+                Foco no setor funerário
               </span>
             </div>
 
