@@ -31,7 +31,7 @@ export const cols = [
       { icon: Newspaper,      label: 'Obituário Digital',     desc: 'Memorial com homenagens e captação de leads.', href: 'https://nalapide.com/' },
       { icon: BarChart3,      label: 'Analytics',             desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
       { icon: CreditCard,     label: 'Taxas & Cobrança',      desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
-      { icon: MessageCircle,  label: 'WhatsApp (Automação)',  desc: 'Mensagens em massa, campanhas e fluxos automáticos via API/SDK.', to: '/integracoes#whatsapp' },
+      { icon: MessageCircle,  label: 'WhatsApp (Automação)',  desc: 'Mensagens em massa, campanhas e fluxos automáticos via API/SDK.', to: '/zap' },
     ],
   },
   {
