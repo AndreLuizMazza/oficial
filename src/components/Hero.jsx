@@ -31,7 +31,7 @@ export default function Hero(){
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <a href="/demo" className="btn btn-primary">Solicitar Demonstração</a>
-
+            <a href="/planos" className="btn btn-ghost">Ver Planos</a>
           </div>
 
           {/* ✅ Prova social (responsiva) */}

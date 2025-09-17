@@ -16,6 +16,7 @@ import GestaoWeb from './pages/GestaoWeb'
 import AppDoCobradorPage from './pages/AppDoCobradorPage'
 import AppDoVendedorPage from './pages/AppDoVendedorPage'
 import ClubeBeneficios from './pages/ParceriasBeneficios'
+import PlanosPet from './pages/PlanosPet'
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home/> },
@@ -35,5 +36,6 @@ export const router = createBrowserRouter([
   { path: "/app-cobrador", element: <AppDoCobradorPage/> },
   { path: "/app-vendedor", element: <AppDoVendedorPage/> },
   { path: "/clube", element: <ClubeBeneficios/> },
+    { path: "/pet", element: <PlanosPet/> },
   { path: "/app-associado", element: <AppAssociado/> }
 ])

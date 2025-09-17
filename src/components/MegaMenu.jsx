@@ -5,7 +5,7 @@ import { useLayoutEffect, useEffect, useRef, useState } from 'react'
 import {
   ShieldCheck, CreditCard, Users, Globe, Handshake,
   BadgeDollarSign, Wand2, BarChart3, Newspaper, Database,
-  Building2, MessageCircle
+  Building2, MessageCircle, PawPrint          // <-- ADICIONADO
 } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import useFocusTrap from '@/hooks/useFocusTrap'
@@ -18,7 +18,10 @@ export const cols = [
       { icon: CreditCard,       label: 'Pagamentos',        desc: 'Cartão, Pix, Boleto, conciliação e baixa automática.', to: '/funcionalidades#vendas' },
       { icon: Users,            label: 'App do Vendedor',   desc: 'Leads, propostas e fechamento de contratos.', to: '/app-vendedor' },
       { icon: BadgeDollarSign,  label: 'App do Cobrador',   desc: 'Rota, baixa de pagamentos e recibos digitais.', to: '/app-cobrador' },
-      { icon: Building2,  label: 'Quem somos',                    desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
+      // --- NOVO ITEM ---
+      { icon: PawPrint,         label: 'Planos Pet',        desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/pet' },
+      // ------------------
+      { icon: Building2,        label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
   },
   {
@@ -38,7 +41,6 @@ export const cols = [
       { icon: Users,      label: 'App do Associado (Whitelabel)', desc: '2ª via, pagamentos, extratos, notificações e Carteirinha Digital.', to: '/app-associado' },
       { icon: Wand2,      label: 'Personalizações',               desc: 'Temas, telas e integrações sob medida.', to: '/solucoes#custom' },
       { icon: Database,   label: 'Migração de Dados',             desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
-      
       { icon: Globe,      label: 'Docs & APIs',                   desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.', href: 'https://sandbox-api.progem.com.br/docs/index.html' },
     ],
   },
@@ -156,7 +158,6 @@ export default function MegaMenu({ anchorRef, onClose }) {
                   {c.items.map((it) => {
                     const Icon = it.icon
 
-                    // conteúdo do card como motion.div para hover/focus
                     const Card = ({ children }) => (
                       <motion.div
                         {...itemMotionProps}
