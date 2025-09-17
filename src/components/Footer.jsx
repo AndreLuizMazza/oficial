@@ -1,6 +1,6 @@
 // src/components/Footer.jsx
 import {
-  Mail, Phone, MapPin, Globe,
+  Mail, Phone, Globe,
   Instagram, Facebook, Youtube, Music
 } from "lucide-react"
 
@@ -11,6 +11,12 @@ export default function Footer(){
         
         {/* Dados institucionais */}
         <div>
+          <img
+            src="https://sandbox-api.progem.com.br/docs/logo.png"
+            alt="Logo Progem"
+            className="h-10 mb-3"
+            loading="lazy"
+          />
           <h4 className="font-semibold mb-2">AWIS Desenvolvimento de Software LTDA</h4>
           <ul className="space-y-1 text-[color:var(--c-muted)]">
             <li>CNPJ: 45.839.937/0001-93</li>
@@ -56,8 +62,18 @@ export default function Footer(){
         </div>
       </div>
 
+      {/* Barra inferior */}
       <div className="text-center text-xs text-[color:var(--c-muted)] py-4 border-t border-[var(--c-border)]">
-        © {new Date().getFullYear()} AWIS Desenvolvimento de Software LTDA. Todos os direitos reservados.
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 px-4">
+          <p>© {new Date().getFullYear()} AWIS Desenvolvimento de Software LTDA. Todos os direitos reservados.</p>
+          <nav className="flex items-center gap-4">
+            <a href="/quem-somos">Quem somos</a>
+            <a href="/taxas">Taxas & Cobrança</a>
+            <a href="#">Termos</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Suporte</a>
+          </nav>
+        </div>
       </div>
     </footer>
   )
