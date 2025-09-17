@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import placeholder from "@/assets/img/placeholder.png";
+import Progemhome from "@/assets/img/progemhome.png";
 import { setPageSEO } from "@/lib/seo";
 import {
   ShieldCheck, Users, ClipboardList, Receipt, BarChart3, Cable,
@@ -81,7 +81,7 @@ export default function GestaoWeb(){
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] aspect-[16/10]">
-            <img src={placeholder} alt="Painéis do Software de Gestão Progem" className="w-full h-full object-cover" loading="lazy"/>
+            <img src={Progemhome} alt="Painéis do Software de Gestão Progem" className="w-full h-full object-cover" loading="lazy"/>
           </div>
         </div>
       </section>
