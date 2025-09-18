@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom"
-import { CreditCard, Globe, Smartphone, Handshake, Wand2, BarChart3 } from "lucide-react"
+import {
+  CreditCard, Globe, Smartphone, Handshake, Wand2, BarChart3,
+  PawPrint, MessageCircle
+} from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 
 const items = [
@@ -24,11 +27,37 @@ const items = [
     desc: "2ª via, pagamentos, extratos e atualização cadastral. Sua marca, seus ícones e cores.",
     tag: "Whitelabel"
   },
+
+  // ✅ Novas telas
+  {
+    id:'app-vendedor', icon: Smartphone,
+    title: "App do Vendedor",
+    subtitle: "Vendas & propostas",
+    desc: "Prospecção, proposta digital, assinatura e acompanhamento de funil. Funciona online/offline.",
+    tag: "Campo"
+  },
+  {
+    id:'app-cobrador', icon: Smartphone,
+    title: "App do Cobrador",
+    subtitle: "Cobranças em campo",
+    desc: "Rotas de cobrança, recebimento por Pix/Cartão, carnês e baixa automática. Modo offline.",
+    tag: "Financeiro"
+  },
+
+  {
+    id:'pet', icon: PawPrint,
+    title: "Planos Pet",
+    subtitle: "Assistência animal",
+    desc: "Gestão de planos pet com regras de cobertura, dependentes, carteirinha e integrações.",
+    tag: "Novo"
+  },
+
+
   {
     id:'clube', icon: Handshake,
     title: "Clubes de Benefícios",
     subtitle: "Rede de parceiros & descontos",
-    desc: "Crie sua rede de parceiros locais ou integre com plataformas de clubes de descontos para dar valor contínuo ao associado.",
+    desc: "Crie sua rede de parceiros locais ou integre com plataformas para dar valor contínuo ao associado.",
     tag: "Fidelização"
   },
   {
@@ -37,6 +66,14 @@ const items = [
     subtitle: "Indicadores e relatórios",
     desc: "KPIs em tempo real, inadimplência, vendas e relatórios para decisões rápidas.",
     tag: "Gestão"
+  },
+
+    {
+    id:'zap', icon: MessageCircle,
+    title: "WhatsApp Ilimitado",
+    subtitle: "Mensageria e notificações",
+    desc: "Add-on por R$ 150/mês com mensagens ilimitadas. Lembretes, boletos e fluxos automatizados.",
+    tag: "Add-on"
   },
   {
     id:'custom', icon: Wand2,
@@ -53,8 +90,12 @@ function getCtaLink(id){
     case "gestao": return "/gestao-web"
     case "site": return "/site-premium"
     case "app-associado": return "/app-associado"
-    case "app-cobrador": return "/app-cobrador"
-    case "app-vendedor": return "/app-vendedor"
+    case "app-cobrador": return "/app-cobrador"     // ✅ nova rota
+    case "app-vendedor": return "/app-vendedor"     // ✅ nova rota
+
+    case "pet": return "/pet"                 // ✅ simulador de preços
+    case "planos-pet": return "/funcionalidades#planos-pet" // ✅ âncora (ajuste se tiver página dedicada)
+    case "zap": return "/zap"     // ✅ âncora do módulo de mensageria
 
     case "clube": return "/clube"
     default: return "/contato"

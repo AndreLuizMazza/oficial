@@ -5,6 +5,8 @@ import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
 import clsx from "clsx"
+
+
 import {
   Check, ShieldCheck, Globe, Handshake, Info, Cable, X, MessageCircle,
   LineChart, Building2, PawPrint
@@ -129,7 +131,7 @@ function FloatingCTA({ visible, onClose, period, contracts }){
             </p>
             <div className="mt-3">
               <a
-                href="/contato"
+                href="/demo"
                 className="btn btn-primary btn-sm w-full"
                 onClick={() => {
                   track("pricing_cta_click", {
