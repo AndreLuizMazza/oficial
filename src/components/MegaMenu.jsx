@@ -5,43 +5,46 @@ import { useLayoutEffect, useEffect, useRef, useState } from 'react'
 import {
   ShieldCheck, CreditCard, Users, Globe, Handshake,
   BadgeDollarSign, Wand2, BarChart3, Newspaper, Database,
-  Building2, MessageCircle, PawPrint          // <-- ADICIONADO
+  Building2, MessageCircle, PawPrint
 } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import useFocusTrap from '@/hooks/useFocusTrap'
 
+/**
+ * Reorganização orientada à usabilidade:
+ * 1) Produtos (o que o cliente usa no dia a dia)
+ * 2) Integrações & Automação (como ele expande o valor)
+ * 3) Operação & Dados (como ele mede, paga e migra)
+ */
 export const cols = [
   {
-    title: 'Soluções',
+    title: 'Produtos',
     items: [
-      { icon: ShieldCheck,      label: 'Software de Gestão', desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
-      { icon: CreditCard,       label: 'Pagamentos',        desc: 'Cartão, Pix, Boleto, conciliação e baixa automática.', to: '/funcionalidades#vendas' },
-      { icon: Users,            label: 'App do Vendedor',   desc: 'Leads, propostas e fechamento de contratos.', to: '/app-vendedor' },
-      { icon: BadgeDollarSign,  label: 'App do Cobrador',   desc: 'Rota, baixa de pagamentos e recibos digitais.', to: '/app-cobrador' },
-      // --- NOVO ITEM ---
-      { icon: PawPrint,         label: 'Planos Pet',        desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/pet' },
-      // ------------------
-      { icon: Building2,        label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
+      { icon: ShieldCheck, label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
+      { icon: Users,       label: 'App do Associado (Whitelabel)',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
+      { icon: Users,       label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
+      { icon: BadgeDollarSign, label: 'App do Cobrador',       desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
+      { icon: PawPrint,    label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/funcionalidades#planos-pet' },
+      { icon: Globe,       label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
     ],
   },
   {
-    title: 'Clube & Integrações',
+    title: 'Integrações & Automação',
     items: [
-      { icon: Handshake,      label: 'Clubes de Benefícios',  desc: 'Monte sua rede local de parceiros e descontos ou conecte com plataformas de Clubes de Descontos.', to: '/clube' },
-      { icon: Newspaper,      label: 'Obituário Digital',     desc: 'Memorial com homenagens e captação de leads.', href: 'https://nalapide.com/' },
-      { icon: BarChart3,      label: 'Analytics',             desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
-      { icon: CreditCard,     label: 'Taxas & Cobrança',      desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
-      { icon: MessageCircle,  label: 'WhatsApp (Automação)',  desc: 'Mensagens em massa, campanhas e fluxos automáticos via API/SDK.', to: '/zap' },
+      { icon: MessageCircle, label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/funcionalidades#whatsapp' },
+      { icon: CreditCard,    label: 'Pagamentos',           desc: 'Cartão, Pix, Boleto, conciliação e baixa automática.',      to: '/funcionalidades#vendas' },
+      { icon: Globe,         label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
+      { icon: Handshake,     label: 'Clubes de Benefícios', desc: 'Monte sua rede local de parceiros e descontos.',            to: '/clube' },
+      { icon: Newspaper,     label: 'Obituário Digital',    desc: 'Memorial com homenagens e captação de leads.',              href: 'https://nalapide.com/' },
     ],
   },
   {
-    title: 'Recursos',
+    title: 'Operação & Dados',
     items: [
-      { icon: Globe,      label: 'Site Premium (Whitelabel)',     desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
-      { icon: Users,      label: 'App do Associado (Whitelabel)', desc: '2ª via, pagamentos, extratos, notificações e Carteirinha Digital.', to: '/app-associado' },
-      { icon: Wand2,      label: 'Personalizações',               desc: 'Temas, telas e integrações sob medida.', to: '/solucoes#custom' },
-      { icon: Database,   label: 'Migração de Dados',             desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
-      { icon: Globe,      label: 'Docs & APIs',                   desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.', href: 'https://sandbox-api.progem.com.br/docs/index.html' },
+      { icon: BarChart3,  label: 'Analytics',         desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
+      { icon: CreditCard, label: 'Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
+      { icon: Database,   label: 'Migração de Dados', desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
+      { icon: Building2,  label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
   },
 ]

@@ -69,12 +69,16 @@ export default function Header() {
       isActive ? "bg-[var(--c-surface-2)] ring-1 ring-[color:var(--c-primary)]" : ""
     ].join(" ")
 
+  // Mega ativo quando usuário navega por produtos/recursos/integr.
   const megaActive =
     pathname.startsWith("/site-premium") ||
     pathname.startsWith("/funcionalidades") ||
     pathname.startsWith("/solucoes") ||
     pathname.startsWith("/migracao") ||
-    pathname.startsWith("/app-associado")
+    pathname.startsWith("/app-associado") ||
+    pathname.startsWith("/app-vendedor") ||      // ✅ incluído
+    pathname.startsWith("/app-cobrador") ||      // ✅ incluído
+    pathname.includes("planos-pet")              // ✅ âncora/rota de Planos Pet
 
   const toggleMobileSection = (title) =>
     setMobileSectionsOpen((s) => ({ ...s, [title]: !s[title] }))
@@ -160,7 +164,8 @@ export default function Header() {
           <div className="ml-2 hidden lg:block">
             <ThemeSwitch />
           </div>
-          <Link to="https://app.progem.com.br/progem/Login.xhtml" className="ml-2 btn btn-ghost">Login</Link>
+          {/* Padroniza Login (desktop) */}
+          <a href="https://app.progem.com.br/progem/Login.xhtml" className="ml-2 btn btn-ghost">Login</a>
         </nav>
 
         {/* Mobile toggles */}
@@ -259,7 +264,13 @@ export default function Header() {
 
                 {/* Demais páginas (com animação e estado ativo) */}
                 <div className="mt-2 space-y-1">
-                  {nav.filter(n => !n.type).map((item) => (
+                  {[
+                    { label: "Planos", to: "/planos" },
+                    { label: "Clientes", to: "/clientes" },
+                    { label: "Blog", to: "/blog" },
+                    { label: "Desenvolvedores", to: "/developers" },
+                    { label: "Contato", to: "/contato" },
+                  ].map((item) => (
                     <NavLink
                       key={item.label}
                       to={item.to}
@@ -281,14 +292,15 @@ export default function Header() {
 
                 {/* Ações */}
                 <div className="pt-3 flex gap-2">
-                  <Link to="/login" onClick={() => setMobileOpen(false)}>
+                  {/* Padroniza Login (mobile) */}
+                  <a href="https://app.progem.com.br/progem/Login.xhtml" onClick={() => setMobileOpen(false)} className="flex-1">
                     <motion.div
                       {...drawerItemAnim(false)}
-                      className="btn btn-ghost flex-1 text-center"
+                      className="btn btn-ghost w-full text-center"
                     >
                       Login
                     </motion.div>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Tema */}
