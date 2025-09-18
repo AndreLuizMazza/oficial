@@ -7,7 +7,7 @@ import { BFF } from "@/lib/bff"
 import clsx from "clsx"
 import {
   Check, ShieldCheck, Globe, Handshake, Info, Cable, X, MessageCircle,
-  LineChart, Building2  // ✅ novos ícones p/ prova social
+  LineChart, Building2, PawPrint
 } from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
@@ -77,6 +77,7 @@ const COMMON_FEATURES = [
   "Memorial Digital integrado",
   "Analytics & KPIs em tempo real",
   "APIs, webhooks e BFF",
+  "Gestão de Planos Pet (assistência animal)",
 ]
 
 const FALLBACK = [
@@ -108,6 +109,8 @@ const FALLBACK = [
 ]
 
 const ICONS = { start: ShieldCheck, pro: Globe, enterprise: Handshake }
+
+const WHATSAPP_MENSAL = 150 // ✅ custo fixo por mês (mensagens ilimitadas)
 
 /** CTA flutuante */
 function FloatingCTA({ visible, onClose, period, contracts }){
@@ -169,6 +172,9 @@ export default function Planos(){
   const selectedTier = useMemo(() => findTierByContracts(contracts), [contracts])
   const descontoAnual = 0.15
 
+  // ✅ Add-on WhatsApp
+  const [whatsappAddon, setWhatsappAddon] = useState(false)
+
   // utils
   const clampContracts = (n) => Math.max(0, Math.min(sliderMax, Math.floor(Number(n) || 0)))
   const roundStep = (n, step = 50) => Math.round((Number(n)||0) / step) * step
@@ -186,7 +192,9 @@ export default function Planos(){
   useEffect(() => {
     const qContracts = searchParams.get("contracts")
     const qPeriodo = searchParams.get("periodo")
+    const qWhats = searchParams.get("whatsapp")
     if (qPeriodo === "mensal" || qPeriodo === "anual") setPeriodo(qPeriodo)
+    if (qWhats === "1" || qWhats === "true") setWhatsappAddon(true)
     setTimeout(() => {
       if (qContracts != null) setContractsSafe(qContracts, { emit:false })
     }, 0)
@@ -197,16 +205,19 @@ export default function Planos(){
   useEffect(() => {
     const currContracts = Number(searchParams.get("contracts"))
     const currPeriodo = searchParams.get("periodo")
+    const currWhats = searchParams.get("whatsapp")
     const nextContracts = Math.max(0, Math.min(sliderMax, Math.floor(Number(contracts) || 0)))
     const nextPeriodo = periodo
-    const changed = currContracts !== nextContracts || currPeriodo !== nextPeriodo
+    const nextWhats = whatsappAddon ? "1" : "0"
+    const changed = currContracts !== nextContracts || currPeriodo !== nextPeriodo || currWhats !== nextWhats
     if (changed) {
       const next = new URLSearchParams(searchParams)
       next.set("contracts", String(nextContracts))
       next.set("periodo", nextPeriodo)
+      next.set("whatsapp", nextWhats)
       setSearchParams(next, { replace: true })
     }
-  }, [contracts, periodo, sliderMax, searchParams, setSearchParams])
+  }, [contracts, periodo, sliderMax, whatsappAddon, searchParams, setSearchParams])
 
   // 2.1) Reclampar quando sliderMax muda
   useEffect(() => {
@@ -273,12 +284,25 @@ export default function Planos(){
     return null
   },[selectedTier])
 
-  // Preço do simulador
+  // Preço do simulador (base)
   const simulatedPrice = useMemo(()=>{
     if (!selectedTier || selectedTier.price == null) return null
     const mensal = selectedTier.price
     return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
   },[selectedTier, periodo])
+
+  // Preço do add-on WhatsApp
+  const whatsappPrice = useMemo(() => {
+    if (!whatsappAddon) return 0
+    const mensal = WHATSAPP_MENSAL
+    return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
+  }, [whatsappAddon, periodo])
+
+  // Total simulado
+  const simulatedTotal = useMemo(() => {
+    if (simulatedPrice == null) return null // base sob consulta
+    return simulatedPrice + (whatsappPrice || 0)
+  }, [simulatedPrice, whatsappPrice])
 
   // ---- dataLayer events ----
   useEffect(() => { track("pricing_period_change", { period: periodo }) }, [periodo])
@@ -462,9 +486,29 @@ export default function Planos(){
                   </Tooltip>
                 ))}
               </div>
+
+              {/* ✅ Toggle WhatsApp ilimitado */}
+              <div className="mt-4 flex items-center gap-2">
+                <input
+                  id="toggle-whatsapp"
+                  type="checkbox"
+                  className="rounded-md border border-[var(--c-border)]"
+                  checked={whatsappAddon}
+                  onChange={(e) => {
+                    setWhatsappAddon(e.target.checked)
+                    track("pricing_whatsapp_toggle", {
+                      enabled: e.target.checked, period: periodo
+                    })
+                  }}
+                />
+                <label htmlFor="toggle-whatsapp" className="text-sm">
+                  Incluir <strong>WhatsApp ilimitado</strong> (+{formatBRL(periodo === "mensal" ? WHATSAPP_MENSAL : WHATSAPP_MENSAL * 12 * (1 - descontoAnual))}{periodo === "mensal" ? "/mês" : "/ano"})
+                </label>
+              </div>
             </div>
 
-            <div className="relative rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4 min-w-[280px]">
+            {/* Bloco de Simulação com breakdown */}
+            <div className="relative rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4 min-w-[300px]">
               {isSobConsulta && (
                 <span className="absolute -top-3 right-3 px-2 py-0.5 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)]">
                   Sob consulta
@@ -474,17 +518,49 @@ export default function Planos(){
               <div className="mt-1 font-semibold">
                 {selectedTier?.name || "—"} <span className="muted">({selectedTier?.rangeLabel || "—"})</span>
               </div>
-              <div className="mt-1 text-2xl font-bold">
-                {formatBRL(simulatedPrice)}
-                {simulatedPrice != null && (
-                  <span className="text-sm font-medium muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
-                )}
+
+              {/* Preços */}
+              <div className="mt-3 space-y-1 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="muted">Base</span>
+                  <span className="font-medium">
+                    {formatBRL(simulatedPrice)}
+                    {simulatedPrice != null && <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="muted">WhatsApp ilimitado</span>
+                  <span className="font-medium">
+                    {whatsappAddon ? (
+                      <>
+                        {formatBRL(whatsappPrice)}
+                        <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
+                      </>
+                    ) : "—"}
+                  </span>
+                </div>
+                <div className="h-px bg-[var(--c-border)] my-2" />
+                <div className="flex items-center justify-between text-base font-semibold">
+                  <span>Total</span>
+                  <span>
+                    {simulatedTotal != null ? (
+                      <>
+                        {formatBRL(simulatedTotal)}
+                        <span className="muted text-sm"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
+                      </>
+                    ) : (
+                      "Sob consulta"
+                    )}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
           <p className="mt-3 text-xs text-[color:var(--c-muted)]">
             Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
             Impostos e tarifas de meios de pagamento não estão incluídos.
+            O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
+            {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
             Consulte também a página <a href="/taxas" className="underline">Taxas & Cobrança</a>.
           </p>
         </section>
@@ -593,6 +669,54 @@ export default function Planos(){
             ))}
           </div>
 
+          {/* Destaque Planos Pet */}
+          <div className="card p-5 mt-6">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
+                <PawPrint className="w-5 h-5 text-[color:var(--c-muted)]" />
+              </span>
+              <div className="flex-1">
+                <h4 className="font-semibold">Gestão de Planos Pet</h4>
+                <p className="muted mt-1 text-sm">
+                  Cadastre e gerencie planos de assistência animal, com regras de cobertura, dependentes pet,
+                  documentos (carteirinha) e integrações com o app do associado.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a
+                    href="/demo"
+                    className="btn btn-primary btn-sm"
+                    onClick={() => {
+                      track("pricing_cta_click", {
+                        origin: "pet_card",
+                        planId: "pet_demo",
+                        planName: "Planos Pet — Demonstração",
+                        period: periodo,
+                        contracts,
+                      })
+                    }}
+                  >
+                    Ver demonstração
+                  </a>
+                  <a
+                    href="/funcionalidades#planos-pet"
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => {
+                      track("pricing_cta_click", {
+                        origin: "pet_card",
+                        planId: "pet_docs",
+                        planName: "Planos Pet — Detalhes",
+                        period: periodo,
+                        contracts,
+                      })
+                    }}
+                  >
+                    Detalhes da funcionalidade
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* APIs e integrações */}
           <div className="card p-5 mt-6">
             <h4 className="font-semibold">APIs e integrações</h4>
@@ -630,6 +754,17 @@ export default function Planos(){
               >
                 Falar com especialista
               </a>
+            </div>
+
+            {/* Aviso sobre WhatsApp (custo fixo) */}
+            <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] shrink-0">
+                <MessageCircle className="w-4 h-4 text-[color:var(--c-muted)]" />
+              </span>
+              <p className="text-xs leading-relaxed">
+                O módulo de <strong>WhatsApp</strong> é um <strong>add-on com custo fixo de R$ 150,00/mês</strong>, com
+                <strong> mensagens ilimitadas</strong>. Solicite nossa tabela comercial para condições e requisitos de integração.
+              </p>
             </div>
           </div>
         </section>
