@@ -13,8 +13,14 @@ export default function Ctas(){
           <p className="muted mt-1">Contratos, cobrança recorrente, memorial digital e apps whitelabel.</p>
         </div>
         <div className="flex gap-3">
-          {/* 👇 CTA principal para /contrato */}
-          <Link to="/contrato" className="btn btn-primary">Solicitar Demonstração</Link>
+          {/* 👇 CTA principal (laranja) */}
+          <Link
+            to="/contrato"
+            data-cta="demo"
+            className="btn btn-primary btn-demo"
+          >
+            Solicitar Demonstração
+          </Link>
         </div>
       </div>
     </section>

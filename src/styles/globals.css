@@ -82,3 +82,13 @@ body{ background: var(--c-bg); color: var(--c-fg); }
 .input-with-icon { @apply relative; }
 .input-with-icon .icon { @apply absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--c-muted)]; }
 .input-with-icon .input { @apply pl-9; }
+
+/* CTA de demonstração em laranja */
+.btn-demo,
+.btn[data-cta="demo"],
+a.btn[href^="/demo"] {
+  --c-primary: #EA580C;          /* orange-600 */
+  --c-primary-hover: #C2410C;    /* orange-700 */
+  --c-primary-contrast: #ffffff; /* texto */
+  --c-primary-ring: rgba(234, 88, 12, 0.35);
+}
