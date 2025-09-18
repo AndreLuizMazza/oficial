@@ -12,37 +12,38 @@ import useFocusTrap from '@/hooks/useFocusTrap'
 
 /**
  * Reorganização orientada à usabilidade:
- * 1) Produtos (o que o cliente usa no dia a dia)
- * 2) Integrações & Automação (como ele expande o valor)
- * 3) Operação & Dados (como ele mede, paga e migra)
+ * 1) Produtos (uso diário)
+ * 2) Integrações & Automação (expansões)
+ * 3) Operação & Dados (gestão)
  */
 export const cols = [
   {
     title: 'Produtos',
     items: [
-      { icon: ShieldCheck, label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
-      { icon: Users,       label: 'App do Associado (Whitelabel)',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
-      { icon: Users,       label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
-      { icon: BadgeDollarSign, label: 'App do Cobrador',       desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
-      { icon: PawPrint,    label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/funcionalidades#planos-pet' },
-      { icon: Globe,       label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
+      { icon: ShieldCheck,      label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
+      { icon: Users,            label: 'App do Associado',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
+      { icon: Users,            label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
+      { icon: BadgeDollarSign,  label: 'App do Cobrador',           desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
+      { icon: PawPrint,         label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/funcionalidades#planos-pet' },
+      { icon: Globe,            label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
     ],
   },
   {
     title: 'Integrações & Automação',
     items: [
-      { icon: MessageCircle, label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/funcionalidades#whatsapp' },
-      { icon: CreditCard,    label: 'Pagamentos',           desc: 'Cartão, Pix, Boleto, conciliação e baixa automática.',      to: '/funcionalidades#vendas' },
-      { icon: Globe,         label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
-      { icon: Handshake,     label: 'Clubes de Benefícios', desc: 'Monte sua rede local de parceiros e descontos.',            to: '/clube' },
-      { icon: Newspaper,     label: 'Obituário Digital',    desc: 'Memorial com homenagens e captação de leads.',              href: 'https://nalapide.com/' },
+      { icon: MessageCircle,  label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/funcionalidades#whatsapp' },
+      
+       { icon: CreditCard, label: 'Pagamentos - Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
+      { icon: Globe,          label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
+      { icon: Handshake,      label: 'Clubes de Benefícios', desc: 'Monte sua rede local de parceiros e descontos.',            to: '/clube' },
+      { icon: Newspaper,      label: 'Obituário Digital',    desc: 'Memorial com homenagens e captação de leads.',              href: 'https://nalapide.com/' },
     ],
   },
   {
     title: 'Operação & Dados',
     items: [
       { icon: BarChart3,  label: 'Analytics',         desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
-      { icon: CreditCard, label: 'Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
+     
       { icon: Database,   label: 'Migração de Dados', desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
       { icon: Building2,  label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
@@ -118,6 +119,9 @@ export default function MegaMenu({ anchorRef, onClose }) {
     transition: { type: 'spring', stiffness: 520, damping: 34, mass: 0.55 }
   }
 
+  // estilo do scroller mobile (momentum scroll iOS)
+  const mobileScrollerStyle = isMobile ? { WebkitOverflowScrolling: 'touch' } : undefined
+
   const content = (
     <div className="fixed inset-0 z-[60]" onClick={onClose}>
       {/* overlay */}
@@ -132,8 +136,13 @@ export default function MegaMenu({ anchorRef, onClose }) {
 
       {/* painel */}
       <div
-        className={["fixed left-1/2 -translate-x-1/2", isMobile ? "inset-x-0 left-0 translate-x-0 top-[64px]" : ""].join(' ')}
-        style={isMobile ? undefined : style}
+        className={[
+          "fixed left-1/2 -translate-x-1/2",
+          isMobile
+            ? "inset-x-0 left-0 translate-x-0 top-[64px] bottom-0 h-[calc(100vh-64px)] [height:calc(100dvh-64px)] overflow-y-auto"
+            : ""
+        ].join(' ')}
+        style={isMobile ? mobileScrollerStyle : style}
         onClick={(e) => e.stopPropagation()}
         onMouseEnter={cancelClose}
         onMouseLeave={startClose}
@@ -148,7 +157,8 @@ export default function MegaMenu({ anchorRef, onClose }) {
             className={[
               "rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface)] shadow-2xl",
               "w-[min(1000px,95vw)] p-5 grid gap-6 md:grid-cols-3",
-              isMobile ? "w-screen max-w-none rounded-none border-t p-4 pb-6 max-h-[70vh] overflow-y-auto" : ""
+              // Em mobile, deixamos o wrapper rolar; aqui só layout/padding.
+              isMobile ? "w-screen max-w-none rounded-none border-t p-4 pb-6" : ""
             ].join(' ')}
             initial="hidden" animate="visible" exit="exit"
             variants={isMobile ? panelVariantsMobile : panelVariantsDesktop}
