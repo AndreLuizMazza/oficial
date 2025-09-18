@@ -22,7 +22,7 @@ export default function Hero(){
       <div className="mx-auto max-w-7xl px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
         <div>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Gestão completa para Funerárias e negócios recorrentes.
+            Gestão completa para Funerárias
           </h1>
           <p className="mt-4 text-lg muted">
             Reduza inadimplência, acelere vendas e ofereça experiências digitais integradas.

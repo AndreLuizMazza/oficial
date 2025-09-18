@@ -558,13 +558,16 @@ export default function Planos(){
               </div>
             </div>
           </div>
-          <p className="mt-3 text-xs text-[color:var(--c-muted)]">
-            Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
-            Impostos e tarifas de meios de pagamento não estão incluídos.
-            O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
-            {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
-            Consulte também a página <a href="/taxas" className="underline">Taxas & Cobrança</a>.
-          </p>
+<p className="mt-3 text-xs text-[color:var(--c-muted)]">
+  Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
+  Impostos e tarifas de meios de pagamento não estão incluídos.
+  O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
+  {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
+  Oferecemos <strong>migração de banco de dados</strong> (importação de clientes, contratos, carnês/boletos e histórico).
+  Veja detalhes em <a href="/migracao" className="underline">Migração de Dados</a>.
+  Consulte também a página <a href="/taxas" className="underline">Taxas & Cobrança</a>.
+</p>
+
         </section>
 
         {/* --- Cards de planos --- */}
