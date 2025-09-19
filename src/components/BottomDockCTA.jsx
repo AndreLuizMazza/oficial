@@ -4,6 +4,7 @@ import { createPortal } from "react-dom"
 import { Link, useLocation } from "react-router-dom"
 import { Smartphone, MessageSquare } from "lucide-react"
 import { track } from "@/lib/analytics"
+import useFacebookPixel from "@/hooks/useFacebookPixel"
 
 // WhatsApp opcional (E.164, sem +)
 const WHATSAPP_E164 = "554699011022"
@@ -18,6 +19,7 @@ export default function BottomDockCTA({
   const { pathname } = useLocation()
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const { track: fbTrack } = useFacebookPixel()
 
   useEffect(() => setMounted(true), [])
 
@@ -32,6 +34,45 @@ export default function BottomDockCTA({
   const hidden = useMemo(() => new Set(hideOnRoutes), [hideOnRoutes])
   const shouldShow = mounted && isMobile && !hidden.has(pathname)
 
+  const handleDemoClick = () => {
+    // Analytics interno
+    track?.("dock_cta_click", { route: pathname })
+
+    // Meta Pixel - Lead
+    fbTrack?.("Lead", {
+      content_name: "BottomDockCTA - Demo/Contato",
+      content_category: "Contato Comercial",
+      origin: "bottom-dock",
+      route: pathname,
+      value: 0,
+      currency: "BRL",
+    })
+  }
+
+  const handleWhatsAppClick = (e) => {
+    // Evita navegação imediata para garantir o envio do evento
+    e.preventDefault()
+
+    // Analytics interno
+    track?.("dock_whatsapp_click", { route: pathname })
+
+    // Meta Pixel - Lead
+    fbTrack?.("Lead", {
+      content_name: "BottomDockCTA - WhatsApp",
+      content_category: "Contato Comercial",
+      origin: "bottom-dock",
+      route: pathname,
+      channel: "whatsapp",
+      value: 0,
+      currency: "BRL",
+    })
+
+    // Pequeno delay para o evento sair antes do redirect externo
+    setTimeout(() => {
+      window.open(whatsappHref, "_blank", "noopener,noreferrer")
+    }, 200)
+  }
+
   if (!shouldShow) return null
 
   return createPortal(
@@ -45,7 +86,7 @@ export default function BottomDockCTA({
             to={to}
             data-cta="demo"
             className="btn btn-primary btn-demo flex-1 justify-center"
-            onClick={() => track?.("dock_cta_click", { route: pathname })}
+            onClick={handleDemoClick}
             aria-label={label}
           >
             <Smartphone className="w-4 h-4" />
@@ -58,7 +99,7 @@ export default function BottomDockCTA({
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-ghost"
-              onClick={() => track?.("dock_whatsapp_click", { route: pathname })}
+              onClick={handleWhatsAppClick}
               aria-label="Conversar no WhatsApp"
             >
               <MessageSquare className="w-4 h-4" />
