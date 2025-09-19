@@ -13,6 +13,7 @@ import {
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
 
+
 function formatBRL(n){
   if (n == null) return "Sob consulta"
   try { return Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) }
@@ -989,6 +990,8 @@ export default function Planos(){
           contracts={contracts}
         />
       </main>
+
+     
       <Footer/>
     </div>
   )

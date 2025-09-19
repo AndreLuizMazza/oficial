@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { track } from "@/lib/analytics";
+import BottomDockCTA from "@/components/BottomDockCTA";
 
 // --- Dados de referência (integração principal em destaque, sem citar marca nos títulos) ---
 const taxasPagamento = [
@@ -599,7 +600,8 @@ export default function Taxas() {
           </div>
         </section>
       </main>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer />
     </div>
   );

@@ -6,6 +6,7 @@ import {
   MessageCircle, Filter, CalendarCheck2, ShieldCheck, ClipboardList,
   BarChart3, Tag, Link2, Plug, CheckCircle2, BadgeDollarSign
 } from "lucide-react"
+import BottomDockCTA from "@/components/BottomDockCTA"
 
 /**
  * Página: Integração com WhatsApp (Progem)
@@ -201,7 +202,8 @@ export default function IntegracaoWhatsapp(){
           </div>
         </section>
       </main>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   )

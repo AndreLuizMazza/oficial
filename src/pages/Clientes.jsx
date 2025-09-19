@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Footer from '@/components/Footer'
 import { setPageSEO } from '@/lib/seo'
 import { HeartHandshake, Users, Dumbbell, Building2, Landmark } from 'lucide-react'
+import BottomDockCTA from '@/components/BottomDockCTA'
 
 const segmentos = [
   {
@@ -117,6 +118,8 @@ export default function Clientes(){
 
         </section>
       </main>
+           {/* CTA fixo (mobile) */}
+            <BottomDockCTA />
       <Footer/>
     </div>
   )

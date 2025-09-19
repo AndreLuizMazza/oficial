@@ -6,6 +6,7 @@ import {
   Link2, Building2, Network, BadgePercent, ShieldCheck, Layers,
   Wrench, Globe, UploadCloud, BarChart3, CheckCircle2
 } from "lucide-react"
+import BottomDockCTA from "@/components/BottomDockCTA"
 
 /**
  * Página: Parcerias & Benefícios (Ferramenta Progem)
@@ -182,7 +183,8 @@ export default function ParceriasBeneficios(){
           </div>
         </div>
       </section>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   )

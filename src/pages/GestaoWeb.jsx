@@ -7,6 +7,7 @@ import {
   ShieldCheck, Users, ClipboardList, Receipt, BarChart3, Cable,
   CheckCircle2, Layers, Wallet, HandCoins, Wrench, ShoppingCart, Package, Truck
 } from "lucide-react";
+import BottomDockCTA from "@/components/BottomDockCTA";
 
 export default function GestaoWeb(){
   useEffect(()=>{
@@ -266,7 +267,8 @@ export default function GestaoWeb(){
           </div>
         </section>
       </main>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   );

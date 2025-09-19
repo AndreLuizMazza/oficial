@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import placeholder from "@/assets/img/placeholder.png"
-
+import BottomDockCTA from "@/components/BottomDockCTA"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
@@ -132,7 +132,8 @@ export default function SitePremium(){
           </div>
         </section>
       </main>
-
+      {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   )

@@ -8,6 +8,7 @@ import {
   QrCode, Smartphone, Bell, MapPin, CalendarCheck2, Layers,
   Percent, CheckCircle2, ClipboardList
 } from "lucide-react"
+import BottomDockCTA from "@/components/BottomDockCTA"
 
 /**
  * Página: Gestão de Planos Pet (Progem)
@@ -186,7 +187,8 @@ export default function PlanosPet(){
           </div>
         </section>
       </main>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   )

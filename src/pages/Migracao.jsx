@@ -7,6 +7,7 @@ import {
   Database, UploadCloud, FileSpreadsheet, ShieldCheck, Check, Sparkles,
   Server, Info, Rocket, Download
 } from "lucide-react";
+import BottomDockCTA from "@/components/BottomDockCTA";
 
 export default function Migracao(){
   useEffect(()=>{
@@ -255,7 +256,8 @@ export default function Migracao(){
           </div>
         </div>
       </section>
-
+     {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
       <Footer/>
     </div>
   );
