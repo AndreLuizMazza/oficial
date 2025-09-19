@@ -21,6 +21,7 @@ const nav = [
   { label: "Soluções", type: "mega" },
   { label: "Planos", to: "/planos" },
   { label: "Clientes", to: "/clientes" },
+  { label: "Quem somos", to: "/quem-somos" }, // ✅ adicionado ao header
   { label: "Blog", to: "/blog" },
   { label: "Desenvolvedores", to: "/developers" },
   { label: "Contato", to: "/contato" },
@@ -76,9 +77,9 @@ export default function Header() {
     pathname.startsWith("/solucoes") ||
     pathname.startsWith("/migracao") ||
     pathname.startsWith("/app-associado") ||
-    pathname.startsWith("/app-vendedor") ||      // ✅ incluído
-    pathname.startsWith("/app-cobrador") ||      // ✅ incluído
-    pathname.includes("planos-pet")              // ✅ âncora/rota de Planos Pet
+    pathname.startsWith("/app-vendedor") ||
+    pathname.startsWith("/app-cobrador") ||
+    pathname.includes("planos-pet")
 
   const toggleMobileSection = (title) =>
     setMobileSectionsOpen((s) => ({ ...s, [title]: !s[title] }))
@@ -99,7 +100,7 @@ export default function Header() {
   const triggerT = { type: "spring", stiffness: 520, damping: 34, mass: 0.6 }
   const t = { type: 'spring', stiffness: 420, damping: 34, mass: 0.6 }
 
-  // micro-anim para itens do drawer (ativa + feedback de tap)
+  // micro-anim para itens do drawer
   const drawerItemAnim = (active) => ({
     initial: false,
     animate: { scale: active && !reduce ? 0.98 : 1 },
@@ -164,7 +165,7 @@ export default function Header() {
           <div className="ml-2 hidden lg:block">
             <ThemeSwitch />
           </div>
-          {/* Padroniza Login (desktop) */}
+          {/* Login (desktop) */}
           <a href="https://app.progem.com.br/progem/Login.xhtml" className="ml-2 btn btn-ghost">Login</a>
         </nav>
 
@@ -267,6 +268,7 @@ export default function Header() {
                   {[
                     { label: "Planos", to: "/planos" },
                     { label: "Clientes", to: "/clientes" },
+                    { label: "Quem somos", to: "/quem-somos" }, // ✅ também no mobile
                     { label: "Blog", to: "/blog" },
                     { label: "Desenvolvedores", to: "/developers" },
                     { label: "Contato", to: "/contato" },
@@ -292,7 +294,6 @@ export default function Header() {
 
                 {/* Ações */}
                 <div className="pt-3 flex gap-2">
-                  {/* Padroniza Login (mobile) */}
                   <a href="https://app.progem.com.br/progem/Login.xhtml" onClick={() => setMobileOpen(false)} className="flex-1">
                     <motion.div
                       {...drawerItemAnim(false)}

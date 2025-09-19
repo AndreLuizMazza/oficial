@@ -200,7 +200,7 @@ export default function Demo(){
                 {[
                   "Criação de páginas de memorial",
                   "Fluxo de aprovação e publicação",
-                  "Leads integrados ao CRM",
+                  "Captação de Leads e vendas de produtos",
                 ].map(s=>(
                   <li key={s} className="flex items-start gap-2">
                     <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
@@ -232,6 +232,7 @@ export default function Demo(){
               </ul>
             </CardMotion>
 
+            {/* (SUBSTITUIR ESTE CARD) Integrações & APIs */}
             <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
@@ -239,21 +240,23 @@ export default function Demo(){
                 </span>
                 <div>
                   <div className="font-semibold">Integrações & APIs</div>
-                  <div className="muted text-sm">Conecte o Progem aos sistemas do seu negócio.</div>
+                  <div className="muted text-sm">Conecte o Progem aos seus fluxos essenciais.</div>
                 </div>
               </div>
+
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  "Integração com ERP/contabilidade",
-                  "Exportação/Importação (CSV, XLSX, JSON)",
-                  "Exemplos práticos com CRM/BI/marketing",
-                ].map(s=>(
+                  "Meios de pagamento",
+                  "Clubes de descontos / benefícios",
+                  "API REST do Progem para integrações personalizadas"
+                ].map((s)=>(
                   <li key={s} className="flex items-start gap-2">
                     <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
                   </li>
                 ))}
               </ul>
             </CardMotion>
+
           </div>
         </section>
 
@@ -264,7 +267,7 @@ export default function Demo(){
             <ul className="mt-3 space-y-2 text-sm">
               {[
                 "Tenha em mente seu volume de contratos ativos",
-                "Liste integrações desejadas com exemplos práticos (ex.: contabilidade/ERP, emissão de NFS-e, conciliação bancária, marketing)",
+                "Liste integrações desejadas com exemplos práticos (ex.: Conciliação bancária, Clubes de descontos)",
                 "Traga dúvidas de cobrança, whitelabel e memorial",
               ].map(s=>(
                 <li key={s} className="flex items-start gap-2">
