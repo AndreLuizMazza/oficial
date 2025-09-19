@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import placeholder from "@/assets/img/placeholder.png"
 
 import { Link } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
@@ -29,7 +28,7 @@ export default function SitePremium(){
 
   return (
     <div>
-      <Header/>
+     
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

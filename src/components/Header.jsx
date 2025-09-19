@@ -23,7 +23,6 @@ const nav = [
   { label: "Clientes", to: "/clientes" },
   { label: "Quem somos", to: "/quem-somos" }, // ✅ adicionado ao header
   { label: "Blog", to: "/blog" },
-  { label: "Desenvolvedores", to: "/developers" },
   { label: "Contato", to: "/contato" },
 ]
 
@@ -270,7 +269,6 @@ export default function Header() {
                     { label: "Clientes", to: "/clientes" },
                     { label: "Quem somos", to: "/quem-somos" }, // ✅ também no mobile
                     { label: "Blog", to: "/blog" },
-                    { label: "Desenvolvedores", to: "/developers" },
                     { label: "Contato", to: "/contato" },
                   ].map((item) => (
                     <NavLink

@@ -1,7 +1,6 @@
 // src/pages/Apps.jsx
 import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import CardMotion from "@/components/CardMotion"
@@ -119,7 +118,7 @@ export default function Apps(){
 
   return (
     <div>
-      <Header/>
+   
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

@@ -1,7 +1,6 @@
 // src/pages/AppVendedor.jsx
 import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
@@ -71,7 +70,7 @@ export default function AppVendedor(){
 
   return (
     <div>
-      <Header/>
+
 
       <div className={`min-h-dvh ${tokens.bg} ${tokens.text}`}>
         {/* HERO */}

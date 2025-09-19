@@ -1,7 +1,6 @@
 // src/pages/BlogPost.jsx
 import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
@@ -149,7 +148,7 @@ export default function BlogPost(){
 
   return (
     <div>
-      <Header/>
+
 
       {post.cover && (
         <div className="w-full h-64 md:h-80 overflow-hidden border-b border-[var(--c-border)] bg-[var(--c-surface)]">

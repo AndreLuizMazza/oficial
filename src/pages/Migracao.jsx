@@ -1,7 +1,6 @@
 // src/pages/Migracao.jsx
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setPageSEO } from "@/lib/seo";
 import {
@@ -19,7 +18,7 @@ export default function Migracao(){
 
   return (
     <div>
-      <Header/>
+
 
       {/* HERO */}
       <section className="relative border-b border-[var(--c-border)] bg-[var(--c-surface)] overflow-hidden">

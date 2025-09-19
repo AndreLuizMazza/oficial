@@ -1,7 +1,6 @@
 // src/pages/Blog.jsx
 import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
@@ -121,7 +120,7 @@ export default function Blog(){
 
   return (
     <div>
-      <Header/>
+  
 
       {/* Hero */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

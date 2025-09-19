@@ -1,7 +1,6 @@
 // src/pages/QuemSomos.jsx
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BottomDockCTA from "@/components/BottomDockCTA";
 import AnimatedCounter from "@/components/AnimatedCounter";
@@ -64,7 +63,7 @@ export default function QuemSomos(){
 
   return (
     <div>
-      <Header/>
+
 
       {/* HERO */}
       <section className="relative border-b border-[var(--c-border)] bg-[var(--c-surface)] overflow-hidden">

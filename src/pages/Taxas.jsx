@@ -1,5 +1,5 @@
 // src/pages/Taxas.jsx
-import Header from "@/components/Header";
+
 import Footer from "@/components/Footer";
 import { setPageSEO } from "@/lib/seo";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -190,7 +190,7 @@ export default function Taxas() {
   // --------- UI ---------
   return (
     <div>
-      <Header />
+  
 
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* HERO / INTRO */}

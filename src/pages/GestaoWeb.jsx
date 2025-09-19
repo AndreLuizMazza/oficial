@@ -1,6 +1,5 @@
 // src/pages/GestaoWeb.jsx
 import { useEffect } from "react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Progemhome from "@/assets/img/gestaoweb.png";
 import { setPageSEO } from "@/lib/seo";
@@ -50,7 +49,7 @@ export default function GestaoWeb(){
 
   return (
     <div>
-      <Header/>
+   
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

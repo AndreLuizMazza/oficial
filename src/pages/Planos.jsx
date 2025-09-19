@@ -1,7 +1,6 @@
 // src/pages/Planos.jsx
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
@@ -443,7 +442,7 @@ export default function Planos(){
 
   return (
     <div>
-      <Header/>
+
       <main className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-4">
           <div>

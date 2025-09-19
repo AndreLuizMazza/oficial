@@ -2,7 +2,6 @@
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
 import placeholder from "@/assets/img/placeholder.png"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
@@ -46,7 +45,7 @@ export default function AppAssociado(){
 
   return (
     <div>
-      <Header/>
+      
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

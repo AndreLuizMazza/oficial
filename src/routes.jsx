@@ -1,5 +1,6 @@
 // src/router.jsx
 import { createBrowserRouter } from 'react-router-dom'
+import AppShell from '@/layouts/AppShell'              // ⟵ novo: Header persistente fora das transições
 import PageTransitionLayout from '@/layouts/PageTransitionLayout'
 
 import Home from '@/pages/Home'
@@ -24,33 +25,39 @@ import IntegracaoWhatsapp from './pages/IntegracaoWhatsapp'
 import Apps from './pages/Apps'
 
 export const router = createBrowserRouter([
-  // ➜ Rotas SEM transição (evita flicker do vídeo)
-  { path: '/', element: <Home/> },
-  { path: '/funcionalidades', element: <Home/> },
-
-  // ➜ Demais rotas COM transição
   {
-    element: <PageTransitionLayout />,
+    // Header fixo aqui dentro
+    element: <AppShell />,
     children: [
-      { path: '/planos', element: <Planos/> },
-      { path: '/clientes', element: <Clientes/> },
-      { path: '/blog', element: <Blog/> },
-      { path: '/contato', element: <Contato/> },
-      { path: '/demo', element: <Demo/> },
-      { path: '/blog/:id', element: <BlogPost/> },
-      { path: '/migracao', element: <Migracao/> },
-      { path: '/developers', element: <Developers/> },
-      { path: '/taxas', element: <Taxas/> },
-      { path: '/gestao-web', element: <GestaoWeb/> },
-      { path: '/quem-somos', element: <QuemSomos/> },
-      { path: '/site-premium', element: <SitePremium/> },
-      { path: '/app-cobrador', element: <AppDoCobradorPage/> },
-      { path: '/app-vendedor', element: <AppDoVendedorPage/> },
-      { path: '/clube', element: <ClubeBeneficios/> },
-      { path: '/pet', element: <PlanosPet/> },
-      { path: '/apps', element: <Apps/> },
-      { path: '/zap', element: <IntegracaoWhatsapp/> },
-      { path: '/app-associado', element: <AppAssociado/> },
+      // ➜ Rotas SEM transição (evita flicker do vídeo)
+      { path: '/', element: <Home/> },
+      { path: '/funcionalidades', element: <Home/> },
+
+      // ➜ Demais rotas COM transição (Header fica de fora)
+      {
+        element: <PageTransitionLayout />,
+        children: [
+          { path: '/planos', element: <Planos/> },
+          { path: '/clientes', element: <Clientes/> },
+          { path: '/blog', element: <Blog/> },
+          { path: '/contato', element: <Contato/> },
+          { path: '/demo', element: <Demo/> },
+          { path: '/blog/:id', element: <BlogPost/> },
+          { path: '/migracao', element: <Migracao/> },
+          { path: '/developers', element: <Developers/> },
+          { path: '/taxas', element: <Taxas/> },
+          { path: '/gestao-web', element: <GestaoWeb/> },
+          { path: '/quem-somos', element: <QuemSomos/> },
+          { path: '/site-premium', element: <SitePremium/> },
+          { path: '/app-cobrador', element: <AppDoCobradorPage/> },
+          { path: '/app-vendedor', element: <AppDoVendedorPage/> },
+          { path: '/clube', element: <ClubeBeneficios/> },
+          { path: '/pet', element: <PlanosPet/> },
+          { path: '/apps', element: <Apps/> },
+          { path: '/zap', element: <IntegracaoWhatsapp/> },
+          { path: '/app-associado', element: <AppAssociado/> },
+        ],
+      },
     ],
   },
 ])

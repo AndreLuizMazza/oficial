@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { setPageSEO } from '@/lib/seo'
 
@@ -15,7 +14,7 @@ export default function Developers(){
 
   return (
     <div>
-      <Header/>
+     
       <main className="mx-auto max-w-7xl px-4 py-12 grid lg:grid-cols-[260px,1fr] gap-8">
         <aside className="hidden lg:block sticky top-24 h-max">
           <nav className="text-sm">

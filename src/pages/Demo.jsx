@@ -1,6 +1,5 @@
 // src/pages/Demo.jsx
 import { useEffect } from "react"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
@@ -26,7 +25,7 @@ export default function Demo(){
 
   return (
     <div>
-      <Header/>
+
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

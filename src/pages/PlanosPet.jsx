@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import pet from "@/assets/img/pet.png"
@@ -36,7 +35,7 @@ export default function PlanosPet(){
 
   return (
     <div className={t.text}>
-      <Header/>
+
 
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">

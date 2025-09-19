@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { BFF } from '@/lib/bff'
 import { setPageSEO } from '@/lib/seo'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Hero from '@/components/Hero'
 import Solutions from '@/components/Solutions'
 import LogosBar from '@/components/LogosBar'
 import FeatureGrid from '@/components/FeatureGrid'
-import Plans from '@/components/Plans'
+
 
 
 export default function Home(){
@@ -19,7 +18,7 @@ export default function Home(){
 
   return (
     <div>
-      <Header/>
+
       <Hero/>
       <Solutions/>
       <LogosBar/>

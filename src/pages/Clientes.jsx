@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { setPageSEO } from '@/lib/seo'
 import { HeartHandshake, Users, Dumbbell, Building2, Landmark } from 'lucide-react'
@@ -56,7 +55,7 @@ export default function Clientes(){
 
   return (
     <div>
-      <Header/>
+
       <main className="mx-auto max-w-7xl px-4 py-12 grid lg:grid-cols-[260px,1fr] gap-8">
         {/* Sidebar com âncoras (igual ao estilo de Developers) */}
         <aside className="hidden lg:block sticky top-24 h-max">

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
@@ -49,7 +48,7 @@ export default function Contato(){
 
   return (
     <div>
-      <Header/>
+
 
       {/* Hero */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
