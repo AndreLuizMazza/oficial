@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Progemhome from "@/assets/img/progemhome.png";
+import Progemhome from "@/assets/img/gestaoweb.png";
 import { setPageSEO } from "@/lib/seo";
 import {
   ShieldCheck, Users, ClipboardList, Receipt, BarChart3, Cable,
@@ -66,7 +66,7 @@ export default function GestaoWeb(){
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
-              Gestão completa — contratos, cobranças, financeiro e operação.
+              Gestão completa de contratos, cobranças, financeiro e operação.
             </h1>
             <p className="muted mt-3 text-lg">
               Reduza inadimplência, padronize processos e integre sua operação de ponta a ponta.

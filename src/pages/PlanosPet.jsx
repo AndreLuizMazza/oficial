@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
-import placeholder from "@/assets/img/placeholder.png"
+import pet from "@/assets/img/pet.png"
 import {
   PawPrint, HeartHandshake, ShieldCheck, CreditCard, FileText,
   QrCode, Smartphone, Bell, MapPin, CalendarCheck2, Layers,
@@ -64,7 +64,7 @@ export default function PlanosPet(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src={placeholder}
+              src={pet}
               alt="Mockup Planos Pet"
               className="w-full h-full object-cover"
               loading="lazy"
