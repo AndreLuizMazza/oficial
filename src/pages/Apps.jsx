@@ -12,6 +12,7 @@ import {
   Check, QrCode, FileText, BellRing, MapPin, CloudOff, Download, LineChart, Info,
   ArrowRight, Apple
 } from "lucide-react"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 
 export default function Apps(){
   const [search, setSearch] = useSearchParams()
@@ -22,7 +23,7 @@ export default function Apps(){
     setPageSEO({
       title: "Progem • Apps móveis (Associado, Vendedor e Cobrador)",
       description:
-        "App do Associado (iOS/Android) whitelabel; Apps do Vendedor e Cobrador (Android). Sem taxa por venda/recebimento no app. Setup único sob escopo. Associado e Site whitelabel com manutenção mensal (estimativa inicial a partir de R$ 199, podendo variar conforme usuários)."
+        "App do Associado (iOS/Android) whitelabel; Apps do Vendedor e Cobrador (Android). Inclusos no pacote Progem, sem taxa por recebimento/venda. Setup único sob escopo."
     })
   },[])
 
@@ -100,17 +101,21 @@ export default function Apps(){
     )
   }
 
-  const Screens = ({ count=3 }) => (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-      {Array.from({length:count}).map((_,i)=>(
-        <Link key={i} to={detailsPath(tab)} className="group focus:outline-none">
-          <CardMotion className="rounded-xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] ring-0 group-focus:ring-2 ring-[var(--c-primary)]" tabIndex={0}>
-            <img src={placeholder} alt="Tela do app" className="w-full h-56 object-cover group-hover:opacity-95 transition" loading="lazy"/>
-          </CardMotion>
-        </Link>
-      ))}
-    </div>
-  )
+  // ==== animações (tabs) ====
+  const reduce = useReducedMotion()
+  const swapVariants = {
+    initial: { opacity: 0, y: reduce ? 0 : 8 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: "easeOut" } },
+    exit:    { opacity: 0, y: reduce ? 0 : -6, transition: { duration: 0.18, ease: "easeIn" } },
+  }
+  const itemVariants = {
+    initial: { opacity: 0, y: 8 },
+    animate: (i=0) => ({
+      opacity: 1, y: 0,
+      transition: { delay: 0.04 * i, duration: 0.22, ease: "easeOut" }
+    }),
+    exit: { opacity: 0, y: -4, transition: { duration: 0.15 } }
+  }
 
   return (
     <div>
@@ -127,8 +132,7 @@ export default function Apps(){
               Apps para <span className="text-[var(--c-primary)]">associados, vendedores e cobradores</span>
             </h1>
             <p className="muted mt-3 text-lg">
-              Experiências móveis que reduzem fricção, aceleram cadastros e melhoram a cobrança. App do Associado com sua
-              marca (whitelabel).
+              Experiências móveis que reduzem fricção, aceleram cadastros e melhoram a cobrança. App do Associado com sua marca (whitelabel).
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">Solicitar demonstração</Link>
@@ -181,87 +185,140 @@ export default function Apps(){
           </div>
         </div>
 
-        {/* CONTEÚDO POR ABA */}
-        <section className="mt-8 grid lg:grid-cols-[1fr,0.9fr] gap-8 items-start">
-          {/* Lista de recursos */}
-          <div>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-2xl font-semibold">
-                  {tab === "associado" && "App do Associado"}
-                  {tab === "vendedor"  && "App do Vendedor"}
-                  {tab === "cobrador"  && "App do Cobrador"}
-                </h2>
-                <p className="muted mt-1">
-                  {tab === "associado" && "Autoatendimento, pagamentos e notificações que reduzem a inadimplência e desafogam o atendimento."}
-                  {tab === "vendedor"  && "Prospecção, cadastro guiado e assinatura — inclusive em campo e com modo offline."}
-                  {tab === "cobrador"  && "Carteira de cobrança com PIX/2ª via na hora, rotas e baixa imediata — mesmo sem internet."}
-                </p>
-                <PlatformBadge {...platform[tab]} note={platform[tab].note}/>
+        {/* CONTEÚDO POR ABA (com transições) */}
+        <section
+          className="mt-8 grid lg:grid-cols-[1fr,0.9fr] gap-8 items-start"
+          aria-live="polite" aria-busy="false"
+        >
+          {/* Coluna esquerda */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`col-left-${tab}`}
+              variants={swapVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-2xl font-semibold">
+                    {tab === "associado" && "App do Associado"}
+                    {tab === "vendedor"  && "App do Vendedor"}
+                    {tab === "cobrador"  && "App do Cobrador"}
+                  </h2>
+                  <p className="muted mt-1">
+                    {tab === "associado" && "Autoatendimento, pagamentos e notificações que reduzem a inadimplência e desafogam o atendimento."}
+                    {tab === "vendedor"  && "Prospecção, cadastro guiado e assinatura — inclusive em campo e com modo offline."}
+                    {tab === "cobrador"  && "Carteira de cobrança com PIX/2ª via na hora, rotas e baixa imediata — mesmo sem internet."}
+                  </p>
+                  {platform?.[tab] && (
+                    <div className="mt-2">
+                      <PlatformBadge {...platform[tab]} note={platform[tab].note}/>
+                    </div>
+                  )}
+                </div>
+
+                {/* Ações rápidas */}
+                <div className="hidden md:flex flex-col gap-2 min-w-[220px]">
+                  <Link
+                    to={detailsPath(tab)}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2 text-sm hover:bg-[var(--c-surface-2)] transition"
+                    aria-label="Ver detalhes do app"
+                  >
+                    Ver detalhes do app <ArrowRight className="w-4 h-4"/>
+                  </Link>
+                  <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo text-sm">
+                    Solicitar demonstração
+                  </Link>
+                </div>
               </div>
 
-              {/* Ações rápidas do app selecionado */}
-              <div className="hidden md:flex flex-col gap-2 min-w-[220px]">
+              {/* Features com stagger */}
+              <div className="grid sm:grid-cols-2 gap-4 mt-5">
+                {FEATURES[tab].map(({icon:Icon, t, d}, i)=>(
+                  <motion.div
+                    key={t}
+                    custom={i}
+                    variants={itemVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <CardMotion className="card p-4 flex items-start gap-3" tabIndex={0}>
+                      <span className="inline-flex w-9 h-9 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
+                        <Icon className="w-4 h-4 text-[color:var(--c-muted)]"/>
+                      </span>
+                      <div>
+                        <div className="font-medium">{t}</div>
+                        <p className="muted text-sm">{d}</p>
+                      </div>
+                    </CardMotion>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Ações (mobile) */}
+              <div className="mt-6 flex flex-wrap gap-3 md:hidden">
                 <Link
                   to={detailsPath(tab)}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2 text-sm hover:bg-[var(--c-surface-2)] transition"
-                  aria-label="Ver detalhes do app"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2 text-sm"
                 >
                   Ver detalhes do app <ArrowRight className="w-4 h-4"/>
                 </Link>
+                <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">
+                  Ver demonstração do {tab === "associado" ? "App do Associado" : tab === "vendedor" ? "App do Vendedor" : "App do Cobrador"}
+                </Link>
+                <Link to="/planos" className="btn btn-ghost">Planos & valores</Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Coluna direita (telas) */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`col-right-${tab}`}
+              variants={swapVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Algumas telas</div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                {Array.from({length:3}).map((_,i)=>(
+                  <motion.div
+                    key={`${tab}-screen-${i}`}
+                    custom={i}
+                    variants={itemVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <Link to={detailsPath(tab)} className="group focus:outline-none">
+                      <CardMotion className="rounded-xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] ring-0 group-focus:ring-2 ring-[var(--c-primary)]" tabIndex={0}>
+                        <img
+                          src={placeholder}
+                          alt="Tela do app"
+                          className="w-full h-56 object-cover group-hover:opacity-95 transition"
+                          loading="lazy"
+                        />
+                      </CardMotion>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-3">
                 <Link
-                  to="/contato"
-                  data-cta="demo"
-                  className="btn btn-primary btn-demo text-sm"
+                  to={detailsPath(tab)}
+                  className="inline-flex items-center gap-2 text-sm underline underline-offset-4"
                 >
-                  Solicitar demonstração
+                  Ver página completa do {tab === "associado" ? "App do Associado" : tab === "vendedor" ? "App do Vendedor" : "App do Cobrador"}
+                  <ArrowRight className="w-4 h-4"/>
                 </Link>
               </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4 mt-5">
-              {FEATURES[tab].map(({icon:Icon, t, d})=>(
-                <CardMotion key={t} className="card p-4 flex items-start gap-3" tabIndex={0}>
-                  <span className="inline-flex w-9 h-9 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                    <Icon className="w-4 h-4 text-[color:var(--c-muted)]"/>
-                  </span>
-                  <div>
-                    <div className="font-medium">{t}</div>
-                    <p className="muted text-sm">{d}</p>
-                  </div>
-                </CardMotion>
-              ))}
-            </div>
-
-            {/* Grupo de ações (mobile) */}
-            <div className="mt-6 flex flex-wrap gap-3 md:hidden">
-              <Link
-                to={detailsPath(tab)}
-                className="inline-flex items-center gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2 text-sm"
-              >
-                Ver detalhes do app <ArrowRight className="w-4 h-4"/>
-              </Link>
-              <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">
-                Ver demonstração do {tab === "associado" ? "App do Associado" : tab === "vendedor" ? "App do Vendedor" : "App do Cobrador"}
-              </Link>
-              <Link to="/planos" className="btn btn-ghost">Planos & valores</Link>
-            </div>
-          </div>
-
-          {/* Telas (grid) */}
-          <div>
-            <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Algumas telas</div>
-            <Screens count={3}/>
-            <div className="mt-3">
-              <Link
-                to={detailsPath(tab)}
-                className="inline-flex items-center gap-2 text-sm underline underline-offset-4"
-              >
-                Ver página completa do {tab === "associado" ? "App do Associado" : tab === "vendedor" ? "App do Vendedor" : "App do Cobrador"}
-                <ArrowRight className="w-4 h-4"/>
-              </Link>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </section>
 
         {/* Custos & Setup (discreto) */}
@@ -274,18 +331,12 @@ export default function Apps(){
               <div className="text-sm">
                 <p className="font-medium">Custos & Setup</p>
                 <ul className="mt-1 space-y-1">
-                  <li className="muted">
-                    <strong>Apps do Vendedor e Cobrador</strong>: inclusos no pacote Progem — sem custo adicional de licenciamento.
-                  </li>
+                  <li className="muted">Apps <strong>Vendedor</strong> e <strong>Cobrador</strong> inclusos no pacote Progem — sem licenciamento adicional.</li>
+                  <li className="muted">App do <strong>Associado</strong> (whitelabel) e <strong>Site whitelabel</strong>: manutenção mensal estimada em <strong>R$ 199,00</strong>, podendo variar conforme base de usuários.</li>
                   <li className="muted">App do Cobrador: <strong>sem taxa por recebimento</strong> ao Progem.</li>
                   <li className="muted">App do Vendedor: <strong>sem taxa por venda</strong> ao Progem.</li>
                   <li className="muted">
-                    <strong>App do Associado</strong> e <strong>Site Premium (Whitelabel)</strong>:
-                    manutenção mensal (estimativa inicial <em>a partir de R$ 199</em>), podendo variar conforme o número de usuários.
-                  </li>
-                  <li className="muted">
-                    <strong>Setup único</strong> (<em>sob escopo</em>): depende das integrações a realizar e da quantidade de usuários
-                    que precisarão de treinamentos setorizados.
+                    Setup único (<em>sob escopo</em>): depende das integrações necessárias e da quantidade de usuários a treinar (setorizado).
                   </li>
                 </ul>
               </div>

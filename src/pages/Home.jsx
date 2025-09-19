@@ -9,6 +9,7 @@ import LogosBar from '@/components/LogosBar'
 import FeatureGrid from '@/components/FeatureGrid'
 import Plans from '@/components/Plans'
 
+
 export default function Home(){
   const [planos, setPlanos] = useState([])
   useEffect(()=>{
