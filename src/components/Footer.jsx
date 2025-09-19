@@ -75,7 +75,7 @@ export default function Footer(){
               <Facebook className="w-5 h-5"/>
             </a>
             <a
-              href="https://www.youtube.com/@progem5998"
+              href="https://www.youtube.com/@progemsoftware"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube da Progem"

@@ -3,11 +3,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { setPageSEO } from "@/lib/seo";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, Calculator, Info, CreditCard } from "lucide-react";
+import {
+  ChevronDown, Calculator, Info, CreditCard,
+  Landmark, Building2, Zap, ShieldCheck
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { track } from "@/lib/analytics";
 
-// --- Dados de referência ---
+// --- Dados de referência (integração principal em destaque, sem citar marca nos títulos) ---
 const taxasPagamento = [
   { tipo: "Pix", valor: "R$0,99", icon: "💠", note: "por transação" },
   { tipo: "Boleto (Liquidado)", valor: "R$2,30", icon: "📄", note: "somente quando pago" },
@@ -26,14 +29,32 @@ const taxasCartoes = [
   { bandeira: "Aura",              gatilho: "R$0,29", taxa: "4,09%" },
 ];
 
+// --- Alternativa: TecnoSpeed (boletos com bancos) ---
+const tecnospeed = {
+  custoRegistro: "R$0,45", // pago à Progem no registro (pode reduzir por volume)
+  bancos: ["Banco do Brasil", "Sicredi", "Sicoob", "Bradesco", "BTG Pactual"],
+  bullets: [
+    "Somente boletos (emissão pelo Progem Gestão).",
+    "Não integrado ao checkout online do Progem.",
+    "Além do valor de registro, há a tarifa do seu banco.",
+    "Créditos pré-pagos no Progem para registrar boletos.",
+    "Velocidade de integração depende do banco/gerente.",
+  ],
+};
+
+// --- FAQ ---
 const faqs = [
+  {
+    q: "Posso usar o gateway do Progem e, ao mesmo tempo, emitir boletos pelo meu banco?",
+    a: "Sim. Você pode manter as duas integrações ativas e alternar conforme a necessidade. No dia a dia, dá para definir preferências por canal (ex.: Pix/Cartão no gateway principal e boletos via banco) ou escolher caso a caso. A conciliação e os relatórios continuam centralizados no Progem."
+  },
   {
     q: "O que é considerado um contrato ativo?",
     a: "Contratos com status 'ativo' dentro do período de faturamento. Cancelados, suspensos ou em implantação não entram na contagem."
   },
   {
     q: "Há cobrança para boletos emitidos, baixados ou cancelados?",
-    a: "Não. A taxa de boleto aplica-se apenas quando há liquidação (pagamento confirmado). Emissão, baixa manual ou cancelamento não geram tarifa."
+    a: "Não. Na integração principal, a taxa de boleto aplica-se apenas quando há liquidação (pagamento confirmado). Emissão, baixa manual ou cancelamento não geram tarifa."
   },
   {
     q: "O que significa 'gatilho' nos cartões?",
@@ -102,11 +123,11 @@ export default function Taxas() {
     setPageSEO({
       title: "Progem • Taxas e formas de cobrança",
       description:
-        "Transparência nas taxas: Pix, boleto liquidado e cartões por bandeira. Entenda gatilhos, percentuais e perguntas frequentes."
+        "Transparência nas taxas com integração recomendada e opção de boletos via bancos. Simule custos e compare."
     });
   }, []);
 
-  // --- Simulador ---
+  // --- Simulador (integração principal) ---
   const [valor, setValor] = useState(100);
   const [metodo, setMetodo] = useState("pix"); // pix | boleto | cartao
   const [flag, setFlag] = useState(taxasCartoes[0]?.bandeira || "Mastercard");
@@ -118,11 +139,11 @@ export default function Taxas() {
 
   const taxaAtual = useMemo(() => {
     const v = Number(valor) || 0;
-    if (metodo === "pix") return 0.99;                         // ✅ SEMPRE R$ 0,99
-    if (metodo === "boleto") return 2.30;                      // boleto liquidado fixo
+    if (metodo === "pix") return 0.99;                         // Pix fixo (integração principal)
+    if (metodo === "boleto") return 2.30;                      // Boleto liquidado (integração principal)
     // cartão → gatilho + (valor * %)
-    const gat = parseMoneyBRL(flagObj?.gatilho);               // ex.: "R$0,29" → 0.29
-    const pct = parsePercentBR(flagObj?.taxa);                 // ex.: "3,59%" → 0.0359
+    const gat = parseMoneyBRL(flagObj?.gatilho);
+    const pct = parsePercentBR(flagObj?.taxa);
     return gat + v * pct;
   }, [valor, metodo, flagObj]);
 
@@ -137,10 +158,8 @@ export default function Taxas() {
     return (taxaAtual / v) * 100;
   }, [valor, taxaAtual]);
 
-  // ---------- Analytics do simulador ----------
+  // ---------- Analytics ----------
   const lastValueTracked = useRef(valor);
-
-  // snapshot comum para payload
   const snapshot = () => ({
     value: Number(valor) || 0,
     method: metodo,
@@ -149,22 +168,20 @@ export default function Taxas() {
     net: Number(liquido || 0),
     eff_rate: Number.isFinite(aliquotaEfetiva) ? Number(aliquotaEfetiva.toFixed(4)) : 0,
   });
-
   const fire = (event, extra = {}) => {
     try { track(event, { ...snapshot(), ...extra }); } catch {}
   };
 
   useEffect(() => {
-    fire("fees_simulator_view");
+    fire("fees_view");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Debounce para mudanças de valor
   useEffect(() => {
     if (lastValueTracked.current === valor) return;
     const id = setTimeout(() => {
       lastValueTracked.current = valor;
-      fire("fees_simulator_value_change");
+      fire("fees_value_change");
     }, 400);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,12 +195,21 @@ export default function Taxas() {
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* HERO / INTRO */}
         <header className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold">Taxas & Formas de Cobrança</h1>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
+            <ShieldCheck className="w-4 h-4 text-[color:var(--c-muted)]" />
+            Integração recomendada
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold mt-3">Taxas & Formas de Cobrança</h1>
           <p className="muted mt-2">
-            Transparência nas modalidades e nos custos por transação. Veja abaixo os valores e simule o seu cenário.
+            Abaixo estão as modalidades e custos da integração principal. Se preferir usar seu próprio banco,
+            há uma opção mais abaixo.
+          </p>
+          {/* ÚNICA menção discreta ao parceiro */}
+          <p className="mt-2 text-[11px] muted">
+            * Integração operada por parceiro homologado (ex.: Cel&nbsp;Cash).
           </p>
 
-        {/* Resumo rápido */}
+          {/* Resumo rápido (integração principal) */}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {taxasPagamento.map((t, i) => (
               <div key={i} className="card p-4 flex items-center gap-3">
@@ -216,7 +242,7 @@ export default function Taxas() {
 
         {/* Grelha principal: Tabelas + Simulador */}
         <div className="grid gap-10 lg:grid-cols-[1fr,420px]">
-          {/* Coluna esquerda: tabelas */}
+          {/* Coluna esquerda: tabelas (integração principal) */}
           <div className="grid gap-10 min-w-0">
             {/* Taxas de Pagamento */}
             <section aria-labelledby="tabela-pagamentos">
@@ -254,10 +280,10 @@ export default function Taxas() {
               </p>
             </section>
 
-            {/* Taxas de Cartões */}
+            {/* Cartões */}
             <section aria-labelledby="tabela-cartoes">
               <h2 id="tabela-cartoes" className="text-xl font-semibold mb-4 text-center md:text-left">
-                Taxas de Cartões por Bandeira
+                Cartões por Bandeira
               </h2>
               <div className="card overflow-hidden">
                 <div className="overflow-x-auto">
@@ -287,9 +313,107 @@ export default function Taxas() {
                 <p>As taxas são definidas pelo adquirente/gateway e podem variar por campanha/volume.</p>
               </div>
             </section>
+
+            {/* Opção discreta: emitir boletos pelo meu banco? (TecnoSpeed) */}
+            <section aria-labelledby="banco-tecnospeed" className="mt-2">
+              <details
+                className="group rounded-xl border border-[var(--c-border)] bg-[var(--c-surface)]"
+                onToggle={(e)=> { if (e.target.open) try{ track("fees_tecnospeed_open"); } catch{} }}
+              >
+                <summary className="list-none cursor-pointer select-none p-4 flex items-center justify-between">
+                  <div>
+                    <h3 id="banco-tecnospeed" className="font-semibold">
+                      Posso emitir boletos pelo meu banco?
+                    </h3>
+                    <p className="muted text-sm">
+                      Opção alternativa via integração de boletos com bancos tradicionais.
+                    </p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 opacity-70 transition group-open:rotate-180" />
+                </summary>
+
+                <div className="px-4 pb-4">
+                  <div className="grid gap-5 lg:grid-cols-2">
+                    {/* Como funciona */}
+                    <article className="card p-5">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-5 h-5 text-[color:var(--c-muted)]" />
+                        <h4 className="font-semibold">Como funciona</h4>
+                      </div>
+                      <ul className="mt-3 space-y-2 text-sm">
+                        {tecnospeed.bullets.map((t) => (
+                          <li key={t} className="muted">• {t}</li>
+                        ))}
+                        <li className="muted">• Bancos: {tecnospeed.bancos.join(", ")}.</li>
+                      </ul>
+                      <div className="text-[11px] muted mt-3">parceria: TecnoSpeed</div>
+                    </article>
+
+                    {/* Custos */}
+                    <article className="card p-5">
+                      <div className="flex items-center gap-2">
+                        <Landmark className="w-5 h-5 text-[color:var(--c-muted)]" />
+                        <h4 className="font-semibold">Custos & Operação</h4>
+                      </div>
+                      <div className="mt-3 text-sm">
+                        <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
+                          <p><strong>Custo Progem por registro:</strong> {tecnospeed.custoRegistro} (pode reduzir por volume)</p>
+                          <p className="mt-1">+ <strong>Tarifa do banco</strong> (conforme convênio).</p>
+                          <p className="mt-1">Emissão exige <strong>créditos pré-pagos</strong> no Progem.</p>
+                        </div>
+                        <div className="mt-3 flex items-start gap-2 text-xs muted">
+                          <Info className="w-4 h-4 mt-0.5" />
+                          <span>
+                            A velocidade de integração depende do banco e do gerente responsável.
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+
+                  {/* Comparativo em 2 cartões curtos */}
+                  <div className="mt-5 grid gap-5 lg:grid-cols-2">
+                    <article className="card p-5">
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-[color:var(--c-muted)]" />
+                        <h4 className="font-semibold">Quando preferimos a integração principal</h4>
+                      </div>
+                      <ul className="mt-3 space-y-2 text-sm">
+                        <li className="muted">• Pix, Boleto liquidado e Cartões no mesmo arranjo.</li>
+                        <li className="muted">• Liquidação mais rápida e conciliação automática.</li>
+                        <li className="muted">• API robusta; autonomia e integração em até <strong>48h úteis</strong>.</li>
+                        <li className="muted">• Caixa integrado: entradas, taxas e repasses organizados.</li>
+                      </ul>
+                    </article>
+
+                    <article className="card p-5">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]" />
+                        <h4 className="font-semibold">Quando faz sentido usar seu banco</h4>
+                      </div>
+                      <ul className="mt-3 space-y-2 text-sm">
+                        <li className="muted">• Política interna exige <strong>convênio direto</strong> com o banco.</li>
+                        <li className="muted">• Operação focada exclusivamente em <strong>boletos</strong>.</li>
+                        <li className="muted">• Você já possui tarifas bancárias negociadas.</li>
+                      </ul>
+                    </article>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                      Escolher a melhor integração
+                    </Link>
+                    <Link to="/contato" className="btn btn-ghost">
+                      Falar com um especialista
+                    </Link>
+                  </div>
+                </div>
+              </details>
+            </section>
           </div>
 
-          {/* Coluna direita: Simulador */}
+          {/* Coluna direita: Simulador (integração principal) */}
           <aside aria-labelledby="simulador-taxas" className="lg:sticky lg:top-24 h-fit min-w-0">
             <div className="card p-5">
               <div className="flex items-center gap-2">
@@ -312,7 +436,7 @@ export default function Taxas() {
                     step="0.01"
                     value={valor}
                     onChange={(e)=> setValor(e.target.value)}
-                    onBlur={()=> fire("fees_simulator_value_blur")}
+                    onBlur={()=> fire("fees_value_blur")}
                     className="input w-40"
                     aria-describedby="valor-ajuda"
                   />
@@ -336,7 +460,7 @@ export default function Taxas() {
                       type="button"
                       onClick={()=>{
                         setMetodo(opt.id);
-                        fire("fees_simulator_method_select", { method: opt.id });
+                        fire("fees_method_select", { method: opt.id });
                       }}
                       className={`px-3 py-1.5 rounded-lg border text-sm transition ${
                         metodo === opt.id
@@ -361,7 +485,7 @@ export default function Taxas() {
                       value={flag}
                       onChange={(e)=>{
                         setFlag(e.target.value);
-                        fire("fees_simulator_flag_select", { flag: e.target.value });
+                        fire("fees_flag_select", { flag: e.target.value });
                       }}
                       className="input w-full sm:w-64 md:w-72"
                       aria-describedby="ajuda-bandeira"
@@ -414,14 +538,14 @@ export default function Taxas() {
                     to="/demo"
                     data-cta="demo"
                     className="btn btn-primary btn-demo w-full"
-                    onClick={()=> fire("fees_simulator_cta_demo")}
+                    onClick={()=> fire("fees_cta_demo")}
                   >
                     Falar com um especialista
                   </Link>
                   <Link
                     to="/planos"
                     className="btn btn-ghost w-full"
-                    onClick={()=> fire("fees_simulator_cta_planos")}
+                    onClick={()=> fire("fees_cta_planos")}
                   >
                     Ver Planos
                   </Link>
@@ -448,7 +572,7 @@ export default function Taxas() {
             <div className="flex items-start gap-2 text-sm">
               <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]" />
               <p className="muted">
-                As condições podem variar por volume, risco e adquirente. Em caso de campanha promocional,
+                As condições podem variar por volume, risco e adquirente/banco. Em caso de campanha promocional,
                 faixas e percentuais podem ser ajustados. Nosso time ajuda a definir o melhor arranjo.
               </p>
             </div>
@@ -463,13 +587,12 @@ export default function Taxas() {
                 Precisa de ajuda?
               </div>
               <h3 className="text-2xl font-semibold mt-1">Vamos calcular o melhor cenário para sua operação</h3>
-              <p className="muted">Simulamos custos por volume, bandeira e meios de pagamento.</p>
+              <p className="muted">Simulamos custos por volume, bandeiras, bancos e meios de pagamento.</p>
             </div>
             <Link
               to="/demo"
               data-cta="demo"
               className="btn btn-primary btn-demo"
-              onClick={()=> fire("fees_simulator_cta_final_demo")}
             >
               Falar com um especialista
             </Link>

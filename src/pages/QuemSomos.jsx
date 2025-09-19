@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import BottomDockCTA from "@/components/BottomDockCTA";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import placeholder from "@/assets/img/placeholder.png";
+import fototime from "@/assets/img/time/1.jpg";
 import { setPageSEO } from "@/lib/seo";
 import {
   ShieldCheck, Globe, Users, Rocket, Sparkles, HeartHandshake,
@@ -80,7 +81,7 @@ export default function QuemSomos(){
             </div>
 
             <h1 className="h1-fluid text-3xl md:text-4xl font-bold tracking-tight mt-4">
-              Tecnologia para negócios recorrentes no setor funerário — com transparência e resultado.
+              Tecnologia para negócios recorrentes no setor funerário com transparência e resultado.
             </h1>
 
             <p className="p-fluid muted mt-3 md:text-lg">
@@ -121,7 +122,7 @@ export default function QuemSomos(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] aspect-[16/10]" style={{ zIndex: 1 }}>
             <img
-              src={placeholder}
+              src={fototime}
               alt="Time Progem em operação"
               className="w-full h-full object-cover"
               loading="eager"
