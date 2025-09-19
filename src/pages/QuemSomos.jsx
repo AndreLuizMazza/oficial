@@ -1,13 +1,43 @@
 // src/pages/QuemSomos.jsx
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BottomDockCTA from "@/components/BottomDockCTA";
+import AnimatedCounter from "@/components/AnimatedCounter";
 import placeholder from "@/assets/img/placeholder.png";
 import { setPageSEO } from "@/lib/seo";
 import {
   ShieldCheck, Globe, Users, Rocket, Sparkles, HeartHandshake,
   Target, Clock, Building2, CheckCircle2, LineChart
 } from "lucide-react";
+
+const GridHalo = () => (
+  <>
+    {/* Halo radial */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 -top-10 h-[220px] opacity-70 blur-3xl"
+      style={{
+        background:
+          "radial-gradient(1100px 220px at 50% 0, color-mix(in oklab, var(--c-primary) 28%, transparent), transparent 60%)",
+        zIndex: 0,
+      }}
+    />
+    {/* Grid sutil */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 opacity-25"
+      style={{
+        backgroundImage:
+          "linear-gradient(var(--c-border) 1px, transparent 1px), linear-gradient(90deg, var(--c-border) 1px, transparent 1px)",
+        backgroundSize: "28px 28px, 28px 28px",
+        mixBlendMode: "normal",
+        zIndex: 0,
+      }}
+    />
+  </>
+);
 
 export default function QuemSomos(){
   useEffect(()=>{
@@ -16,13 +46,6 @@ export default function QuemSomos(){
       description: "Conheça a Progem: missão, visão e valores. Nossa história, time e o compromisso com transparência e resultados."
     });
   },[]);
-
-  const metrics = [
-    { label: "anos de experiência", value: "5+" },
-    { label: "empresas atendidas", value: "200+" },
-    { label: "volume transacionado/mês", value: "R$ 5 mi+" },
-    { label: "SLA médio", value: "99,9%" },
-  ];
 
   const pillars = [
     { icon: ShieldCheck,     title: "Confiabilidade",       desc: "Segurança, disponibilidade e processos auditáveis." },
@@ -43,9 +66,10 @@ export default function QuemSomos(){
       <Header/>
 
       {/* HERO */}
-      <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
-        <div className="mx-auto max-w-7xl px-4 py-14 grid md:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
-          <div>
+      <section className="relative border-b border-[var(--c-border)] bg-[var(--c-surface)] overflow-hidden">
+        <GridHalo />
+        <div className="relative mx-auto max-w-7xl px-4 py-14 grid md:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
+          <div style={{ zIndex: 1 }}>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
                 <Building2 className="w-4 h-4 text-[color:var(--c-muted)]"/> Quem somos
@@ -55,54 +79,53 @@ export default function QuemSomos(){
               </span>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
+            <h1 className="h1-fluid text-3xl md:text-4xl font-bold tracking-tight mt-4">
               Tecnologia para negócios recorrentes no setor funerário — com transparência e resultado.
             </h1>
 
-            <p className="muted mt-3 text-lg">
+            <p className="p-fluid muted mt-3 md:text-lg">
               A Progem nasceu para simplificar a gestão de contratos, cobranças e a experiência digital
               de organizações funerárias e negócios recorrentes. Unimos software, dados e atendimento próximo.
             </p>
 
-            {/* ✅ Trust strip abaixo do título */}
+            {/* CTAs no herói */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Solicitar Demonstração
+              </Link>
+              <Link to="/planos" className="btn btn-ghost">Ver Planos</Link>
+            </div>
+
+            {/* Trust strip (cards) */}
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="card p-4 flex items-center gap-3">
-                <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                  <LineChart className="w-5 h-5 text-[color:var(--c-muted)]" />
-                </span>
-                <div>
-                  <div className="font-semibold leading-tight">R$ 5 mi+ processados/mês</div>
-                  <div className="muted text-[13px]">Pagamentos recorrentes com escala</div>
+              {[
+                { icon: LineChart, title: "R$ 5 mi+ processados/mês", sub: "Pagamentos recorrentes com escala" },
+                { icon: Building2, title: "Foco no setor funerário",  sub: "Operando desde 2019" },
+                { icon: ShieldCheck, title: "SLA médio 99,9%",        sub: "Disponibilidade para operações críticas" },
+              ].map(({icon:Icon, title, sub}, i) => (
+                <div
+                  key={i}
+                  className="p-4 flex items-center gap-3 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface)]/70 backdrop-blur"
+                >
+                  <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
+                    <Icon className="w-5 h-5 text-[color:var(--c-muted)]" />
+                  </span>
+                  <div>
+                    <div className="font-semibold leading-tight">{title}</div>
+                    <div className="muted text-[13px]">{sub}</div>
+                  </div>
                 </div>
-              </div>
-
-              <div className="card p-4 flex items-center gap-3">
-                <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                  <Building2 className="w-5 h-5 text-[color:var(--c-muted)]" />
-                </span>
-                <div>
-                  <div className="font-semibold leading-tight">Foco no setor funerário</div>
-                  <div className="muted text-[13px]">Operando desde 2019</div>
-                </div>
-              </div>
-
-              <div className="card p-4 flex items-center gap-3">
-                <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                  <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]" />
-                </span>
-                <div>
-                  <div className="font-semibold leading-tight">SLA médio 99,9%</div>
-                  <div className="muted text-[13px]">Disponibilidade para operações críticas</div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] aspect-[16/10]">
+          <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] aspect-[16/10]" style={{ zIndex: 1 }}>
             <img
               src={placeholder}
               alt="Time Progem em operação"
-              className="w-full h-full object-cover" loading="lazy"
+              className="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
@@ -118,7 +141,7 @@ export default function QuemSomos(){
           ].map((c,i)=>{
             const Icon = c.icon;
             return (
-              <article key={i} className="card p-6">
+              <article key={i} className="card p-6 hover:shadow-card transition">
                 <div className="flex items-start gap-3">
                   <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                     <Icon className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -133,12 +156,30 @@ export default function QuemSomos(){
           })}
         </section>
 
-        {/* MÉTRICAS */}
+        {/* MÉTRICAS (com contador animado) */}
         <section className="mt-10 grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {metrics.map(m=>(
-            <div key={m.label} className="card p-5 text-center">
-              <div className="text-3xl font-bold">{m.value}</div>
-              <div className="muted text-sm mt-1">{m.label}</div>
+          {[
+            { label: "anos de experiência", to: 5, prefix: "", suffix: "+", decimals: 0 },
+            { label: "empresas atendidas",  to: 200, prefix: "", suffix: "+", decimals: 0 },
+            { label: "volume transacionado/mês", to: 5, prefix: "R$ ", suffix: " mi+", decimals: 0 },
+            { label: "SLA médio", to: 99.9, prefix: "", suffix: "%", decimals: 1 },
+          ].map((m)=>(
+            <div
+              key={m.label}
+              className="relative overflow-hidden rounded-2xl p-5 text-center border border-[var(--c-border)] bg-[var(--c-surface-2)]"
+            >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-40"
+                style={{
+                  background:
+                    "radial-gradient(600px 120px at 50% 0%, color-mix(in oklab, var(--c-primary) 26%, transparent), transparent)"
+                }}
+              />
+              <div className="relative text-3xl font-bold">
+                <AnimatedCounter to={m.to} prefix={m.prefix} suffix={m.suffix} decimals={m.decimals}/>
+              </div>
+              <div className="relative muted text-sm mt-1">{m.label}</div>
             </div>
           ))}
         </section>
@@ -151,7 +192,7 @@ export default function QuemSomos(){
             {pillars.map((p)=> {
               const Icon = p.icon;
               return (
-                <div key={p.title} className="card p-6">
+                <div key={p.title} className="card p-6 hover:shadow-card transition">
                   <Icon className="w-6 h-6 text-[color:var(--c-muted)] mb-3"/>
                   <div className="font-semibold">{p.title}</div>
                   <p className="muted text-sm mt-1">{p.desc}</p>
@@ -164,23 +205,38 @@ export default function QuemSomos(){
         {/* LINHA DO TEMPO */}
         <section className="mt-12">
           <h2 className="text-2xl font-semibold">Nossa trajetória</h2>
-          <div className="mt-4 grid gap-4">
-            {timeline.map((t, i)=>(
-              <div key={i} className="card p-4 flex items-start gap-4">
-                <div className="w-16 shrink-0 text-center">
-                  <div className="text-xl font-bold">{t.year}</div>
-                  <Clock className="w-4 h-4 mx-auto mt-1 text-[color:var(--c-muted)]" />
-                </div>
-                <div>
-                  <div className="font-semibold">{t.title}</div>
-                  <p className="muted text-sm mt-1">{t.desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="mt-6 relative">
+            {/* Linha com gradiente */}
+            <div
+              className="absolute left-4 top-0 bottom-0 w-px opacity-80"
+              aria-hidden
+              style={{
+                background:
+                  "linear-gradient(180deg, color-mix(in oklab, var(--c-primary) 60%, transparent), var(--c-border) 30%, var(--c-border) 70%, color-mix(in oklab, var(--c-primary) 60%, transparent))"
+              }}
+            />
+            <ul className="space-y-5">
+              {timeline.map((t, i)=>(
+                <li key={i} className="relative pl-12">
+                  {/* Dot com glow */}
+                  <span
+                    className="absolute left-0 top-1.5 grid place-content-center w-8 h-8 rounded-full border border-[var(--c-border)] bg-[var(--c-surface-2)] text-xs font-semibold"
+                    style={{ boxShadow: "0 0 0 6px color-mix(in oklab, var(--c-primary) 18%, transparent)" }}
+                    aria-hidden
+                  >
+                    {t.year}
+                  </span>
+                  <div className="card p-4">
+                    <div className="font-semibold">{t.title}</div>
+                    <p className="muted text-sm mt-1">{t.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* CONFIANÇA / SELOS / ITENS */}
+        {/* CONFIANÇA / SELOS */}
         <section className="mt-12">
           <div className="card p-5">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -212,10 +268,15 @@ export default function QuemSomos(){
               <h3 className="text-2xl font-semibold mt-1">Conheça o ecossistema Progem por dentro</h3>
               <p className="muted">Agende uma conversa e veja como aceleramos a sua operação recorrente.</p>
             </div>
-            <a href="/contato" className="btn btn-primary">Falar com um especialista</a>
+            <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+              Solicitar Demonstração
+            </Link>
           </div>
         </section>
       </main>
+
+      {/* Dock de CTA (mobile) */}
+      <BottomDockCTA />
 
       <Footer/>
     </div>

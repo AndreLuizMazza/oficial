@@ -1,15 +1,15 @@
+// src/pages/Planos.jsx
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
 import clsx from "clsx"
 
-
 import {
   Check, ShieldCheck, Globe, Handshake, Info, Cable, X, MessageCircle,
-  LineChart, Building2, PawPrint
+  LineChart, Building2, PawPrint, Link2 as LinkIcon
 } from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
@@ -114,6 +114,32 @@ const ICONS = { start: ShieldCheck, pro: Globe, enterprise: Handshake }
 
 const WHATSAPP_MENSAL = 150 // ✅ custo fixo por mês (mensagens ilimitadas)
 
+/** Marcas do slider (visuais) */
+function TierMarks({ max=3500 }){
+  const marks = [
+    { v: 500,  label: "500" },
+    { v: 1000, label: "1.000" },
+    { v: 2000, label: "2.000" },
+    { v: 3000, label: "3.000" },
+  ].filter(m => m.v <= max)
+
+  return (
+    <div className="mt-1 relative h-5">
+      <div className="absolute inset-x-0 top-2 h-0.5 bg-[var(--c-border)] rounded" />
+      {marks.map(m => (
+        <div
+          key={m.v}
+          className="absolute top-0 -translate-x-1/2"
+          style={{ left: `${(m.v/max)*100}%` }}
+        >
+          <div className="w-px h-2.5 bg-[var(--c-border)] mx-auto" />
+          <div className="text-[10px] text-[color:var(--c-muted)] mt-0.5">{m.label}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /** CTA flutuante */
 function FloatingCTA({ visible, onClose, period, contracts }){
   if (!visible) return null
@@ -130,9 +156,10 @@ function FloatingCTA({ visible, onClose, period, contracts }){
               Tire dúvidas sobre limites de contratos, add-ons e migração.
             </p>
             <div className="mt-3">
-              <a
-                href="/demo"
-                className="btn btn-primary btn-sm w-full"
+              <Link
+                to="/demo"
+                data-cta="demo"
+                className="btn btn-primary btn-demo btn-sm w-full"
                 onClick={() => {
                   track("pricing_cta_click", {
                     origin: "floating_cta",
@@ -144,7 +171,7 @@ function FloatingCTA({ visible, onClose, period, contracts }){
                 }}
               >
                 Solicitar Demonstração
-              </a>
+              </Link>
             </div>
           </div>
           <button
@@ -165,11 +192,12 @@ export default function Planos(){
 
   const [periodo, setPeriodo] = useState("mensal")
   const [plans, setPlans] = useState(FALLBACK)
+  const [loadingPlans, setLoadingPlans] = useState(true)
   const [ctaOpen, setCtaOpen] = useState(false)
   const comparativoRef = useRef(null)
 
-  // --- Slider dinâmico: mensal 0–3500 | anual 0–10000 ---
-  const sliderMax = periodo === "mensal" ? 3500 : 10000
+  // --- Slider fixo 0–3500 (não muda ao alternar o período)
+  const sliderMax = 3500
   const [contracts, setContracts] = useState(500)
   const selectedTier = useMemo(() => findTierByContracts(contracts), [contracts])
   const descontoAnual = 0.15
@@ -221,7 +249,7 @@ export default function Planos(){
     }
   }, [contracts, periodo, sliderMax, whatsappAddon, searchParams, setSearchParams])
 
-  // 2.1) Reclampar quando sliderMax muda
+  // 2.1) Reclampar quando sliderMax muda (aqui roda só na montagem pois sliderMax é fixo)
   useEffect(() => {
     setContractsSafe(contracts, { emit:false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -256,7 +284,11 @@ export default function Planos(){
           })
           setPlans(normalized)
         }
-      }catch(e){ console.warn("BFF.planos falhou, usando fallback", e) }
+      }catch(e){
+        console.warn("BFF.planos falhou, usando fallback", e)
+      }finally{
+        setLoadingPlans(false)
+      }
     })()
   },[])
 
@@ -273,7 +305,13 @@ export default function Planos(){
   const planosComPreco = useMemo(()=> plans.map(p=>{
     const mensal = p.price_month
     const anual = mensal != null ? mensal * 12 * (1 - descontoAnual) : null
-    return { ...p, displayPrice: periodo === "mensal" ? mensal : anual, suffix: periodo === "mensal" ? "/mês" : "/ano", badge: p.highlight ? "Recomendado" : null }
+    return {
+      ...p,
+      displayPrice: periodo === "mensal" ? mensal : anual,
+      suffix: periodo === "mensal" ? "/mês" : "/ano",
+      badge: p.highlight ? "Recomendado" : null,
+      mensal
+    }
   }),[plans, periodo])
 
   // Destaque pelo simulador
@@ -302,9 +340,37 @@ export default function Planos(){
 
   // Total simulado
   const simulatedTotal = useMemo(() => {
-    if (simulatedPrice == null) return null // base sob consulta
+    if (simulatedPrice == null) return null
     return simulatedPrice + (whatsappPrice || 0)
   }, [simulatedPrice, whatsappPrice])
+
+  // Economia anual
+  const mensalBase = selectedTier?.price ?? null
+  const mensalAddon = whatsappAddon ? WHATSAPP_MENSAL : 0
+  const economiaAnual = useMemo(() => {
+    if (periodo !== "anual" || mensalBase == null || simulatedTotal == null) return 0
+    const semDesconto = (mensalBase + mensalAddon) * 12
+    return Math.max(0, semDesconto - simulatedTotal)
+  }, [periodo, mensalBase, mensalAddon, simulatedTotal])
+
+  // Preço por contrato (equivalente mensal)
+  const perContract = useMemo(() => {
+    if (!contracts || contracts <= 0 || simulatedTotal == null) return null
+    const monthlyEq = periodo === "mensal" ? simulatedTotal : simulatedTotal / 12
+    return monthlyEq / contracts
+  }, [contracts, simulatedTotal, periodo])
+
+  // Próximo degrau
+  const nextBreakpoint = useMemo(() => {
+    if (!selectedTier) return null
+    if (selectedTier.id === "start") return 501
+    if (selectedTier.id === "pro") return 1001
+    if (selectedTier.id === "enterprise1") return 2001
+    if (selectedTier.id === "enterprise2") return 3001
+    return null
+  }, [selectedTier])
+  const nearNext = nextBreakpoint ? Math.max(0, nextBreakpoint - contracts) : null
+  const showNearHint = nearNext != null && nearNext <= 100
 
   // ---- dataLayer events ----
   useEffect(() => { track("pricing_period_change", { period: periodo }) }, [periodo])
@@ -364,6 +430,17 @@ export default function Planos(){
   const isSobConsulta = contracts > 3000
   const atMax = contracts >= sliderMax
 
+  // copy link da simulação
+  const [copied, setCopied] = useState(false)
+  const copyLink = async () => {
+    try{
+      await navigator.clipboard.writeText(window.location.href)
+      setCopied(true)
+      setTimeout(()=>setCopied(false), 1600)
+      track("pricing_share", { period: periodo, contracts, whatsappAddon })
+    }catch(e){ /* ignore */ }
+  }
+
   return (
     <div>
       <Header/>
@@ -413,8 +490,9 @@ export default function Planos(){
 
         {/* --- Simulador --- */}
         <section className="card p-4 md:p-5 mb-6">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div className="flex-1">
+          <div className="grid lg:grid-cols-[1fr,360px] gap-6">
+            {/* controles */}
+            <div>
               <label htmlFor="contracts-range" className="text-sm font-medium">
                 Quantidade de contratos ativos
               </label>
@@ -431,7 +509,14 @@ export default function Planos(){
                 aria-valuemax={sliderMax}
                 aria-valuenow={contracts}
               />
-              <div className="mt-2 flex items-center gap-2">
+              <TierMarks max={sliderMax} />
+
+              {/* Faixa / tier atual */}
+              <div className="mt-1 text-xs text-[color:var(--c-muted)]">
+                {selectedTier ? `Faixa atual: ${selectedTier.name} — ${selectedTier.rangeLabel}` : "—"}
+              </div>
+
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <input
                   type="number"
                   inputMode="numeric"
@@ -451,42 +536,28 @@ export default function Planos(){
                   title={atMax ? "Você atingiu o máximo para este período" : undefined}
                 />
                 <span className="muted text-sm">contratos</span>
-                {atMax && (
-                  <span className="text-xs px-2 py-1 rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                    Máximo para {periodo}: {sliderMax.toLocaleString("pt-BR")}
-                  </span>
-                )}
-              </div>
 
-              {/* atalhos/pílulas */}
-              <div className="mt-3 flex flex-wrap gap-2">
-                {[
-                  { n:500,  label:"500",   tip:"Start: até 500 contratos" },
-                  { n:1000, label:"1.000", tip:"Pro: até 1.000 contratos" },
-                  { n:2000, label:"2.000", tip:"Enterprise: 1.001–2.000" },
-                  { n:3000, label:"3.000", tip:"Enterprise: 2.001–3.000" },
-                  { n:3500, label:"+3.000", tip:"Enterprise: acima de 3.000 (sob consulta)" },
-                ].filter(p => p.n <= sliderMax).map((p) => (
-                  <Tooltip key={p.n} id={`preset-${p.n}`} content={p.tip}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        track("pricing_preset_click", { value: p.n, label: p.label, period: periodo })
-                        setContractsSafe(p.n)
-                      }}
-                      className={clsx(
-                        "px-3 py-1.5 rounded-lg border text-sm transition",
-                        contracts === p.n
-                          ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]"
-                          : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]"
-                      )}
-                      aria-pressed={contracts === p.n}
-                      aria-label={`Definir ${p.label} contratos`}
-                    >
-                      {p.label}
-                    </button>
-                  </Tooltip>
-                ))}
+                {/* chips */}
+                <div className="flex flex-wrap gap-2 ml-auto">
+                  {PRESETS.filter(p => p.n <= sliderMax).map((p) => (
+                    <Tooltip key={p.n} id={`preset-${p.n}`} content={p.tip}>
+                      <button
+                        type="button"
+                        onClick={() => onPreset(p.n, p.label)}
+                        className={clsx(
+                          "px-3 py-1.5 rounded-lg border text-sm transition",
+                          contracts === p.n
+                            ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]"
+                            : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]"
+                        )}
+                        aria-pressed={contracts === p.n}
+                        aria-label={`Definir ${p.label} contratos`}
+                      >
+                        {p.label}
+                      </button>
+                    </Tooltip>
+                  ))}
+                </div>
               </div>
 
               {/* ✅ Toggle WhatsApp ilimitado */}
@@ -498,81 +569,132 @@ export default function Planos(){
                   checked={whatsappAddon}
                   onChange={(e) => {
                     setWhatsappAddon(e.target.checked)
-                    track("pricing_whatsapp_toggle", {
-                      enabled: e.target.checked, period: periodo
-                    })
+                    track("pricing_whatsapp_toggle", { enabled: e.target.checked, period: periodo })
                   }}
                 />
                 <label htmlFor="toggle-whatsapp" className="text-sm">
                   Incluir <strong>WhatsApp ilimitado</strong> (+{formatBRL(periodo === "mensal" ? WHATSAPP_MENSAL : WHATSAPP_MENSAL * 12 * (1 - descontoAnual))}{periodo === "mensal" ? "/mês" : "/ano"})
                 </label>
               </div>
+
+              {/* dica para próximo degrau */}
+              {showNearHint && (
+                <div className="mt-3 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
+                  Você está a <strong>{nearNext}</strong> contratos do próximo degrau de preço.
+                </div>
+              )}
             </div>
 
-            {/* Bloco de Simulação com breakdown */}
-            <div className="relative rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4 min-w-[300px]">
-              {isSobConsulta && (
-                <span className="absolute -top-3 right-3 px-2 py-0.5 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)]">
-                  Sob consulta
-                </span>
-              )}
-              <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Simulação</div>
-              <div className="mt-1 font-semibold">
-                {selectedTier?.name || "—"} <span className="muted">({selectedTier?.rangeLabel || "—"})</span>
-              </div>
+            {/* Resumo sticky */}
+            <div className="relative lg:sticky lg:top-24">
+              <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
+                {isSobConsulta && (
+                  <span className="absolute -top-3 right-3 px-2 py-0.5 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)]">
+                    Sob consulta
+                  </span>
+                )}
+                <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Resumo</div>
+                <div className="mt-1 font-semibold">
+                  {selectedTier?.name || "—"} <span className="muted">({selectedTier?.rangeLabel || "—"})</span>
+                </div>
 
-              {/* Preços */}
-              <div className="mt-3 space-y-1 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="muted">Base</span>
-                  <span className="font-medium">
-                    {formatBRL(simulatedPrice)}
-                    {simulatedPrice != null && <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>}
-                  </span>
+                {/* Preços */}
+                <div className="mt-3 space-y-1 text-sm" aria-live="polite">
+                  <div className="flex items-center justify-between">
+                    <span className="muted">Base</span>
+                    <span className="font-medium">
+                      {formatBRL(simulatedPrice)}
+                      {simulatedPrice != null && <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="muted">WhatsApp ilimitado</span>
+                    <span className="font-medium">
+                      {whatsappAddon ? (
+                        <>
+                          {formatBRL(whatsappPrice)}
+                          <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
+                        </>
+                      ) : "—"}
+                    </span>
+                  </div>
+                  <div className="h-px bg-[var(--c-border)] my-2" />
+                  <div className="flex items-center justify-between text-base font-semibold">
+                    <span>Total</span>
+                    <span>
+                      {simulatedTotal != null ? (
+                        <>
+                          {formatBRL(simulatedTotal)}
+                          <span className="muted text-sm"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
+                        </>
+                      ) : (
+                        "Sob consulta"
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Economia no anual */}
+                  {periodo === "anual" && economiaAnual > 0 && (
+                    <div className="mt-2 text-xs text-emerald-600 dark:text-emerald-400">
+                      Economize {formatBRL(economiaAnual)}/ano (15% off). ≈ {formatBRL((simulatedTotal ?? 0)/12)} / mês.
+                    </div>
+                  )}
+
+                  {/* preço por contrato */}
+                  {perContract != null && (
+                    <div className="mt-2 text-xs text-[color:var(--c-muted)]">
+                      ≈ {formatBRL(perContract)} por contrato/mês
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="muted">WhatsApp ilimitado</span>
-                  <span className="font-medium">
-                    {whatsappAddon ? (
-                      <>
-                        {formatBRL(whatsappPrice)}
-                        <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
-                      </>
-                    ) : "—"}
-                  </span>
+
+                {/* Ações */}
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Link
+                    to="/demo"
+                    data-cta="demo"
+                    className="btn btn-primary btn-demo w-full text-center"
+                    onClick={() => {
+                      track("pricing_cta_click", {
+                        origin: "simulator_card",
+                        planId: selectedTier?.id || "unknown",
+                        planName: selectedTier?.name || "unknown",
+                        period: periodo,
+                        contracts,
+                      })
+                    }}
+                  >
+                    Solicitar Demonstração
+                  </Link>
+                  <Link to="/contato" className="btn btn-ghost w-full text-center">Gerar proposta</Link>
                 </div>
-                <div className="h-px bg-[var(--c-border)] my-2" />
-                <div className="flex items-center justify-between text-base font-semibold">
-                  <span>Total</span>
-                  <span>
-                    {simulatedTotal != null ? (
-                      <>
-                        {formatBRL(simulatedTotal)}
-                        <span className="muted text-sm"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
-                      </>
-                    ) : (
-                      "Sob consulta"
-                    )}
-                  </span>
-                </div>
+
+                {/* share link */}
+                <button
+                  type="button"
+                  onClick={copyLink}
+                  className="mt-3 inline-flex items-center gap-2 text-sm"
+                >
+                  <LinkIcon className="w-4 h-4 text-[color:var(--c-muted)]"/> {copied ? "Link copiado!" : "Copiar link da simulação"}
+                </button>
               </div>
             </div>
           </div>
-<p className="mt-3 text-xs text-[color:var(--c-muted)]">
-  Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
-  Impostos e tarifas de meios de pagamento não estão incluídos.
-  O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
-  {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
-  Oferecemos <strong>migração de banco de dados</strong> (importação de clientes, contratos, carnês/boletos e histórico).
-  Veja detalhes em <a href="/migracao" className="underline">Migração de Dados</a>.
-  Consulte também a página <a href="/taxas" className="underline">Taxas & Cobrança</a>.
-</p>
 
+          <p className="mt-3 text-xs text-[color:var(--c-muted)]">
+            Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
+            Impostos e tarifas de meios de pagamento não estão incluídos.
+            O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
+            {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
+            Oferecemos <strong>migração de banco de dados</strong> (importação de clientes, contratos, carnês/boletos e histórico).
+            Veja detalhes em <Link to="/migracao" className="underline">Migração de Dados</Link>.
+            Consulte também a página <Link to="/taxas" className="underline">Taxas & Cobrança</Link>.
+          </p>
         </section>
 
         {/* --- Cards de planos --- */}
         <section className="grid gap-6 md:grid-cols-3">
-          {planosComPreco.map(pl=>(
+          {(loadingPlans ? FALLBACK : planosComPreco).map(pl=>(
             <CardMotion
               key={pl.id}
               className={clsx(
@@ -598,6 +720,7 @@ export default function Planos(){
                         <button
                           type="button"
                           className="inline-flex items-center justify-center w-5 h-5 rounded-full border border-[var(--c-border)]"
+                          aria-label="Informações da faixa"
                         >
                           <Info className="w-3.5 h-3.5 text-[color:var(--c-muted)]" />
                         </button>
@@ -612,6 +735,9 @@ export default function Planos(){
                 {pl.id !== "enterprise" ? (
                   <>
                     {formatBRL(pl.displayPrice)} <span className="text-sm font-medium muted">{pl.suffix}</span>
+                    {periodo === "anual" && pl.displayPrice != null && pl.mensal != null && (
+                      <div className="text-xs muted mt-1">equivale a {formatBRL(pl.displayPrice/12)} / mês</div>
+                    )}
                   </>
                 ) : (
                   <div className="text-xl font-semibold">Tabelas por faixa</div>
@@ -644,38 +770,48 @@ export default function Planos(){
               </div>
 
               <div className="mt-6 flex flex-col gap-2">
-                <a
-                  href={pl.id === "enterprise" ? "/contato" : "/demo"}
-                  className="btn btn-primary w-full text-center"
-                  onClick={() => {
-                    track("pricing_cta_click", {
-                      origin: "plan_card",
-                      planId: pl.id,
-                      planName: pl.name,
-                      period: periodo,
-                      contracts,
-                    })
-                  }}
-                >
-                  {pl.id === "enterprise" ? "Falar com Vendas" : "Solicitar Demonstração"}
-                </a>
+                {pl.id === "enterprise" ? (
+                  <Link
+                    to="/contato"
+                    className="btn btn-primary w-full text-center"
+                    onClick={() => {
+                      track("pricing_cta_click", {
+                        origin: "plan_card",
+                        planId: pl.id,
+                        planName: pl.name,
+                        period: periodo,
+                        contracts,
+                      })
+                    }}
+                  >
+                    Falar com Vendas
+                  </Link>
+                ) : (
+                  <Link
+                    to="/demo"
+                    data-cta="demo"
+                    className="btn btn-primary btn-demo w-full text-center"
+                    onClick={() => {
+                      track("pricing_cta_click", {
+                        origin: "plan_card",
+                        planId: pl.id,
+                        planName: pl.name,
+                        period: periodo,
+                        contracts,
+                      })
+                    }}
+                  >
+                    Solicitar Demonstração
+                  </Link>
+                )}
               </div>
             </CardMotion>
           ))}
         </section>
 
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold mb-2">Todos os planos incluem</h2>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {COMMON_FEATURES.map(f=>(
-              <CardMotion key={f} className="card p-4 flex items-start gap-3" tabIndex={0}>
-                <Check className="w-4 h-4 mt-1" /> <span className="text-sm">{f}</span>
-              </CardMotion>
-            ))}
-          </div>
-
-          {/* Destaque Planos Pet */}
-          <div className="card p-5 mt-6">
+        {/* Destaque Planos Pet (subi antes do “Todos os planos incluem”) */}
+        <section className="mt-10">
+          <div className="card p-5">
             <div className="flex items-start gap-3">
               <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                 <PawPrint className="w-5 h-5 text-[color:var(--c-muted)]" />
@@ -683,13 +819,14 @@ export default function Planos(){
               <div className="flex-1">
                 <h4 className="font-semibold">Gestão de Planos Pet</h4>
                 <p className="muted mt-1 text-sm">
-                  Cadastre e gerencie planos de assistência animal, com regras de cobertura, dependentes pet,
-                  documentos (carteirinha) e integrações com o app do associado.
+                  Cadastre e gerencie planos de assistência animal, com regras de cobertura, dependentes pet, carteirinha digital
+                  e integrações com o app do associado.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <a
-                    href="/demo"
-                    className="btn btn-primary btn-sm"
+                  <Link
+                    to="/demo"
+                    data-cta="demo"
+                    className="btn btn-primary btn-demo btn-sm"
                     onClick={() => {
                       track("pricing_cta_click", {
                         origin: "pet_card",
@@ -701,9 +838,9 @@ export default function Planos(){
                     }}
                   >
                     Ver demonstração
-                  </a>
-                  <a
-                    href="/funcionalidades#planos-pet"
+                  </Link>
+                  <Link
+                    to="/funcionalidades#planos-pet"
                     className="btn btn-ghost btn-sm"
                     onClick={() => {
                       track("pricing_cta_click", {
@@ -716,10 +853,21 @@ export default function Planos(){
                     }}
                   >
                     Detalhes da funcionalidade
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-semibold mb-2">Todos os planos incluem</h2>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {COMMON_FEATURES.map(f=>(
+              <CardMotion key={f} className="card p-4 flex items-start gap-3" tabIndex={0}>
+                <Check className="w-4 h-4 mt-1" /> <span className="text-sm">{f}</span>
+              </CardMotion>
+            ))}
           </div>
 
           {/* APIs e integrações */}
@@ -729,8 +877,8 @@ export default function Planos(){
               Conecte seu ERP, site ou CRM às APIs do Progem e à NaLápide.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <a
-                href="/developers"
+              <Link
+                to="/developers"
                 className="btn btn-ghost text-sm inline-flex items-center gap-2"
                 onClick={() => {
                   track("pricing_cta_click", {
@@ -743,10 +891,11 @@ export default function Planos(){
                 }}
               >
                 <Cable className="w-4 h-4"/> Ver documentação
-              </a>
-              <a
-                href="/demo"
-                className="btn btn-primary text-sm"
+              </Link>
+              <Link
+                to="/demo"
+                data-cta="demo"
+                className="btn btn-primary btn-demo text-sm"
                 onClick={() => {
                   track("pricing_cta_click", {
                     origin: "integrations_card",
@@ -758,7 +907,7 @@ export default function Planos(){
                 }}
               >
                 Falar com especialista
-              </a>
+              </Link>
             </div>
 
             {/* Aviso sobre WhatsApp (custo fixo) */}
@@ -801,6 +950,36 @@ export default function Planos(){
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold mb-3">Perguntas frequentes</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              {
+                q: "Como vocês contam contratos ativos?",
+                a: "Consideramos contratos com status 'ativo' no mês de faturamento. Cancelados/pausados não entram no cálculo."
+              },
+              {
+                q: "O WhatsApp ilimitado tem alguma taxa por mensagem?",
+                a: "Não. É um add-on de custo fixo R$ 150/mês para envios ilimitados, via integração com plataforma parceira oficial."
+              },
+              {
+                q: "Posso migrar meus dados atuais?",
+                a: "Sim. Ajudamos na importação de clientes, contratos, carnês/boletos e histórico básico."
+              },
+              {
+                q: "Posso mudar de plano depois?",
+                a: "Pode. O ajuste acompanha sua faixa de contratos ativos, sem fricção no uso da plataforma."
+              },
+            ].map((item, i) => (
+              <details key={i} className="card p-4">
+                <summary className="cursor-pointer font-medium">{item.q}</summary>
+                <p className="muted text-sm mt-2">{item.a}</p>
+              </details>
+            ))}
           </div>
         </section>
 

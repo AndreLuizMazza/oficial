@@ -14,13 +14,11 @@ export default function Ctas(){
         </div>
         <div className="flex gap-3">
           {/* 👇 CTA principal (laranja) */}
-          <Link
-            to="/contrato"
-            data-cta="demo"
-            className="btn btn-primary btn-demo"
-          >
-            Solicitar Demonstração
-          </Link>
+<Link to="/demo" data-cta="demo"
+  className="btn btn-primary btn-demo">
+  Solicitar demonstração
+</Link>
+
         </div>
       </div>
     </section>

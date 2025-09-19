@@ -1,7 +1,8 @@
-import { motion, useReducedMotion } from "framer-motion"
+// src/components/CardMotion.jsx
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function CardMotion({ children, className = "", ...rest }) {
-  const reduce = useReducedMotion()
+  const reduce = useReducedMotion();
   return (
     <motion.div
       whileHover={reduce ? {} : { y: -2, scale: 1.01 }}
@@ -12,5 +13,5 @@ export default function CardMotion({ children, className = "", ...rest }) {
     >
       {children}
     </motion.div>
-  )
+  );
 }

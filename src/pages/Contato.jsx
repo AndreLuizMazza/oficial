@@ -169,9 +169,15 @@ export default function Contato(){
             </div>
 
             <div className="mt-2 flex flex-col sm:flex-row gap-3">
-              <button type="submit" className="btn btn-primary">
+              <button
+                type="submit"
+                data-cta="whatsapp"
+                className="inline-flex items-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 font-medium shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+              >
+                <MessageSquareText className="size-5" />
                 Enviar pelo WhatsApp
               </button>
+
               <div className="inline-flex items-center gap-2 text-sm text-[color:var(--c-muted)]">
                 <Info className="w-4 h-4"/> Abriremos uma conversa no WhatsApp para confirmar.
               </div>

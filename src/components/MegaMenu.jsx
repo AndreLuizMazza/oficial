@@ -2,11 +2,13 @@
 import { Link } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { useLayoutEffect, useEffect, useRef, useState } from 'react'
+
 import {
-  ShieldCheck, CreditCard, Users, Globe, Handshake,
-  BadgeDollarSign, Wand2, BarChart3, Newspaper, Database,
-  Building2, MessageCircle, PawPrint
+   ShieldCheck, CreditCard, Users, Globe, Handshake,
+   BadgeDollarSign, Wand2, BarChart3, Newspaper, Database,
+   Building2, MessageCircle, PawPrint, Smartphone
 } from 'lucide-react'
+
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import useFocusTrap from '@/hooks/useFocusTrap'
 
@@ -16,22 +18,24 @@ import useFocusTrap from '@/hooks/useFocusTrap'
  * 2) Integrações & Automação (expansões)
  * 3) Operação & Dados (gestão)
  */
-export const cols = [
-  {
-    title: 'Produtos',
-    items: [
-      { icon: ShieldCheck,      label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
-      { icon: Users,            label: 'App do Associado',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
-      { icon: Users,            label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
-      { icon: BadgeDollarSign,  label: 'App do Cobrador',           desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
-      { icon: PawPrint,         label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/funcionalidades#planos-pet' },
-      { icon: Globe,            label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
-    ],
-  },
+  export const cols = [
+    {
+      title: 'Produtos',
+      items: [
+        { icon: ShieldCheck,      label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
+       { icon: Smartphone,       label: 'Apps (visão geral)',        desc: 'Associado, Vendedor e Cobrador — iOS/Android whitelabel.', to: '/apps' },
+        { icon: Users,            label: 'App do Associado',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
+        { icon: Users,            label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
+        { icon: BadgeDollarSign,  label: 'App do Cobrador',           desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
+        { icon: PawPrint,         label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/pet' },
+        { icon: Globe,            label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
+      ],
+    },
+
   {
     title: 'Integrações & Automação',
     items: [
-      { icon: MessageCircle,  label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/funcionalidades#whatsapp' },
+      { icon: MessageCircle,  label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/zap' },
       
        { icon: CreditCard, label: 'Pagamentos - Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
       { icon: Globe,          label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },

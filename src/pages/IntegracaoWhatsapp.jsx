@@ -3,20 +3,19 @@ import { Link } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
-import placeholder from "@/assets/img/placeholder.png"
 import {
-  MessageCircle, Send, Filter, CalendarCheck2, ShieldCheck, ClipboardList,
-  Users, BarChart3, Database, Tag, Bot, BellRing, Link2, Plug, CheckCircle2, BadgeDollarSign
+  MessageCircle, Filter, CalendarCheck2, ShieldCheck, ClipboardList,
+  BarChart3, Tag, Link2, Plug, CheckCircle2, BadgeDollarSign
 } from "lucide-react"
 
 /**
  * Página: Integração com WhatsApp (Progem)
- * Conceito: O Progem integra-se ao WhatsApp por meio de **API de terceiros (provedores oficiais)**,
- * permitindo **modelos de mensagens**, **envio em massa por filtros/segmentos**, **programações/automação**
- * e **melhoria contínua** com métricas.
- * - Mantém padrão do site (Header/Footer/SEO)
- * - Não promete gateway próprio; deixa claro o uso de provedores oficiais (BSP/Cloud API)
+ * Ajustes:
+ * - CTAs padronizados em laranja: `btn btn-primary btn-demo`
+ * - Substituição do placeholder por imagem que remete a WhatsApp/smartphone
  */
+const HERO_IMG =
+  "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1600&q=80"
 
 export default function IntegracaoWhatsapp(){
   useEffect(()=>{
@@ -55,15 +54,18 @@ export default function IntegracaoWhatsapp(){
               tudo integrado ao Progem e à nossa plataforma parceira oficial do WhatsApp (integração única).
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Falar com um especialista</Link>
+              {/* CTA principal padronizada (laranja) */}
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Falar com um especialista
+              </Link>
               <a href="#recursos" className="btn btn-ghost">Ver recursos</a>
             </div>
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src={placeholder}
-              alt="Fluxos de mensagens e métricas"
+              src={HERO_IMG}
+              alt="Smartphone com conversa/mensagens (WhatsApp)"
               className="w-full h-full object-cover"
               loading="lazy"
             />
@@ -191,8 +193,11 @@ export default function IntegracaoWhatsapp(){
               <p className={`${t.muted}`}>Conectamos à plataforma parceira oficial, configuramos modelos e deixamos as automações rodando. Plano R$ 150/mês — envios ilimitados.</p>
             </div>
             <div className="flex gap-3">
-              <Link to="/contato" className="btn btn-primary">Falar com um especialista</Link>
-              <Link to="/integracoes#whatsapp" className="btn btn-ghost">Docs & APIs</Link>
+              {/* CTA padronizada (laranja) */}
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Falar com um especialista
+              </Link>
+              <Link to="/integracoes#whatsapp" className="btn btn-ghost">Baixar documentação</Link>
             </div>
           </div>
         </section>

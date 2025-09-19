@@ -1,18 +1,17 @@
+// src/pages/AppCobrador.jsx
 import { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import { motion } from "framer-motion"
+import placeholder from "@/assets/img/placeholder.png"
 import {
   Smartphone, Download, ShieldCheck, MapPin, QrCode, WifiOff,
   Wallet, Receipt, Users, Clock3, Signal, Sparkles, CheckCircle2,
-  FileText, UploadCloud, BarChart3, RefreshCcw, PhoneCall
+  FileText, UploadCloud, BarChart3, RefreshCcw, PhoneCall, Info
 } from "lucide-react"
-
-/**
- * CONTEÚDO ORIGINAL MANTIDO — apenas envelopado por Header/Footer e SEO.
- */
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -38,11 +37,24 @@ const faqs = [
   { q: "Quais meios de pagamento?", a: "PIX (QR), boleto e cartão quando integrado ao seu adquirente/PSP." },
 ]
 
+function PlatformBadge(){
+  return (
+    <div className="mt-3 flex items-center gap-2 text-xs">
+      <span className="inline-flex items-center gap-1 rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-2 py-1">
+        <Smartphone className="w-3.5 h-3.5" /> Android
+      </span>
+      <span className="inline-flex items-center gap-1 rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] px-2 py-1">
+        <ShieldCheck className="w-3.5 h-3.5" /> Sem taxa por recebimento ao Progem
+      </span>
+    </div>
+  )
+}
+
 export default function AppCobrador(){
   useEffect(() => {
     setPageSEO({
       title: "Progem • App do Cobrador",
-      description: "Cobrança em campo com rotas, QR Code PIX, modo offline, baixa automática e indicadores — integrado ao Progem."
+      description: "Cobrança em campo com rotas, QR Code PIX, modo offline, baixa automática e indicadores — integrado ao Progem e sem taxa por recebimento."
     })
   }, [])
 
@@ -53,7 +65,6 @@ export default function AppCobrador(){
     border: "border-[var(--c-border)]",
     primary: "text-[color:var(--c-primary)]",
     primaryBg: "bg-[color:var(--c-primary)]",
-    primaryHover: "hover:bg-[color:var(--c-primary-600, var(--c-primary))]",
   }), [])
 
   return (
@@ -63,7 +74,7 @@ export default function AppCobrador(){
       <div className={`min-h-dvh ${tokens.bg} ${tokens.text}`}>
         {/* HERO */}
         <section className="relative overflow-hidden">
-          <div className="mx-auto max-w-7xl px-4 py-20 md:py-24 grid gap-10 md:grid-cols-2 items-center">
+          <div className="mx-auto max-w-7xl px-4 py-16 md:py-20 grid gap-10 md:grid-cols-[1fr,320px] items-center">
             <motion.div {...fadeUp}>
               <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs md:text-sm font-medium border-[var(--c-border)]">
                 <Sparkles className="size-4"/> Novo módulo Progem
@@ -73,17 +84,21 @@ export default function AppCobrador(){
                 <span className={`block mt-1 ${tokens.primary}`}>cobrança em campo, sem fricção</span>
               </h1>
               <p className={`mt-4 md:text-lg ${tokens.muted}`}>
-                Centralize suas rotas, recebimentos e comprovantes em um único app.
-                Reduza inadimplência e acelere a baixa, online e offline.
+                Centralize rotas, recebimentos e comprovantes em um único app.
+                Reduza inadimplência e acelere a baixa — online e offline.
               </p>
+
+              <PlatformBadge/>
+
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link to="/contato" className={`inline-flex items-center gap-2 rounded-xl ${tokens.primaryBg} ${tokens.primaryHover} text-white px-5 py-3 font-medium shadow-sm transition`}>
-                  <Download className="size-5"/> Solicitar demonstração
+                <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                  Solicitar demonstração
                 </Link>
                 <a href="#recursos" className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)]">
                   Ver recursos
                 </a>
               </div>
+
               <ul className="mt-6 grid grid-cols-2 gap-3 text-sm">
                 <li className="inline-flex items-center gap-2"><CheckCircle2 className="size-4"/> Modo offline</li>
                 <li className="inline-flex items-center gap-2"><CheckCircle2 className="size-4"/> QR Code PIX</li>
@@ -92,22 +107,27 @@ export default function AppCobrador(){
               </ul>
             </motion.div>
 
-            <motion.div {...fadeUp} className="relative">
-              <div className="relative mx-auto max-w-sm">
-                <div className="aspect-[9/19] w-full rounded-[2rem] border-8 border-black/90 shadow-2xl overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"
-                    alt="App do Cobrador — mockup"
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="absolute -bottom-6 -right-6 hidden md:block rounded-2xl border bg-white/70 backdrop-blur px-4 py-3 border-[var(--c-border)]">
+            {/* Mockup compacto em formato de celular */}
+            <motion.div {...fadeUp} className="relative mx-auto w-full max-w-[200px] md:max-w-[220px]">
+              <div className="aspect-[9/19] w-full rounded-[1.5rem] border-4 md:border-8 border-black/90 shadow-2xl overflow-hidden bg-black">
+                <img
+                  src={placeholder}
+                  alt="App do Cobrador — mockup"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* Badge acessível no claro/escuro */}
+              <div className="absolute -bottom-6 -right-6 hidden md:block">
+                <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] shadow-xl px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className={`size-5 ${tokens.primary}`}/>
+                    <span className="grid place-content-center size-8 rounded-full border border-[var(--c-border)] bg-[var(--c-surface)]">
+                      <ShieldCheck className={`size-4 ${tokens.primary}`} />
+                    </span>
                     <div>
-                      <p className="text-sm font-semibold">Dados protegidos</p>
-                      <p className={`text-xs ${tokens.muted}`}>Criptografia em repouso e em trânsito</p>
+                      <p className="text-sm font-semibold text-[color:var(--c-foreground)]">Dados protegidos</p>
+                      <p className="text-xs text-[color:var(--c-muted)]">Criptografia em repouso e em trânsito</p>
                     </div>
                   </div>
                 </div>
@@ -169,7 +189,7 @@ export default function AppCobrador(){
                 { k: "sync", t: "Sincronização", d: "Conflitos resolvidos automaticamente.", icon: RefreshCcw },
                 { k: "docs", t: "Documentos", d: "Recibos e comprovantes organizados.", icon: UploadCloud },
                 { k: "smart", t: "Rotas inteligentes", d: "Sugestões baseadas em proximidade.", icon: MapPin },
-              ].map((b, i) => (
+              ].map((b) => (
                 <div key={b.k} className="rounded-2xl border p-5 border-[var(--c-border)]">
                   <b.icon className={`size-6 ${tokens.primary}`}/>
                   <p className="mt-2 font-semibold">{b.t}</p>
@@ -180,18 +200,50 @@ export default function AppCobrador(){
           </div>
         </section>
 
+        {/* Custos & Setup (discreto) */}
+        <section className="mx-auto max-w-7xl px-4">
+          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
+                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
+              </span>
+              <div className="text-sm">
+                <p className="font-medium">Custos</p>
+                <ul className="mt-1 space-y-1">
+                  <li className="muted">App do Cobrador incluso no pacote Progem — <strong>sem custo adicional de licenciamento</strong>.</li>
+                  <li className="muted"><strong>Sem taxa por recebimento</strong> ao Progem ao utilizar o app.</li>
+                  <li className="muted">Setup único (<em>sob escopo</em>) pode ser aplicado conforme integrações e treinamentos setorizados necessários.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CHAMADA / CTA */}
         <section id="contato" className="relative">
           <div className="mx-auto max-w-7xl px-4 py-16">
-            <div className="rounded-3xl border p-8 md:p-12 text-center bg-[color:var(--c-muted-bg,#f8fafc)] border-[var(--c-border)]">
-              <h3 className="text-2xl md:text-3xl font-semibold">Leve sua cobrança de campo para outro nível</h3>
-              <p className={`mt-2 ${tokens.muted}`}>Disponível para Android. Integração nativa ao Progem.</p>
+            <div className="rounded-3xl border p-8 md:p-12 text-center bg-[var(--c-surface-2)] border-[var(--c-border)]">
+              <h3 className="text-2xl md:text-3xl font-semibold text-[color:var(--c-foreground)]">
+                Leve sua cobrança de campo para outro nível
+              </h3>
+              <p className="mt-2 text-[color:var(--c-muted)]">
+                Disponível para Android. Integração nativa ao Progem.
+              </p>
+
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <Link to="/demo" className={`inline-flex items-center gap-2 rounded-xl ${tokens.primaryBg} ${tokens.primaryHover} text-white px-5 py-3 font-medium shadow-sm transition`}>
-                  <Smartphone className="size-5"/> Falar com um especialista
+                <Link
+                  to="/demo"
+                  data-cta="demo"
+                  className="inline-flex items-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 font-medium shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+                >
+                  <Smartphone className="size-5" /> Falar com um especialista
                 </Link>
-                <a href="#" className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)]">
-                  <Download className="size-5"/> Baixar apresentação (PDF)
+
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)] text-[color:var(--c-foreground)]/90"
+                >
+                  <Download className="size-5" /> Baixar apresentação (PDF)
                 </a>
               </div>
             </div>
@@ -218,6 +270,9 @@ export default function AppCobrador(){
           <p className="text-center text-xs text-[color:var(--c-muted)]">Progem • App do Cobrador — módulo adicional do ecossistema de gestão</p>
         </footer>
       </div>
+
+      {/* CTA fixo (mobile) */}
+      <BottomDockCTA/>
 
       <Footer/>
     </div>

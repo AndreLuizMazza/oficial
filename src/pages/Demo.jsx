@@ -1,11 +1,16 @@
+// src/pages/Demo.jsx
 import { useEffect } from "react"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
-  Sparkles, Check, Clock, Users, ShieldCheck, CreditCard, Globe, Newspaper, BarChart3, Cable, MessageSquareText, Info
+  Sparkles, Check, Clock, Users, ShieldCheck, CreditCard, Globe, Newspaper,
+  BarChart3, Cable, Info
 } from "lucide-react"
 import { Link } from "react-router-dom"
+import CardMotion from "@/components/CardMotion"
+import BottomDockCTA from "@/components/BottomDockCTA"
+import { track } from "@/lib/analytics"
 
 const WHATSAPP_E164 = "554699011022" // usado apenas no link, não exibido
 
@@ -16,6 +21,8 @@ export default function Demo(){
       description: "Veja, passo a passo, como o Progem organiza contratos, cobranças recorrentes, whitelabel, memorial e analytics."
     })
   },[])
+
+  const waHref = `https://wa.me/${WHATSAPP_E164}`
 
   return (
     <div>
@@ -33,12 +40,29 @@ export default function Demo(){
               O que você verá na <span className="text-[var(--c-primary)]">demonstração</span>
             </h1>
             <p className="muted mt-3 text-lg">
-              Um roteiro objetivo para você avaliar o Progem com clareza — do cadastro ao recebimento, com
+              Um roteiro objetivo para avaliar o Progem com clareza — do cadastro ao recebimento, com
               site e apps whitelabel, memorial digital e analytics.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
-              <a href={`https://wa.me/${WHATSAPP_E164}`} target="_blank" rel="noreferrer" className="btn btn-ghost">
+              {/* CTA em laranja */}
+              <Link
+                to="/contato"
+                data-cta="demo"
+                className="btn btn-primary btn-demo"
+                onClick={()=>track("demo_primary_click", { origin: "hero" })}
+                aria-label="Solicitar demonstração com o time Progem"
+              >
+                Solicitar demonstração
+              </Link>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+                data-cta="whatsapp"
+                onClick={()=>track("demo_whatsapp_click", { origin: "hero" })}
+                aria-label="Abrir conversa no WhatsApp"
+              >
                 Abrir conversa no WhatsApp
               </a>
             </div>
@@ -49,22 +73,25 @@ export default function Demo(){
       {/* AGENDA */}
       <main className="mx-auto max-w-7xl px-4 py-10">
         <section className="grid lg:grid-cols-[420px,1fr] gap-8">
-          <div className="card p-6 h-max">
+          <CardMotion className="card p-6 h-max" tabIndex={0}>
             <div className="font-semibold">Agenda da demo (aprox. 45–60 min)</div>
             <ul className="mt-4 space-y-3 text-sm">
               {[
-                { t:"Panorama e objetivos", d:"Entendemos seu contexto e volume de contratos." },
+                { t:"Panorama e objetivos", d:"Contexto do seu negócio funerário e volume de contratos." },
                 { t:"Fluxo de contratos", d:"Cadastro, planos, status e ciclo de vida (ativo/inadimplente)." },
                 { t:"Cobrança recorrente", d:"Carnês/boletos, conciliação e baixa — passo a passo." },
-                { t:"Experiências whitelabel", d:"Site Premium e App do Associado com sua identidade." },
+                { t:"Experiências whitelabel", d:"Site Premium e App do Associado com a sua identidade." },
                 { t:"Memorial digital", d:"Publicação e captação de leads integrada ao Progem." },
                 { t:"Analytics & KPIs", d:"Indicadores de inadimplência, MRR, cohort, crescimento." },
-                { t:"Integrações & APIs", d:"Webhooks, BFF e exemplos de uso." },
+                { t:"Integrações & APIs", d:"Exemplos práticos de integração com seus sistemas." },
                 { t:"Próximos passos", d:"Onboarding, migração e estimativa de go-live." },
               ].map((i,idx)=>(
                 <li key={idx} className="flex items-start gap-3">
                   <Check className="w-4 h-4 mt-0.5"/>
-                  <div><div className="font-medium">{i.t}</div><div className="muted">{i.d}</div></div>
+                  <div>
+                    <div className="font-medium">{i.t}</div>
+                    <div className="muted">{i.d}</div>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -84,13 +111,13 @@ export default function Demo(){
 
             <div className="mt-5 p-3 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-xs">
               <Info className="inline-block w-4 h-4 mr-1 align-[-2px]"/>
-              Podemos adaptar o roteiro para o seu segmento (associados, clubes, academias, imobiliárias e similares).
+              Roteiro orientado ao setor funerário (planos familiares, prestação de serviços, memorial digital).
             </div>
-          </div>
+          </CardMotion>
 
           {/* MÓDULOS QUE MOSTRAREMOS */}
           <div className="grid gap-6 md:grid-cols-2">
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -106,12 +133,14 @@ export default function Demo(){
                   "Regras de plano e upgrades",
                   "Gestão de inadimplência",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
 
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <CreditCard className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -127,12 +156,14 @@ export default function Demo(){
                   "Conciliação e baixa",
                   "Rotinas anti-inadimplência",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
 
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <Globe className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -148,12 +179,14 @@ export default function Demo(){
                   "App do Associado (2ª via, pagamentos)",
                   "Apps do Vendedor/Cobrador (online/offline)",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
 
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <Newspaper className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -169,12 +202,14 @@ export default function Demo(){
                   "Fluxo de aprovação e publicação",
                   "Leads integrados ao CRM",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
 
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <BarChart3 className="w-5 h-5 text-[color:var(--c-muted)]"/>
@@ -190,42 +225,46 @@ export default function Demo(){
                   "MRR, cohort e crescimento",
                   "Relatórios operacionais",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
 
-            <article className="card p-6">
+            <CardMotion className="card p-6" tabIndex={0}>
               <div className="flex items-center gap-3">
                 <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                   <Cable className="w-5 h-5 text-[color:var(--c-muted)]"/>
                 </span>
                 <div>
                   <div className="font-semibold">Integrações & APIs</div>
-                  <div className="muted text-sm">Webhooks, BFF e exemplos práticos.</div>
+                  <div className="muted text-sm">Conecte o Progem aos sistemas do seu negócio.</div>
                 </div>
               </div>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  "Eventos de cobrança e contrato",
-                  "Helpers/SDK e melhores práticas",
-                  "Exemplos de integração com ERP/CRM",
+                  "Integração com ERP/contabilidade",
+                  "Exportação/Importação (CSV, XLSX, JSON)",
+                  "Exemplos práticos com CRM/BI/marketing",
                 ].map(s=>(
-                  <li key={s} className="flex items-start gap-2"><Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span></li>
+                  <li key={s} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5"/><span className="muted">{s}</span>
+                  </li>
                 ))}
               </ul>
-            </article>
+            </CardMotion>
           </div>
         </section>
 
         {/* PRÉ-REQUISITOS / PÓS-DEMO */}
         <section className="mt-10 grid md:grid-cols-2 gap-6">
-          <div className="card p-6">
+          <CardMotion className="card p-6" tabIndex={0}>
             <div className="font-semibold">Como aproveitar melhor a demo</div>
             <ul className="mt-3 space-y-2 text-sm">
               {[
                 "Tenha em mente seu volume de contratos ativos",
-                "Liste integrações desejadas (ERP, gateways, site)",
+                "Liste integrações desejadas com exemplos práticos (ex.: contabilidade/ERP, emissão de NFS-e, conciliação bancária, marketing)",
                 "Traga dúvidas de cobrança, whitelabel e memorial",
               ].map(s=>(
                 <li key={s} className="flex items-start gap-2">
@@ -233,8 +272,9 @@ export default function Demo(){
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="card p-6">
+          </CardMotion>
+
+          <CardMotion className="card p-6" tabIndex={0}>
             <div className="font-semibold">Próximos passos</div>
             <ul className="mt-3 space-y-2 text-sm">
               {[
@@ -247,7 +287,32 @@ export default function Demo(){
                 </li>
               ))}
             </ul>
-          </div>
+          </CardMotion>
+        </section>
+
+        {/* GLOSSÁRIO DISCRETO */}
+        <section className="mt-8">
+          <details className="card p-5 text-sm">
+            <summary className="cursor-pointer font-medium">
+              Glossário rápido (opcional)
+              <span className="muted font-normal text-xs ml-2">— alinhamento de termos usados na demo</span>
+            </summary>
+            <div className="grid sm:grid-cols-2 gap-3 mt-3 text-[13px]">
+              {[
+                { term: "SLA", def: "Acordo de nível de serviço: prazos de resposta e atendimento." },
+                { term: "MRR", def: "Receita Recorrente Mensal: soma das mensalidades ativas." },
+                { term: "Cohort", def: "Grupo de clientes com mesma data de entrada para análise." },
+                { term: "Whitelabel", def: "Site/apps com a sua marca, cores e domínio." },
+                { term: "Conciliação", def: "Conferência de pagamentos e baixa automática." },
+                { term: "Gateway", def: "Provedor que processa pagamentos (cartão, Pix, boleto)." },
+              ].map((g)=>(
+                <div key={g.term} className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
+                  <div className="font-medium">{g.term}</div>
+                  <div className="muted">{g.def}</div>
+                </div>
+              ))}
+            </div>
+          </details>
         </section>
 
         {/* CTA FINAL */}
@@ -262,14 +327,34 @@ export default function Demo(){
               <p className="muted">Retorno rápido e confirmação por WhatsApp.</p>
             </div>
             <div className="flex gap-3">
-              <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
-              <a href={`https://wa.me/${WHATSAPP_E164}`} target="_blank" rel="noreferrer" className="btn btn-ghost">
+              {/* CTA em laranja */}
+              <Link
+                to="/contato"
+                data-cta="demo"
+                className="btn btn-primary btn-demo"
+                onClick={()=>track("demo_primary_click", { origin: "footer" })}
+                aria-label="Solicitar demonstração com o time Progem"
+              >
+                Solicitar demonstração
+              </Link>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+                data-cta="whatsapp"
+                onClick={()=>track("demo_whatsapp_click", { origin: "footer" })}
+                aria-label="Conversar no WhatsApp"
+              >
                 Conversar no WhatsApp
               </a>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Dock CTA no mobile */}
+      <BottomDockCTA/>
 
       <Footer/>
     </div>

@@ -18,6 +18,7 @@ import AppDoVendedorPage from './pages/AppDoVendedorPage'
 import ClubeBeneficios from './pages/ParceriasBeneficios'
 import PlanosPet from './pages/PlanosPet'
 import IntegracaoWhatsapp from './pages/IntegracaoWhatsapp'
+import Apps from './pages/Apps'
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home/> },
@@ -26,7 +27,7 @@ export const router = createBrowserRouter([
   { path: '/clientes', element: <Clientes/> },
   { path: '/blog', element: <Blog/> },
   { path: '/contato', element: <Contato/> },
-    { path: "/demo", element: <Demo/> }, 
+  { path: "/demo", element: <Demo/> }, 
   { path: "/blog/:id", element: <BlogPost/> },
   { path: "/migracao", element: <Migracao/> },
   { path: '/developers', element: <Developers/> },
@@ -37,7 +38,8 @@ export const router = createBrowserRouter([
   { path: "/app-cobrador", element: <AppDoCobradorPage/> },
   { path: "/app-vendedor", element: <AppDoVendedorPage/> },
   { path: "/clube", element: <ClubeBeneficios/> },
-    { path: "/pet", element: <PlanosPet/> },
-      { path: "/zap", element: <IntegracaoWhatsapp/> },
+  { path: "/pet", element: <PlanosPet/> },
+  { path: "/apps", element: <Apps/> },
+  { path: "/zap", element: <IntegracaoWhatsapp/> },
   { path: "/app-associado", element: <AppAssociado/> }
 ])

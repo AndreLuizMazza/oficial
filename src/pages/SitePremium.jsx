@@ -46,14 +46,17 @@ export default function SitePremium(){
               Uma presença digital de alto nível, otimizada para SEO e preparada para integrar captação de leads ao Progem.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
+              {/* CTA laranja */}
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Solicitar demonstração
+              </Link>
               <Link to="/blog" className="btn btn-ghost">Ver conteúdos</Link>
             </div>
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-               src={placeholder}
+              src={placeholder}
               alt="Mockup de website premium"
               className="w-full h-full object-cover"
               loading="lazy"
@@ -104,12 +107,12 @@ export default function SitePremium(){
             </ul>
           </div>
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-<img
-  src={placeholder}
-  alt="Mockup de website premium"
-  className="w-full h-full object-cover"
-  loading="lazy"
-/>
+            <img
+              src={placeholder}
+              alt="Mockup de website premium"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
           </div>
         </section>
 
@@ -123,7 +126,10 @@ export default function SitePremium(){
               <h3 className="text-2xl font-semibold mt-3">Vamos publicar o seu novo site</h3>
               <p className="muted">Time de onboarding acompanha do design ao go-live.</p>
             </div>
-            <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
+            {/* CTA laranja */}
+            <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+              Solicitar demonstração
+            </Link>
           </div>
         </section>
       </main>

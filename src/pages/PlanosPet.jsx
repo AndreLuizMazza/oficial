@@ -54,7 +54,10 @@ export default function PlanosPet(){
               um plano exclusivo para pets — com carteirinha, benefícios e cobranças recorrentes integradas ao Progem.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
+              {/* CTA laranja */}
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Solicitar demonstração
+              </Link>
               <a href="#modelos" className="btn btn-ghost">Modelos de plano</a>
             </div>
           </div>
@@ -177,7 +180,10 @@ export default function PlanosPet(){
               <h3 className="text-2xl font-semibold mt-3">Vamos tirar seus planos pet do papel</h3>
               <p className={`${t.muted}`}>Definimos juntos os modelos (híbrido e/ou exclusivo), regras e comunicação.</p>
             </div>
-            <Link to="/contato" className="btn btn-primary">Falar com um especialista</Link>
+            {/* CTA laranja */}
+            <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+              Falar com um especialista
+            </Link>
           </div>
         </section>
       </main>

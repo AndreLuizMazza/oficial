@@ -2,8 +2,9 @@
 import poster from '@/assets/img/hero.jpg'
 import videoSrc from '@/assets/img/video.mp4'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LineChart, Building2, ShieldCheck } from 'lucide-react'
+import { LineChart, Building2, ShieldCheck, Sparkles } from 'lucide-react'
 
 export default function Hero(){
   const [allowMotion, setAllowMotion] = useState(true)
@@ -18,20 +19,44 @@ export default function Hero(){
   },[])
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden hero-grid">
+      {/* Halo suave no topo */}
+      <div className="hero-halo" aria-hidden />
+
       <div className="mx-auto max-w-7xl px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+        {/* Coluna de texto */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.4 }}
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
+            <Sparkles className="w-4 h-4 text-[color:var(--c-muted)]" />
+            Feito para operações recorrentes
+          </div>
+
+          <h1 className="mt-3 text-4xl md:text-5xl font-bold leading-tight">
             Gestão completa para Funerárias
           </h1>
+
           <p className="mt-4 text-lg muted">
             Reduza inadimplência, acelere vendas e ofereça experiências digitais integradas.
             O ecossistema Progem eleva sua operação ao próximo nível.
           </p>
 
+          {/* CTAs padronizados */}
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <a href="/demo" className="btn btn-primary">Solicitar Demonstração</a>
-            <a href="/planos" className="btn btn-ghost">Ver Planos</a>
+            <Link
+              to="/demo"
+              data-cta="demo"
+              className="btn btn-primary btn-demo"
+            >
+              Solicitar Demonstração
+            </Link>
+            <Link to="/planos" className="btn btn-ghost">
+              Ver Planos
+            </Link>
           </div>
 
           {/* ✅ Prova social (responsiva) */}
@@ -56,7 +81,7 @@ export default function Hero(){
               </div>
             </div>
 
-            <div className="card p-4 flex items-center gap-3 lg:col-span-1 sm:col-span-2 lg:col-span-1">
+            <div className="card p-4 flex items-center gap-3 sm:col-span-2 lg:col-span-1">
               <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                 <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]" />
               </span>
@@ -66,15 +91,25 @@ export default function Hero(){
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
+        {/* Coluna de mídia */}
         <motion.div
           initial={{opacity:0, y:20}}
           whileInView={{opacity:1, y:0}}
           transition={{duration:.6}}
-          viewport={{once:true}}
-          className="rounded-xl2 border border-[var(--c-border)] overflow-hidden bg-[var(--c-surface-2)]"
+          viewport={{once:true, amount: 0.3}}
+          className="relative rounded-2xl border border-[var(--c-border)] overflow-hidden bg-[var(--c-surface-2)] aspect-video"
         >
+          {/* Scrim sutil para legibilidade da borda */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(80% 60% at 50% 10%, transparent 0%, transparent 60%, color-mix(in oklab, var(--c-border) 40%, transparent) 100%)"
+            }}
+          />
           {/* Vídeo com poster e fallback automático */}
           {allowMotion ? (
             <video
@@ -88,7 +123,7 @@ export default function Hero(){
               preload="metadata"
             />
           ) : (
-            <img src={poster} alt="Painéis Progem" className="w-full h-full object-cover"/>
+            <img src={poster} alt="Painéis e módulos do Progem em uso" className="w-full h-full object-cover" loading="lazy" />
           )}
         </motion.div>
       </div>

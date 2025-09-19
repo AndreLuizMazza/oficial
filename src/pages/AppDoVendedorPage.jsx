@@ -1,19 +1,18 @@
-import { useEffect, useMemo } from "react"
+// src/pages/AppVendedor.jsx
+import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import { motion } from "framer-motion"
+import placeholder from "@/assets/img/placeholder.png"
 import {
   Smartphone, Download, ShieldCheck, MapPin, Share2,
   Clock3, Signal, Sparkles, CheckCircle2, MessageSquare,
   FileSignature, ShoppingCart, CalendarCheck2, BellRing,
-  Images, FilePieChart
+  Images, FilePieChart, ClipboardList, Target, PhoneCall, Info
 } from "lucide-react"
-
-/**
- * CONTEÚDO ORIGINAL MANTIDO — apenas envelopado por Header/Footer e SEO.
- */
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -32,9 +31,6 @@ const features = [
   { icon: FilePieChart, title: "Metas & Indicadores", desc: "Taxa de conversão, ticket médio e funil por vendedor." },
 ]
 
-// Import faltante acima
-import { ClipboardList, UploadCloud, RefreshCcw, Target, PhoneCall } from "lucide-react"
-
 const faqs = [
   { q: "Como capturo leads?", a: "Via site, QR Code, formulários, importação de planilhas ou integração com campanhas." },
   { q: "É possível assinar no celular?", a: "Sim. Envie para assinatura com validade, acompanhe status e receba notificação ao assinar." },
@@ -42,11 +38,25 @@ const faqs = [
   { q: "Funciona offline?", a: "Cadastro e notas funcionam offline; propostas/assinatura requerem conexão no envio." },
 ]
 
+function PlatformBadge(){
+  return (
+    <div className="mt-3 flex items-center gap-2 text-xs">
+      <span className="inline-flex items-center gap-1 rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-2 py-1">
+        <Smartphone className="w-3.5 h-3.5" /> Android
+      </span>
+      <span className="inline-flex items-center gap-1 rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] px-2 py-1">
+        <ShieldCheck className="w-3.5 h-3.5" /> Sem taxa por venda ao Progem
+      </span>
+    </div>
+  )
+}
+
 export default function AppVendedor(){
   useEffect(() => {
     setPageSEO({
       title: "Progem • App do Vendedor",
-      description: "Leads, propostas, assinatura digital, agenda e follow-ups — feche mais vendas com previsibilidade."
+      description:
+        "Leads, propostas, assinatura digital, agenda e follow-ups — feche mais vendas com previsibilidade. Disponível para Android e sem taxa por venda ao Progem."
     })
   }, [])
 
@@ -57,7 +67,6 @@ export default function AppVendedor(){
     border: "border-[var(--c-border)]",
     primary: "text-[color:var(--c-primary)]",
     primaryBg: "bg-[color:var(--c-primary)]",
-    primaryHover: "hover:bg-[color:var(--c-primary-600, var(--c-primary))]",
   }), [])
 
   return (
@@ -67,7 +76,7 @@ export default function AppVendedor(){
       <div className={`min-h-dvh ${tokens.bg} ${tokens.text}`}>
         {/* HERO */}
         <section className="relative overflow-hidden">
-          <div className="mx-auto max-w-7xl px-4 py-20 md:py-24 grid gap-10 md:grid-cols-2 items-center">
+          <div className="mx-auto max-w-7xl px-4 py-16 md:py-20 grid gap-10 md:grid-cols-[1fr,320px] items-center">
             <motion.div {...fadeUp}>
               <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs md:text-sm font-medium border-[var(--c-border)]">
                 <Sparkles className="size-4"/> Novo módulo Progem
@@ -80,14 +89,23 @@ export default function AppVendedor(){
                 Centralize leads, propostas, agenda e follow-ups. Assine contratos no celular e
                 entregue uma experiência moderna ao seu cliente.
               </p>
+
+              <PlatformBadge/>
+
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link to="/contato" className={`inline-flex items-center gap-2 rounded-xl ${tokens.primaryBg} ${tokens.primaryHover} text-white px-5 py-3 font-medium shadow-sm transition`}>
-                  <Download className="size-5"/> Solicitar demonstração
+                {/* CTA laranja padronizada */}
+                <Link
+                  to="/demo"
+                  data-cta="demo"
+                  className="inline-flex items-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 font-medium shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+                >
+                  <Download className="size-5" /> Solicitar demonstração
                 </Link>
                 <a href="#recursos" className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)]">
                   Ver recursos
                 </a>
               </div>
+
               <ul className="mt-6 grid grid-cols-2 gap-3 text-sm">
                 <li className="inline-flex items-center gap-2"><CheckCircle2 className="size-4"/> Propostas em 1 clique</li>
                 <li className="inline-flex items-center gap-2"><CheckCircle2 className="size-4"/> Assinatura digital</li>
@@ -96,22 +114,27 @@ export default function AppVendedor(){
               </ul>
             </motion.div>
 
-            <motion.div {...fadeUp} className="relative">
-              <div className="relative mx-auto max-w-sm">
-                <div className="aspect-[9/19] w-full rounded-[2rem] border-8 border-black/90 shadow-2xl overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=1200&auto=format&fit=crop"
-                    alt="App do Vendedor — mockup"
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="absolute -bottom-6 -right-6 hidden md:block rounded-2xl border bg-white/70 backdrop-blur px-4 py-3 border-[var(--c-border)]">
+            {/* Mockup compacto em formato de celular */}
+            <motion.div {...fadeUp} className="relative mx-auto w-full max-w-[200px] md:max-w-[220px]">
+              <div className="aspect-[9/19] w-full rounded-[1.5rem] border-4 md:border-8 border-black/90 shadow-2xl overflow-hidden bg-black">
+                <img
+                  src={placeholder}
+                  alt="App do Vendedor — mockup"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* Badge acessível no claro/escuro */}
+              <div className="absolute -bottom-6 -right-6 hidden md:block">
+                <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] shadow-xl px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <Target className={`size-5 ${tokens.primary}`}/>
+                    <span className="grid place-content-center size-8 rounded-full border border-[var(--c-border)] bg-[var(--c-surface)]">
+                      <Target className={`size-4 ${tokens.primary}`} />
+                    </span>
                     <div>
-                      <p className="text-sm font-semibold">Foco em conversão</p>
-                      <p className={`text-xs ${tokens.muted}`}>Playbook guiado e etapas do funil</p>
+                      <p className="text-sm font-semibold text-[color:var(--c-foreground)]">Foco em conversão</p>
+                      <p className="text-xs text-[color:var(--c-muted)]">Playbook guiado e etapas do funil</p>
                     </div>
                   </div>
                 </div>
@@ -167,6 +190,7 @@ export default function AppVendedor(){
                 ))}
               </ol>
             </motion.div>
+
             <motion.div {...fadeUp} className="grid gap-4 sm:grid-cols-2">
               {[
                 { k: "zap", t: "WhatsApp oficial", d: "Modelos aprovados e histórico por lead.", icon: MessageSquare },
@@ -184,24 +208,57 @@ export default function AppVendedor(){
           </div>
         </section>
 
+        {/* Custos & Setup (discreto) */}
+        <section className="mx-auto max-w-7xl px-4">
+          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
+                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
+              </span>
+              <div className="text-sm">
+                <p className="font-medium">Custos</p>
+                <ul className="mt-1 space-y-1">
+                  <li className="muted">App do Vendedor incluso no pacote Progem — <strong>sem custo adicional de licenciamento</strong>.</li>
+                  <li className="muted"><strong>Sem taxa por venda</strong> ao Progem ao utilizar o app.</li>
+                  <li className="muted">Setup único (<em>sob escopo</em>) pode ser aplicado conforme integrações e treinamentos setorizados necessários.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CHAMADA / CTA */}
         <section id="contato" className="relative">
           <div className="mx-auto max-w-7xl px-4 py-16">
-            <div className="rounded-3xl border p-8 md:p-12 text-center bg-[color:var(--c-muted-bg,#f8fafc)] border-[var(--c-border)]">
-              <h3 className="text-2xl md:text-3xl font-semibold">Acelere seu funil de vendas</h3>
-              <p className={`mt-2 ${tokens.muted}`}>Disponível para Android. Integração nativa ao Progem.</p>
+            <div className="rounded-3xl border p-8 md:p-12 text-center bg-[var(--c-surface-2)] border-[var(--c-border)]">
+              <h3 className="text-2xl md:text-3xl font-semibold text-[color:var(--c-foreground)]">
+                Acelere seu funil de vendas
+              </h3>
+              <p className="mt-2 text-[color:var(--c-muted)]">
+                Disponível para Android. Integração nativa ao Progem.
+              </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <Link to="/demo" className={`inline-flex items-center gap-2 rounded-xl ${tokens.primaryBg} ${tokens.primaryHover} text-white px-5 py-3 font-medium shadow-sm transition`}>
-                  <Smartphone className="size-5"/> Falar com um especialista
+                {/* CTA em laranja */}
+                <Link
+                  to="/demo"
+                  data-cta="demo"
+                  className="inline-flex items-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 font-medium shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+                >
+                  <Smartphone className="size-5" /> Falar com um especialista
                 </Link>
-                <a href="#" className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)]">
-                  <Download className="size-5"/> Baixar apresentação (PDF)
+
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-2 rounded-xl border px-5 py-3 font-medium border-[var(--c-border)] text-[color:var(--c-foreground)]/90"
+                >
+                  <Download className="size-5" /> Baixar apresentação (PDF)
                 </a>
               </div>
             </div>
           </div>
         </section>
 
+        {/* FAQ */}
         <section className="mx-auto max-w-5xl px-4 py-14">
           <h3 className="text-xl md:text-2xl font-semibold text-center">Perguntas frequentes</h3>
           <div className="mt-6 divide-y border rounded-2xl border-[var(--c-border)]">
@@ -221,6 +278,9 @@ export default function AppVendedor(){
           <p className="text-center text-xs text-[color:var(--c-muted)]">Progem • App do Vendedor — módulo adicional do ecossistema de gestão</p>
         </footer>
       </div>
+
+      {/* CTA fixo (mobile) */}
+      <BottomDockCTA />
 
       <Footer/>
     </div>

@@ -54,7 +54,16 @@ export default function ParceriasBeneficios(){
               Você define regras, publica ofertas e mede o resultado.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Quero ativar no meu Progem</Link>
+
+              
+        <Link
+  to="/contato"
+  data-cta="activate_progem"
+  className="inline-flex items-center justify-center rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-5 py-3 font-medium shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600"
+>
+  Quero ativar no meu Progem
+</Link>
+
               <a href="#conectores" className="btn btn-ghost">Ver conectores</a>
             </div>
           </div>

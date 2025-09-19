@@ -1,29 +1,51 @@
 // src/pages/Migracao.jsx
-import { useEffect } from "react"
-import { Link } from "react-router-dom"
-import Header from "@/components/Header"
-import Footer from "@/components/Footer"
-import { setPageSEO } from "@/lib/seo"
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { setPageSEO } from "@/lib/seo";
 import {
   Database, UploadCloud, FileSpreadsheet, ShieldCheck, Check, Sparkles,
-  Server, Info
-} from "lucide-react"
+  Server, Info, Rocket, Download
+} from "lucide-react";
 
 export default function Migracao(){
   useEffect(()=>{
     setPageSEO({
       title: "Progem • Migração de Dados",
       description: "Importação guiada de clientes, contratos, carnês/boletos e histórico com validações e segurança."
-    })
-  },[])
+    });
+  },[]);
 
   return (
     <div>
       <Header/>
 
       {/* HERO */}
-      <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
-        <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+      <section className="relative border-b border-[var(--c-border)] bg-[var(--c-surface)] overflow-hidden">
+        {/* halo sutil */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -top-10 h-[220px] opacity-70 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(1100px 220px at 50% 0, color-mix(in oklab, var(--c-primary) 28%, transparent), transparent 60%)",
+            zIndex: 0,
+          }}
+        />
+        {/* grid sutil */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-25"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--c-border) 1px, transparent 1px), linear-gradient(90deg, var(--c-border) 1px, transparent 1px)",
+            backgroundSize: "28px 28px, 28px 28px",
+            mixBlendMode: "normal",
+            zIndex: 0,
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-14">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
               <Sparkles className="w-4 h-4 text-[color:var(--c-muted)]"/>
@@ -35,9 +57,21 @@ export default function Migracao(){
             <p className="muted mt-3 text-lg">
               Trazemos seu histórico para o Progem com segurança: clientes, contratos, carnês/boletos, baixas e status.
             </p>
+
+            {/* badges rápidas */}
+            <ul className="mt-4 flex flex-wrap gap-2 text-xs">
+              {["CSV/XLSX/JSON", "Backups SQL", "Prévia de erros", "Homologação", "LGPD & auditoria"].map(b => (
+                <li key={b} className="badge">{b}</li>
+              ))}
+            </ul>
+
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
-              <Link to="/developers" className="btn btn-ghost">Ver guias técnicos</Link>
+              <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+                Solicitar demonstração
+              </Link>
+              <Link to="/developers#migracao" className="btn btn-ghost">
+                Ver guias técnicos
+              </Link>
             </div>
           </div>
         </div>
@@ -123,8 +157,40 @@ export default function Migracao(){
           </ul>
         </article>
 
+        {/* Passo a passo (stepper) */}
         <article className="md:col-span-3 card p-6">
           <div className="flex items-center gap-3">
+            <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
+              <Database className="w-5 h-5 text-[color:var(--c-muted)]"/>
+            </span>
+            <div>
+              <div className="font-semibold">Como migramos (passo a passo)</div>
+              <div className="muted text-sm">Fluxo guiado e reversível até a homologação.</div>
+            </div>
+          </div>
+          <ol className="mt-4 space-y-3">
+            {[
+              { t: "Kickoff & escopo", d: "Levantamento de fontes, tabelas e escopo de histórico." },
+              { t: "Coleta & mapeamento", d: "Recebemos arquivos/backups e mapeamos colunas para o modelo Progem." },
+              { t: "Normalização & validação", d: "Tratamos formatos, CPF/CNPJ, duplicidades e consistência de chaves." },
+              { t: "Carga em sandbox", d: "Importamos em ambiente de testes para prévia e ajustes finais." },
+              { t: "Homologação", d: "Você valida e assina a conferência de amostras e relatórios." },
+              { t: "Go-live & monitoramento", d: "Publicamos a base e acompanhamos os primeiros ciclos.", icon: Rocket },
+            ].map((step, i)=>(
+              <li key={i} className="flex items-start gap-3">
+                <span className="grid place-content-center size-8 rounded-full bg-[color:var(--c-primary)] text-[var(--c-primary-contrast)] font-bold">
+                  {i+1}
+                </span>
+                <div>
+                  <div className="font-medium">{step.t}</div>
+                  <div className="text-sm muted">{step.d}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          {/* Segurança & compliance */}
+          <div className="mt-6 flex items-center gap-3">
             <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
               <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]"/>
             </span>
@@ -133,7 +199,7 @@ export default function Migracao(){
               <div className="muted text-sm">Criptografia em trânsito, acesso restrito e registros de auditoria.</div>
             </div>
           </div>
-          <ul className="mt-4 space-y-2 text-sm">
+          <ul className="mt-3 space-y-2 text-sm">
             {[
               "Uploads seguros e segregação de ambientes",
               "Logs de importação e rastreabilidade",
@@ -153,6 +219,16 @@ export default function Migracao(){
               e qualidade dos arquivos/backups.
             </span>
           </div>
+
+          {/* Materiais de apoio */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link to="/developers#migracao" className="btn btn-ghost text-sm inline-flex items-center gap-2">
+              <Download className="w-4 h-4"/> Modelos de planilha (CSV/XLSX)
+            </Link>
+            <Link to="/developers#migracao" className="btn btn-ghost text-sm inline-flex items-center gap-2">
+              <Download className="w-4 h-4"/> Checklist de migração (PDF)
+            </Link>
+          </div>
         </article>
       </main>
 
@@ -171,12 +247,17 @@ export default function Migracao(){
             </p>
           </div>
           <div className="flex gap-3">
-            <Link to="/contato" className="btn btn-primary">Solicitar demonstração</Link>
+            <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+              Falar com um especialista
+            </Link>
+            <Link to="/developers#migracao" className="btn btn-ghost">
+              Ver guias técnicos
+            </Link>
           </div>
         </div>
       </section>
 
       <Footer/>
     </div>
-  )
+  );
 }

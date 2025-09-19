@@ -101,18 +101,21 @@ export default function Clientes(){
             ))}
           </div>
 
-          {/* Chamada final */}
           <div id="proxima-etapa" className="mt-12 card p-8">
-            <h2 className="text-2xl font-semibold">Seu setor também pode ser Progem</h2>
-            <p className="muted mt-2">
-              Se sua operação envolve <strong>assinaturas, mensalidades ou carnês</strong>, nós integramos tudo:
-              site, apps, cobranças e analytics — com a identidade da sua marca.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <a href="/contato" className="btn btn-primary">Solicitar Demonstração</a>
-              <a href="/developers" className="btn btn-ghost">Ver docs & APIs</a>
-            </div>
-          </div>
+  <h2 className="text-2xl font-semibold">Seu setor também pode ser Progem</h2>
+  <p className="muted mt-2">
+    Se sua operação envolve <strong>assinaturas, mensalidades ou carnês</strong>, nós integramos tudo:
+    site, apps, cobranças e analytics — com a identidade da sua marca.
+  </p>
+  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+    {/* CTA alaranjado */}
+    <a href="/demo" data-cta="demo" className="btn btn-primary btn-demo">
+      Solicitar Demonstração
+    </a>
+    <a href="/developers" className="btn btn-ghost">Ver docs & APIs</a>
+  </div>
+</div>
+
         </section>
       </main>
       <Footer/>
