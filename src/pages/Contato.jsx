@@ -1,9 +1,11 @@
+// src/pages/Contato.jsx
 import { useEffect, useState } from "react"
 import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
   Sparkles, Building2, FileText, Mail, Phone, Check, MessageSquareText, Info, MapPin, Clock
 } from "lucide-react"
+import useFacebookPixel from "@/hooks/useFacebookPixel"
 
 const WHATSAPP_E164 = "554699011022" // número usado apenas no link (não exibido)
 
@@ -16,6 +18,8 @@ export default function Contato(){
     interesse: "Visão geral + dúvidas",
     mensagem: "",
   })
+
+  const { track: fbTrack } = useFacebookPixel()
 
   useEffect(()=>{
     setPageSEO({
@@ -31,6 +35,7 @@ export default function Contato(){
 
   function enviarWhatsApp(e){
     e.preventDefault()
+
     const linhas = [
       "Olá, quero falar com a equipe Progem 👋",
       "",
@@ -42,14 +47,41 @@ export default function Contato(){
       `E-mail: ${form.email || "-"}`,
       `WhatsApp (para retorno): ${form.whatsapp || "-"}`,
     ].filter(Boolean)
+
+    // Meta Pixel — Lead (envio do formulário de contato)
+    fbTrack?.("Lead", {
+      content_name: "Contato - Enviar pelo WhatsApp",
+      content_category: "Contato",
+      form_interesse: form.interesse,
+      email: form.email || undefined,
+      phone: form.whatsapp || undefined,
+      value: 0,
+      currency: "BRL",
+    })
+
     const texto = encodeURIComponent(linhas.join("\n"))
     window.open(`https://wa.me/${WHATSAPP_E164}?text=${texto}`, "_blank", "noopener,noreferrer")
   }
 
+  function abrirWhatsAppDireto(e){
+    // Garantir que o evento seja enviado antes do redirect externo
+    e.preventDefault()
+
+    // Meta Pixel — Contact (clique no atalho lateral)
+    fbTrack?.("Contact", {
+      content_name: "Contato - Abrir conversa direta",
+      content_category: "Contato",
+      value: 0,
+      currency: "BRL",
+    })
+
+    setTimeout(() => {
+      window.open(`https://wa.me/${WHATSAPP_E164}`, "_blank", "noopener,noreferrer")
+    }, 200)
+  }
+
   return (
     <div>
-
-
       {/* Hero */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
         <div className="mx-auto max-w-7xl px-4 py-10 md:py-12">
@@ -227,6 +259,7 @@ export default function Contato(){
                   target="_blank"
                   rel="noreferrer"
                   className="btn btn-ghost mt-3"
+                  onClick={abrirWhatsAppDireto}
                 >
                   Abrir conversa direta
                 </a>
