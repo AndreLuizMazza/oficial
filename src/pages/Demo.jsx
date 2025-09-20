@@ -355,8 +355,6 @@ export default function Demo(){
         </section>
       </main>
 
-      {/* Dock CTA no mobile */}
-      <BottomDockCTA/>
 
       <Footer/>
     </div>
