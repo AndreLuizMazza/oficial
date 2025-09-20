@@ -321,14 +321,24 @@ export default function Planos(){
     })()
   },[])
 
-  // CTA flutuante quando chega no comparativo
-  useEffect(()=>{
-    const el = comparativoRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setCtaOpen(true) }), { threshold: 0.2 })
-    obs.observe(el)
-    return ()=> obs.disconnect()
-  },[])
+// CTA flutuante quando chega no comparativo
+useEffect(() => {
+  const el = comparativoRef.current;
+  if (!el) return;
+
+  const obs = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) setCtaOpen(true);
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  obs.observe(el);
+  return () => obs.disconnect();
+}, []);
+
 
   // Cards com preço por período
   const planosComPreco = useMemo(()=> plans.map(p=>{
@@ -817,7 +827,7 @@ export default function Planos(){
                 )}
               </div>
 
-              {/* Inclui usuários (pedido) */}
+              {/* Inclui usuários */}
               <div className="mt-2 text-sm muted flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 Inclui {usersIncludedFor(pl.id === "enterprise" ? "enterprise" : pl.id)} usuários.
@@ -998,6 +1008,19 @@ export default function Planos(){
                 <span><strong>Migração de dados</strong>: orçamento conforme escopo (clientes, contratos, carnês/boletos e histórico).</span>
               </li>
             </ul>
+
+            {/* Links úteis — discretos e em linha */}
+            <div className="mt-3 text-xs text-[color:var(--c-muted)] flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="font-medium">Links úteis:</span>
+              <Link to="/taxas" className="underline">Taxas &amp; Cobrança</Link>
+              <span>•</span>
+              <Link to="/migracao" className="underline">Migração de Dados</Link>
+              <span>•</span>
+              <Link to="/app-associado" className="underline">App do Associado</Link>
+              <span>•</span>
+              <Link to="/site-premium" className="underline">Site Premium</Link>
+            </div>
+
             <div className="mt-3">
               <Link to="/contato" className="btn btn-ghost btn-sm">Tirar dúvidas com o time</Link>
             </div>
