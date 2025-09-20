@@ -2,13 +2,14 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import Footer from "@/components/Footer"
+import { createPortal } from "react-dom"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
 import clsx from "clsx"
 
 import {
-  Check, ShieldCheck, Globe, Handshake, Info, Cable, X, MessageCircle,
-  LineChart, Building2, PawPrint, Link2 as LinkIcon, Users
+  Check, ShieldCheck, Globe, Handshake, Info, Cable, X,
+  LineChart, Building2, Link2 as LinkIcon, MessageCircle, Users
 } from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
@@ -46,7 +47,7 @@ function Tooltip({ id, content, children, side="top" }){
   )
 }
 
-/** Faixas oficiais por nº de contratos ativos */
+/** Faixas por nº de contratos ativos */
 const TIERS = [
   { id: "start",       name: "Start",      min: 0,    max: 500,   price: 250, rangeLabel: "0 – 500 contratos" },
   { id: "pro",         name: "Pro",        min: 501,  max: 1000,  price: 350, rangeLabel: "501 – 1.000 contratos" },
@@ -69,20 +70,24 @@ const ENTERPRISE_BULLETS = [
   { range: "+3.000 contratos",        price: null },
 ]
 
-// 🚩 Política de usuários incluídos
+// Política de usuários
 const INCLUDED_USERS = { start: 5, pro: 5, enterprise: 10 }
 const EXTRA_USER_PRICE = 10 // R$/mês por usuário adicional
+const usersIncludedFor = (planId) =>
+  planId === "start" ? INCLUDED_USERS.start
+  : planId === "pro" ? INCLUDED_USERS.pro
+  : INCLUDED_USERS.enterprise
 
+// Features (termo padronizado: Site Premium)
 const COMMON_FEATURES = [
   "Gestão de contratos e assinaturas",
   "Cobrança recorrente (boletos/carnês)",
-  "Site institucional whitelabel",
+  "Site Premium institucional",
   "App do Associado (iOS/Android)",
   "Apps do Vendedor e Cobrador (online/offline)",
   "Memorial Digital integrado",
   "Analytics & KPIs em tempo real",
   "APIs, webhooks e BFF",
-  "Gestão de Planos Pet (assistência animal)",
 ]
 
 const FALLBACK = [
@@ -115,9 +120,10 @@ const FALLBACK = [
 
 const ICONS = { start: ShieldCheck, pro: Globe, enterprise: Handshake }
 
-const WHATSAPP_MENSAL = 150 // custo fixo por mês (mensagens ilimitadas)
+const WHATSAPP_MENSAL = 150 // custo fixo/mês (mensagens ilimitadas)
+const SITE_APP_MENSAL_STARTPRO = 199 // Site Premium + App do Associado (Start/Pro). Enterprise = sob consulta.
 
-/** Marcas do slider (visuais) */
+/** Marcas do slider */
 function TierMarks({ max=3500 }){
   const marks = [
     { v: 500,  label: "500" },
@@ -143,12 +149,18 @@ function TierMarks({ max=3500 }){
   )
 }
 
-/** CTA flutuante */
-function FloatingCTA({ visible, onClose, period, contracts }){
+function FloatingCTA({ visible, onClose, period, contracts }) {
   if (!visible) return null
-  return (
-    <div className="fixed right-4 bottom-4 z-50" aria-live="polite">
-      <div className="rounded-2xl shadow-2xl border border-[var(--c-border)] bg-[var(--c-surface)] p-4 max-w-xs">
+
+  const content = (
+    <div
+      className="hidden md:block fixed right-4 z-[90] pointer-events-none"
+      style={{ bottom: "calc(16px + env(safe-area-inset-bottom, 0px))" }}
+      aria-live="polite"
+      role="dialog"
+      aria-label="Fale com vendas"
+    >
+      <div className="pointer-events-auto rounded-2xl shadow-2xl border border-[var(--c-border)] bg-[var(--c-surface)] p-4 max-w-xs">
         <div className="flex items-start gap-3">
           <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <MessageCircle className="w-5 h-5 text-[color:var(--c-muted)]" />
@@ -182,13 +194,17 @@ function FloatingCTA({ visible, onClose, period, contracts }){
             aria-label="Fechar"
             onClick={onClose}
           >
-            <X className="w-4 h-4"/>
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
     </div>
   )
+
+  // Renderiza fora da árvore com transform (corrige “grudar” no rodapé e clipping)
+  return createPortal(content, document.body)
 }
+
 
 export default function Planos(){
   const [searchParams, setSearchParams] = useSearchParams()
@@ -199,14 +215,15 @@ export default function Planos(){
   const [ctaOpen, setCtaOpen] = useState(false)
   const comparativoRef = useRef(null)
 
-  // --- Slider fixo 0–3500
+  // Slider fixo 0–3500
   const sliderMax = 3500
   const [contracts, setContracts] = useState(500)
   const selectedTier = useMemo(() => findTierByContracts(contracts), [contracts])
   const descontoAnual = 0.15
 
-  // Add-on WhatsApp
+  // Add-ons
   const [whatsappAddon, setWhatsappAddon] = useState(false)
+  const [siteAppAddon, setSiteAppAddon] = useState(false)
 
   // utils
   const clampContracts = (n) => Math.max(0, Math.min(sliderMax, Math.floor(Number(n) || 0)))
@@ -226,8 +243,10 @@ export default function Planos(){
     const qContracts = searchParams.get("contracts")
     const qPeriodo = searchParams.get("periodo")
     const qWhats = searchParams.get("whatsapp")
+    const qSiteApp = searchParams.get("siteapp")
     if (qPeriodo === "mensal" || qPeriodo === "anual") setPeriodo(qPeriodo)
     if (qWhats === "1" || qWhats === "true") setWhatsappAddon(true)
+    if (qSiteApp === "1" || qSiteApp === "true") setSiteAppAddon(true)
     setTimeout(() => {
       if (qContracts != null) setContractsSafe(qContracts, { emit:false })
     }, 0)
@@ -239,20 +258,27 @@ export default function Planos(){
     const currContracts = Number(searchParams.get("contracts"))
     const currPeriodo = searchParams.get("periodo")
     const currWhats = searchParams.get("whatsapp")
+    const currSiteApp = searchParams.get("siteapp")
     const nextContracts = Math.max(0, Math.min(sliderMax, Math.floor(Number(contracts) || 0)))
     const nextPeriodo = periodo
     const nextWhats = whatsappAddon ? "1" : "0"
-    const changed = currContracts !== nextContracts || currPeriodo !== nextPeriodo || currWhats !== nextWhats
+    const nextSiteApp = siteAppAddon ? "1" : "0"
+    const changed =
+      currContracts !== nextContracts ||
+      currPeriodo !== nextPeriodo ||
+      currWhats !== nextWhats ||
+      currSiteApp !== nextSiteApp
     if (changed) {
       const next = new URLSearchParams(searchParams)
       next.set("contracts", String(nextContracts))
       next.set("periodo", nextPeriodo)
       next.set("whatsapp", nextWhats)
+      next.set("siteapp", nextSiteApp)
       setSearchParams(next, { replace: true })
     }
-  }, [contracts, periodo, sliderMax, whatsappAddon, searchParams, setSearchParams])
+  }, [contracts, periodo, sliderMax, whatsappAddon, siteAppAddon, searchParams, setSearchParams])
 
-  // Reclampar
+  // Reclampar na montagem
   useEffect(() => {
     setContractsSafe(contracts, { emit:false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -295,7 +321,7 @@ export default function Planos(){
     })()
   },[])
 
-  // CTA flutuante
+  // CTA flutuante quando chega no comparativo
   useEffect(()=>{
     const el = comparativoRef.current
     if (!el) return
@@ -341,15 +367,26 @@ export default function Planos(){
     return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
   }, [whatsappAddon, periodo])
 
+  // Site + App do Associado
+  const siteAppPrice = useMemo(() => {
+    if (!siteAppAddon) return 0
+    if (!selectedTier) return 0
+    const isEnterprise = selectedTier.id.startsWith("enterprise")
+    if (isEnterprise) return null // sob consulta
+    const mensal = SITE_APP_MENSAL_STARTPRO
+    return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
+  }, [siteAppAddon, selectedTier, periodo])
+
   // Total simulado
   const simulatedTotal = useMemo(() => {
     if (simulatedPrice == null) return null
-    return simulatedPrice + (whatsappPrice || 0)
-  }, [simulatedPrice, whatsappPrice])
+    if (siteAppAddon && siteAppPrice == null) return null // enterprise com add-on => sob consulta
+    return simulatedPrice + (whatsappPrice || 0) + (siteAppPrice || 0)
+  }, [simulatedPrice, whatsappPrice, siteAppPrice, siteAppAddon])
 
   // Economia anual
   const mensalBase = selectedTier?.price ?? null
-  const mensalAddon = whatsappAddon ? WHATSAPP_MENSAL : 0
+  const mensalAddon = (whatsappAddon ? WHATSAPP_MENSAL : 0) + (siteAppAddon && !selectedTier?.id?.startsWith("enterprise") ? SITE_APP_MENSAL_STARTPRO : 0)
   const economiaAnual = useMemo(() => {
     if (periodo !== "anual" || mensalBase == null || simulatedTotal == null) return 0
     const semDesconto = (mensalBase + mensalAddon) * 12
@@ -440,14 +477,9 @@ export default function Planos(){
       await navigator.clipboard.writeText(window.location.href)
       setCopied(true)
       setTimeout(()=>setCopied(false), 1600)
-      track("pricing_share", { period: periodo, contracts, whatsappAddon })
+      track("pricing_share", { period: periodo, contracts, whatsappAddon, siteAppAddon })
     }catch(e){ /* ignore */ }
   }
-
-  const usersIncludedFor = (planId) =>
-    planId === "start" ? INCLUDED_USERS.start
-    : planId === "pro" ? INCLUDED_USERS.pro
-    : INCLUDED_USERS.enterprise
 
   return (
     <div>
@@ -584,35 +616,34 @@ export default function Planos(){
                 </label>
               </div>
 
+              {/* Toggle Site + App do Associado */}
+              <div className="mt-3 flex items-center gap-2">
+                <input
+                  id="toggle-siteapp"
+                  type="checkbox"
+                  className="rounded-md border border-[var(--c-border)]"
+                  checked={siteAppAddon}
+                  onChange={(e) => {
+                    setSiteAppAddon(e.target.checked)
+                    track("pricing_siteapp_toggle", { enabled: e.target.checked, period: periodo })
+                  }}
+                />
+                <label htmlFor="toggle-siteapp" className="text-sm">
+                  Incluir <strong>Site Premium + App do Associado</strong> (
+                  {selectedTier?.id?.startsWith("enterprise")
+                    ? <em>sob consulta</em>
+                    : <>+{formatBRL(periodo === "mensal" ? SITE_APP_MENSAL_STARTPRO : SITE_APP_MENSAL_STARTPRO * 12 * (1 - descontoAnual))}{periodo === "mensal" ? "/mês" : "/ano"}</>
+                  }
+                  ).
+                </label>
+              </div>
+
               {/* dica próximo degrau */}
               {showNearHint && (
                 <div className="mt-3 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
                   Você está a <strong>{nearNext}</strong> contratos do próximo degrau de preço.
                 </div>
               )}
-
-              {/* ❗ Custos adicionais (claro e direto) */}
-              <div className="mt-4 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3 text-sm">
-                <div className="font-medium mb-1">Custos adicionais</div>
-                <ul className="space-y-1">
-                  <li className="flex gap-2 items-start">
-                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
-                    <span><strong>Setup inicial</strong>: a partir de {formatBRL(600)} — varia por integrações e nº de usuários.</span>
-                  </li>
-                  <li className="flex gap-2 items-start">
-                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
-                    <span><strong>Manutenção App do Associado e Site Whitelabel</strong>: a partir de {formatBRL(199)}/mês, conforme base de usuários.</span>
-                  </li>
-                  <li className="flex gap-2 items-start">
-                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
-                    <span><strong>Migração de dados</strong>: orçamento sob escopo (clientes, contratos, carnês/boletos e histórico).</span>
-                  </li>
-                  <li className="flex gap-2 items-start">
-                    <Users className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
-                    <span><strong>Usuários adicionais</strong>: {formatBRL(EXTRA_USER_PRICE)}/mês por usuário. Start/Pro incluem 5 usuários; Enterprise inclui 10.</span>
-                  </li>
-                </ul>
-              </div>
             </div>
 
             {/* Resumo sticky */}
@@ -637,6 +668,7 @@ export default function Planos(){
                       {simulatedPrice != null && <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>}
                     </span>
                   </div>
+
                   <div className="flex items-center justify-between">
                     <span className="muted">WhatsApp ilimitado</span>
                     <span className="font-medium">
@@ -648,6 +680,21 @@ export default function Planos(){
                       ) : "—"}
                     </span>
                   </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="muted">Site + App do Associado</span>
+                    <span className="font-medium">
+                      {siteAppAddon ? (
+                        siteAppPrice != null ? (
+                          <>
+                            {formatBRL(siteAppPrice)}
+                            <span className="muted"> {periodo === "mensal" ? "/mês" : "/ano"}</span>
+                          </>
+                        ) : "Sob consulta"
+                      ) : "—"}
+                    </span>
+                  </div>
+
                   <div className="h-px bg-[var(--c-border)] my-2" />
                   <div className="flex items-center justify-between text-base font-semibold">
                     <span>Total</span>
@@ -676,15 +723,6 @@ export default function Planos(){
                       ≈ {formatBRL(perContract)} por contrato/mês
                     </div>
                   )}
-
-                  {/* lembrete de usuários incluídos */}
-                  {selectedTier && (
-                    <div className="mt-3 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2">
-                      Inclui <strong>{usersIncludedFor(
-                        selectedTier.id.startsWith("enterprise") ? "enterprise" : selectedTier.id
-                      )}</strong> usuários. Usuário adicional: <strong>{formatBRL(EXTRA_USER_PRICE)}/mês</strong>.
-                    </div>
-                  )}
                 </div>
 
                 {/* Ações */}
@@ -700,6 +738,7 @@ export default function Planos(){
                         planName: selectedTier?.name || "unknown",
                         period: periodo,
                         contracts,
+                        addons: { whatsapp: whatsappAddon, siteapp: siteAppAddon }
                       })
                     }}
                   >
@@ -720,13 +759,9 @@ export default function Planos(){
             </div>
           </div>
 
+          {/* Nota curta */}
           <p className="mt-3 text-xs text-[color:var(--c-muted)]">
-            Os valores acima referem-se à <strong>mensalidade do Progem</strong> (com opção de pagamento anual com 15% OFF).
-            Além da mensalidade e do add-on opcional de <strong>WhatsApp</strong> ({formatBRL(WHATSAPP_MENSAL)}/mês),
-            há <strong>setup inicial</strong> (a partir de {formatBRL(600)}), <strong>manutenção</strong> do
-            <strong> App do Associado</strong> e do <strong>Site Whitelabel</strong> (a partir de {formatBRL(199)}/mês, variável pelo nº de usuários)
-            e custos de <strong>migração de dados</strong> sob escopo. Usuários incluídos: Start/Pro (5), Enterprise (10). Usuário adicional: {formatBRL(EXTRA_USER_PRICE)}/mês.
-            Consulte também a página <Link to="/taxas" className="underline">Taxas & Cobrança</Link>.
+            Os valores acima referem-se à <strong>mensalidade do Progem</strong>. Impostos e tarifas de meios de pagamento não estão incluídos.
           </p>
         </section>
 
@@ -782,10 +817,10 @@ export default function Planos(){
                 )}
               </div>
 
-              {/* Included users + extra price */}
+              {/* Inclui usuários (pedido) */}
               <div className="mt-2 text-sm muted flex items-center gap-2">
                 <Users className="w-4 h-4" />
-                Inclui {usersIncludedFor(pl.id)} usuários. Usuário adicional: {formatBRL(EXTRA_USER_PRICE)}/mês.
+                Inclui {usersIncludedFor(pl.id === "enterprise" ? "enterprise" : pl.id)} usuários.
               </div>
 
               {pl.id === "enterprise" && (
@@ -853,69 +888,9 @@ export default function Planos(){
           ))}
         </section>
 
-        {/* Destaque Planos Pet */}
+        {/* APIs e integrações */}
         <section className="mt-10">
           <div className="card p-5">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                <PawPrint className="w-5 h-5 text-[color:var(--c-muted)]" />
-              </span>
-              <div className="flex-1">
-                <h4 className="font-semibold">Gestão de Planos Pet</h4>
-                <p className="muted mt-1 text-sm">
-                  Cadastre e gerencie planos de assistência animal, com regras de cobertura, dependentes pet, carteirinha digital
-                  e integrações com o app do associado.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Link
-                    to="/demo"
-                    data-cta="demo"
-                    className="btn btn-primary btn-demo btn-sm"
-                    onClick={() => {
-                      track("pricing_cta_click", {
-                        origin: "pet_card",
-                        planId: "pet_demo",
-                        planName: "Planos Pet — Demonstração",
-                        period: periodo,
-                        contracts,
-                      })
-                    }}
-                  >
-                    Ver demonstração
-                  </Link>
-                  <Link
-                    to="/funcionalidades#planos-pet"
-                    className="btn btn-ghost btn-sm"
-                    onClick={() => {
-                      track("pricing_cta_click", {
-                        origin: "pet_card",
-                        planId: "pet_docs",
-                        planName: "Planos Pet — Detalhes",
-                        period: periodo,
-                        contracts,
-                      })
-                    }}
-                  >
-                    Detalhes da funcionalidade
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold mb-2">Todos os planos incluem</h2>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {COMMON_FEATURES.map(f=>(
-              <CardMotion key={f} className="card p-4 flex items-start gap-3" tabIndex={0}>
-                <Check className="w-4 h-4 mt-1" /> <span className="text-sm">{f}</span>
-              </CardMotion>
-            ))}
-          </div>
-
-          {/* APIs e integrações */}
-          <div className="card p-5 mt-6">
             <h4 className="font-semibold">APIs e integrações</h4>
             <p className="muted mt-1 text-sm">
               Automatize seus fluxos com a API do Progem e integrações.
@@ -953,21 +928,11 @@ export default function Planos(){
                 Falar com especialista
               </Link>
             </div>
-
-            {/* Aviso WhatsApp */}
-            <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] shrink-0">
-                <MessageCircle className="w-4 h-4 text-[color:var(--c-muted)]" />
-              </span>
-              <p className="text-xs leading-relaxed">
-                O módulo de <strong>WhatsApp</strong> é um <strong>add-on com custo fixo de {formatBRL(WHATSAPP_MENSAL)}/mês</strong>, com
-                <strong> mensagens ilimitadas</strong>. Solicite nossa tabela comercial para condições e requisitos de integração.
-              </p>
-            </div>
           </div>
         </section>
 
-        <section className="mt-12" ref={comparativoRef}>
+        {/* Comparativo operacional */}
+        <section className="mt-10" ref={comparativoRef}>
           <h2 className="text-2xl font-semibold mb-4">Comparativo operacional</h2>
           <div className="overflow-x-auto border border-[var(--c-border)] rounded-xl">
             <table className="min-w-[760px] w-full text-sm">
@@ -988,15 +953,9 @@ export default function Planos(){
                 </tr>
                 <tr className="border-t border-[var(--c-border)]">
                   <td className="px-4 py-3 font-medium">Usuários incluídos</td>
-                  <td className="px-4 py-3">5</td>
-                  <td className="px-4 py-3">5</td>
-                  <td className="px-4 py-3">10</td>
-                </tr>
-                <tr className="border-t border-[var(--c-border)]">
-                  <td className="px-4 py-3 font-medium">Usuário adicional</td>
-                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
-                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
-                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
+                  <td className="px-4 py-3">{INCLUDED_USERS.start}</td>
+                  <td className="px-4 py-3">{INCLUDED_USERS.pro}</td>
+                  <td className="px-4 py-3">{INCLUDED_USERS.enterprise}</td>
                 </tr>
                 <tr className="border-t border-[var(--c-border)]">
                   <td className="px-4 py-3 font-medium">SLA de suporte</td>
@@ -1006,6 +965,42 @@ export default function Planos(){
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        {/* Observações comerciais */}
+        <section className="mt-10">
+          <div className="card p-5">
+            <h4 className="font-semibold">Observações comerciais</h4>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Faixa de contratos ativos</strong>: define o plano (Start, Pro, Enterprise).</span>
+              </li>
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Período de pagamento</strong>: mensal ou anual (<strong>15% OFF</strong> no anual).</span>
+              </li>
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Add-ons selecionados</strong>: WhatsApp ilimitado ({formatBRL(WHATSAPP_MENSAL)}/mês) e <strong>Site Premium + App do Associado</strong> ({formatBRL(SITE_APP_MENSAL_STARTPRO)}/mês em Start/Pro; <em>sob consulta</em> no Enterprise).</span>
+              </li>
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Usuários</strong>: Start/Pro incluem 5; Enterprise inclui 10. Usuário adicional: {formatBRL(EXTRA_USER_PRICE)}/mês por usuário.</span>
+              </li>
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Setup inicial</strong>: a partir de {formatBRL(600)} (varia por integrações solicitadas e nº de usuários).</span>
+              </li>
+              <li className="flex gap-2 items-start">
+                <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/>
+                <span><strong>Migração de dados</strong>: orçamento conforme escopo (clientes, contratos, carnês/boletos e histórico).</span>
+              </li>
+            </ul>
+            <div className="mt-3">
+              <Link to="/contato" className="btn btn-ghost btn-sm">Tirar dúvidas com o time</Link>
+            </div>
           </div>
         </section>
 
@@ -1031,12 +1026,12 @@ export default function Planos(){
                 a: "Pode. O ajuste acompanha sua faixa de contratos ativos, sem fricção no uso da plataforma."
               },
               {
-                q: "Quantos usuários o plano inclui?",
-                a: "Start e Pro incluem 5 usuários; Enterprise inclui 10. Usuário adicional custa R$ 10/mês por usuário."
+                q: "Posso contratar o WhatsApp ilimitado depois?",
+                a: "Sim. O add-on de WhatsApp pode ser habilitado a qualquer momento e começa a ser faturado a partir da ativação."
               },
               {
-                q: "Há custo de setup e manutenção dos apps/site?",
-                a: "Sim. Setup a partir de R$ 600 (varia por integrações e nº de usuários) e manutenção do App do Associado e do Site Whitelabel a partir de R$ 199/mês, conforme base de usuários."
+                q: "Posso contratar o Site Premium + App do Associado depois?",
+                a: "Sim. Você pode ativar esse pacote quando preferir. Em Start/Pro o valor é de R$ 199/mês; no Enterprise é sob consulta."
               },
             ].map((item, i) => (
               <details key={i} className="card p-4">
