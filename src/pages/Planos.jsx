@@ -133,7 +133,7 @@ const ENTERPRISE_BULLETS = [
   { range:`+${BREAKPOINTS.ent4.toLocaleString("pt-BR")} contratos`, price:null },
 ]
 
-// Fallback dos cards
+// Fallback dos cards (sem BFF)
 const FALLBACK = [
   { id:"start", name:"Start", price_month:BASE_MONTHLY_PRICES.start, cap:`até ${BREAKPOINTS.start.toLocaleString("pt-BR")} contratos ativos`, capNote:"Considera contratos com status 'ativo' no mês de faturamento.", icon:ShieldCheck },
   { id:"pro", name:"Pro", price_month:BASE_MONTHLY_PRICES.pro, cap:`até ${BREAKPOINTS.pro.toLocaleString("pt-BR")} contratos ativos`, capNote:`Ao ultrapassar ${BREAKPOINTS.pro.toLocaleString("pt-BR")}, migre para Enterprise.`, highlight:true, icon:Globe },
@@ -176,7 +176,7 @@ const tierKeyForContracts = (contracts) => {
 }
 const priceFromTableForContracts = (table, contracts) => table[tierKeyForContracts(contracts)]
 
-// Toggle (componente usado no simulador e na barra fixa)
+// Toggle de período (apenas no simulador e nos cards)
 function TogglePeriodo({ periodo, setPeriodo }) {
   return (
     <div className="inline-flex items-center gap-1 rounded-xl p-1 bg-[var(--c-surface)] border border-[var(--c-border)]">
@@ -193,36 +193,11 @@ function TogglePeriodo({ periodo, setPeriodo }) {
   )
 }
 
-// Barra fixa simulador
-function StickySimBar({ show, periodo, setPeriodo, contracts, ticketMedio, custoMensalEquivalente, pct, onDemo }) {
-  if (!show) return null
-  return (
-    <div className="fixed top-0 inset-x-0 z-50">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mt-2 rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--c-surface)]/80 shadow-lg">
-          <div className="p-3 flex flex-wrap items-center gap-3">
-            <TogglePeriodo periodo={periodo} setPeriodo={setPeriodo} />
-            <div className="h-6 w-px bg-[var(--c-border)]" />
-            <div className="text-sm"><span className="muted">Contratos:</span> <strong>{contracts}</strong></div>
-            <div className="text-sm"><span className="muted">Ticket médio:</span> <strong>{formatBRL(ticketMedio)}</strong></div>
-            <div className="text-sm"><span className="muted">Custo Progem (eq. mês):</span> <strong>{custoMensalEquivalente!=null ? formatBRL(custoMensalEquivalente) : "—"}</strong></div>
-            <div className="text-sm"><span className="muted">% na receita:</span> <strong>{pct!=null ? `${pct.toFixed(2)}%` : "—"}</strong></div>
-            <div className="ml-auto">
-              <Link to="/demo" className="btn btn-primary btn-sm" onClick={onDemo}>Solicitar Demonstração</Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function Planos(){
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [periodo, setPeriodo] = useState("mensal")
   const [plans] = useState(FALLBACK) // sem BFF
-  const comparativoRef = useRef(null)
   const simuladorRef = useRef(null)
 
   const sliderMax = BREAKPOINTS.ent4 + 500
@@ -283,14 +258,6 @@ export default function Planos(){
   // SEO
   useEffect(()=>{ setPageSEO({ title:"Progem • Planos", description:"Simule o custo do Progem: escolha a faixa, informe o ticket médio e veja o investimento estimado." }) },[])
 
-  // Sticky bar
-  const [stickyShow, setStickyShow] = useState(false)
-  useEffect(() => {
-    const el = simuladorRef.current; if (!el) return
-    const obs = new IntersectionObserver(([entry]) => setStickyShow(!entry.isIntersecting))
-    obs.observe(el); return ()=>obs.disconnect()
-  }, [])
-
   // Cards com preço por período
   const planosComPreco = useMemo(()=> plans.map(p=>{
     const mensal = p.price_month
@@ -313,7 +280,7 @@ export default function Planos(){
     return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
   },[selectedTier, periodo])
 
-  // Add-on values for the CURRENT contracts & period
+  // Add-on values for current contracts & period
   const addonPriceDisplay = (monthly) => {
     if (monthly == null) return "Sob consulta"
     return periodo === "mensal" ? formatBRL(monthly) + "/mês" : formatBRL(monthly*12*(1-descontoAnual)) + "/ano"
@@ -383,16 +350,6 @@ export default function Planos(){
   const nearNext = nextBreakpoint ? Math.max(0, nextBreakpoint - contracts) : null
   const showNearHint = nearNext != null && nearNext <= 100
 
-  useEffect(()=>{ track("pricing_period_change", { period: periodo }) }, [periodo])
-  const prevTierRef = useRef(selectedTier?.id)
-  useEffect(() => {
-    const prev = prevTierRef.current, next = selectedTier?.id
-    if (next && prev !== next) {
-      track("pricing_tier_change", { tierId:selectedTier.id, tierName:selectedTier.name, contracts, period:periodo })
-      prevTierRef.current = next
-    }
-  }, [selectedTier, contracts, periodo])
-
   const [copied, setCopied] = useState(false)
   const copyLink = async () => {
     try{
@@ -405,17 +362,6 @@ export default function Planos(){
 
   return (
     <div>
-      <StickySimBar
-        show={stickyShow && simulatedTotal != null}
-        periodo={periodo}
-        setPeriodo={setPeriodo}
-        contracts={contracts}
-        ticketMedio={ticketMedio}
-        custoMensalEquivalente={custoMensalEquivalente}
-        pct={custoSobreReceitaPct}
-        onDemo={()=>track("pricing_cta_click",{origin:"sticky_sim_bar",period:periodo,contracts,ticketMedio})}
-      />
-
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* Título */}
         <div className="mb-6">
@@ -830,7 +776,7 @@ export default function Planos(){
         </section>
 
         {/* Comparativo operacional */}
-        <section className="mt-10" ref={comparativoRef}>
+        <section className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Comparativo operacional</h2>
           <div className="overflow-x-auto border border-[var(--c-border)] rounded-xl">
             <table className="min-w-[900px] w-full text-sm">
