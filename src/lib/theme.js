@@ -1,7 +1,10 @@
 // /src/lib/theme.js
+import faviconUrl from "@/assets/favicon.ico?url"; // ✅ resolve URL do ícone dentro de src/assets
+
 const KEY = "progem.theme"; // "light" | "dark" | "auto" | "system"
 
 let autoTimer = null;
+let visUnsub = null;
 let systemUnsub = null;
 
 export const getStoredMode = () => localStorage.getItem(KEY) || "auto";
@@ -20,8 +23,7 @@ export const resolveIsDark = (mode) => {
   if (mode === "dark")  return true;
   if (mode === "light") return false;
   if (mode === "auto")  return computeAutoMode() === "dark";
-  // system
-  return getSystemPrefersDark();
+  return getSystemPrefersDark(); // system
 };
 
 export const applyHtmlDarkClass = (isDark) => {
@@ -32,7 +34,11 @@ export const applyHtmlDarkClass = (isDark) => {
 export const applyMetaThemeColor = (isDark) => {
   const color = isDark ? "#0b1220" : "#ffffff";
   let m = document.querySelector('meta[name="theme-color"]');
-  if (!m) { m = document.createElement("meta"); m.setAttribute("name","theme-color"); document.head.appendChild(m); }
+  if (!m) {
+    m = document.createElement("meta");
+    m.setAttribute("name","theme-color");
+    document.head.appendChild(m);
+  }
   m.setAttribute("content", color);
 };
 
@@ -40,30 +46,39 @@ const applyNow = (mode) => {
   const dark = resolveIsDark(mode);
   applyHtmlDarkClass(dark);
   applyMetaThemeColor(dark);
+  applyFavicon(); // usa o import do Vite
 };
 
-const stopAutoTimer = () => { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } };
-const stopSystemWatch = () => { if (systemUnsub) { systemUnsub(); systemUnsub = null; } };
+const stopAutoTimer = () => {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  if (visUnsub) { visUnsub(); visUnsub = null; }
+};
+
+const stopSystemWatch = () => {
+  if (systemUnsub) { systemUnsub(); systemUnsub = null; }
+};
 
 const startAutoTimer = () => {
   stopAutoTimer();
-  // aplica já e rechec a cada minuto / quando volta aba
   const tick = () => applyNow("auto");
   tick();
   autoTimer = setInterval(tick, 60 * 1000);
   const onVis = () => { if (!document.hidden) tick(); };
   document.addEventListener("visibilitychange", onVis, { passive: true });
+  visUnsub = () => document.removeEventListener("visibilitychange", onVis, { passive: true });
 };
 
 const startSystemWatch = () => {
   stopSystemWatch();
   const m = window.matchMedia("(prefers-color-scheme: dark)");
   const h = () => applyNow("system");
-  m.addEventListener ? m.addEventListener("change", h) : m.addListener(h);
+  if (m.addEventListener) m.addEventListener("change", h);
+  else m.addListener(h);
   systemUnsub = () => {
-    m.removeEventListener ? m.removeEventListener("change", h) : m.removeListener(h);
+    if (m.removeEventListener) m.removeEventListener("change", h);
+    else m.removeListener(h);
   };
-  h(); // aplica já
+  h();
 };
 
 const ensureWatchers = (mode) => {
@@ -76,12 +91,7 @@ const ensureWatchers = (mode) => {
 export const setThemeMode = (mode) => {
   persistMode(mode);
   ensureWatchers(mode);
-  if (mode === "auto" || mode === "system") {
-    // já aplicados nos watchers; garante 1ª aplicação
-    applyNow(mode);
-  } else {
-    applyNow(mode);
-  }
+  applyNow(mode);
 };
 
 export const initTheme = () => {
@@ -89,3 +99,16 @@ export const initTheme = () => {
   ensureWatchers(mode);
   applyNow(mode);
 };
+
+function applyFavicon(){
+  const href = faviconUrl || "/favicon.ico"; // ✅ usa o asset importado; fallback para /public
+  let link = document.querySelector('link#favicon[rel="icon"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.id = "favicon";
+    link.rel = "icon";
+    link.type = "image/x-icon";
+    document.head.appendChild(link);
+  }
+  if (link.href !== href) link.href = href;
+}

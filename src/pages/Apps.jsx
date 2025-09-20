@@ -6,6 +6,11 @@ import { setPageSEO } from "@/lib/seo"
 import CardMotion from "@/components/CardMotion"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import placeholder from "@/assets/img/placeholder.png"
+
+import imgvendedor from "@/assets/img/app/vendedor1.jpeg"
+import imgcobraddor from "@/assets/img/app/cobrador1.jpeg"
+import imgassociado from "@/assets/img/app/associado1.jpeg"
+
 import {
   Sparkles, Smartphone, UserRound, BadgeDollarSign, Wallet2, ShieldCheck,
   Check, QrCode, FileText, BellRing, MapPin, CloudOff, Download, LineChart, Info,
