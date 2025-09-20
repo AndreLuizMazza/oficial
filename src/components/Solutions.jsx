@@ -97,7 +97,7 @@ export default function Solutions(){
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
             Soluções do ecossistema Progem
           </div>
-          <h2 className="text-2xl md:text-3xl font-semibold mt-3">Tudo que você precisa — do site ao app</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold mt-3">  Tudo que você precisa, do software de gestão ao site e app</h2>
           <p className="muted mt-2">
             Gestão recorrente no centro, com whitelabel, automações e integrações para sua operação.
           </p>

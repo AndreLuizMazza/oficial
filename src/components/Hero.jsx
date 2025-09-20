@@ -37,7 +37,7 @@ export default function Hero(){
           </div>
 
           <h1 className="mt-3 text-4xl md:text-5xl font-bold leading-tight">
-            Gestão completa para Funerárias
+            Gestão completa  <span className="text-[var(--c-primary)]">para Funerárias</span>
           </h1>
 
           <p className="mt-4 text-lg muted">
@@ -45,17 +45,17 @@ export default function Hero(){
             O ecossistema Progem eleva sua operação ao próximo nível.
           </p>
 
-          {/* CTAs padronizados (agora lado a lado no mobile também) */}
+          {/* CTAs padronizados */}
           <div className="mt-6 flex flex-row flex-wrap gap-3">
             <Link
               to="/demo"
               data-cta="demo"
               className="btn btn-primary btn-demo"
             >
-              Solicitar Demonstração
+              Agendar Demonstração
             </Link>
             <Link to="/planos" className="btn btn-ghost">
-              Ver Planos
+              Conhecer Planos
             </Link>
           </div>
 
