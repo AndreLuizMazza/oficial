@@ -45,7 +45,6 @@ const BASE_MONTHLY_PRICES = {
 }
 
 // Add-on WhatsApp por faixa (mensal)
-// Até 5.000 => 150; Acima de 5.000 => Sob consulta
 const ADDON_WHATSAPP_MONTHLY = {
   start:           envNum("VITE_PRICE_WHATSAPP_START", 150),
   pro:             envNum("VITE_PRICE_WHATSAPP_PRO", 150),
@@ -57,7 +56,6 @@ const ADDON_WHATSAPP_MONTHLY = {
 }
 
 // Add-on Site + App por faixa (mensal)
-// 199 até 2.000; 249 de 2.001 a 5.000; >5.000 sob consulta
 const ADDON_SITE_APP_MONTHLY = {
   start:           envNum("VITE_PRICE_SITEAPP_START", 199),
   pro:             envNum("VITE_PRICE_SITEAPP_PRO", 199),
@@ -178,7 +176,7 @@ const tierKeyForContracts = (contracts) => {
 }
 const priceFromTableForContracts = (table, contracts) => table[tierKeyForContracts(contracts)]
 
-// Toggle período
+// Toggle (componente usado no simulador e na barra fixa)
 function TogglePeriodo({ periodo, setPeriodo }) {
   return (
     <div className="inline-flex items-center gap-1 rounded-xl p-1 bg-[var(--c-surface)] border border-[var(--c-border)]">
@@ -517,7 +515,6 @@ export default function Planos(){
                 )}
               </div>
 
-              {/* Lista (dois itens): Inclui usuários + Todos os recursos */}
               <ul className="mt-3 space-y-1.5 text-sm">
                 <li className="muted flex items-center gap-2">
                   <Users className="w-4 h-4" />
