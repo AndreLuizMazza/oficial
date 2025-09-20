@@ -7,7 +7,7 @@ import clsx from "clsx"
 import {
   Check, ShieldCheck, Globe, Handshake, Info, Cable,
   LineChart, Building2, Link2 as LinkIcon, Users,
-  Calculator, Percent, Receipt, BadgeDollarSign
+  Calculator, Percent, Receipt, BadgeDollarSign, MessageCircle
 } from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
@@ -555,26 +555,32 @@ export default function Planos(){
                 />
                 <span className="muted text-sm">contratos</span>
 
+                {/* Pílulas sem tooltip */}
                 <div className="flex flex-wrap gap-2 ml-auto">
                   {[
-                    { n: BREAKPOINTS.start, label: BREAKPOINTS.start.toLocaleString("pt-BR"), tip:`Start: até ${BREAKPOINTS.start.toLocaleString("pt-BR")}` },
-                    { n: BREAKPOINTS.pro,   label: BREAKPOINTS.pro.toLocaleString("pt-BR"),   tip:`Pro: até ${BREAKPOINTS.pro.toLocaleString("pt-BR")}` },
-                    { n: BREAKPOINTS.ent1,  label: BREAKPOINTS.ent1.toLocaleString("pt-BR"),  tip:`Enterprise: ${(BREAKPOINTS.pro+1).toLocaleString("pt-BR")}–${BREAKPOINTS.ent1.toLocaleString("pt-BR")}` },
-                    { n: BREAKPOINTS.ent2,  label: BREAKPOINTS.ent2.toLocaleString("pt-BR"),  tip:`Enterprise: ${(BREAKPOINTS.ent1+1).toLocaleString("pt-BR")}–${BREAKPOINTS.ent2.toLocaleString("pt-BR")}` },
-                    { n: BREAKPOINTS.ent3,  label: BREAKPOINTS.ent3.toLocaleString("pt-BR"),  tip:`Enterprise: ${(BREAKPOINTS.ent2+1).toLocaleString("pt-BR")}–${BREAKPOINTS.ent3.toLocaleString("pt-BR")}` },
-                    { n: BREAKPOINTS.ent4,  label: BREAKPOINTS.ent4.toLocaleString("pt-BR"),  tip:`Enterprise: ${(BREAKPOINTS.ent3+1).toLocaleString("pt-BR")}–${BREAKPOINTS.ent4.toLocaleString("pt-BR")}` },
-                    { n: sliderMax,         label: `+${BREAKPOINTS.ent4.toLocaleString("pt-BR")}`, tip:`Enterprise: acima de ${BREAKPOINTS.ent4.toLocaleString("pt-BR")} (sob consulta)` },
+                    { n: BREAKPOINTS.start, label: BREAKPOINTS.start.toLocaleString("pt-BR") },
+                    { n: BREAKPOINTS.pro,   label: BREAKPOINTS.pro.toLocaleString("pt-BR") },
+                    { n: BREAKPOINTS.ent1,  label: BREAKPOINTS.ent1.toLocaleString("pt-BR") },
+                    { n: BREAKPOINTS.ent2,  label: BREAKPOINTS.ent2.toLocaleString("pt-BR") },
+                    { n: BREAKPOINTS.ent3,  label: BREAKPOINTS.ent3.toLocaleString("pt-BR") },
+                    { n: BREAKPOINTS.ent4,  label: BREAKPOINTS.ent4.toLocaleString("pt-BR") },
+                    { n: sliderMax,         label: `+${BREAKPOINTS.ent4.toLocaleString("pt-BR")}` },
                   ].map(p=>(
-                    <Tooltip key={p.n} id={`preset-${p.n}`} content={p.tip}>
-                      <button
-                        type="button" onClick={()=>{track("pricing_preset_click",{value:p.n,label:p.label,period:periodo}); setContractsSafe(p.n)}}
-                        className={clsx("px-3 py-1.5 rounded-lg border text-sm transition",
-                          contracts===p.n ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]" : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]")}
-                        aria-pressed={contracts===p.n}
-                      >
-                        {p.label}
-                      </button>
-                    </Tooltip>
+                    <button
+                      key={p.n}
+                      type="button"
+                      onClick={()=>{
+                        track("pricing_preset_click",{value:p.n,label:p.label,period:periodo})
+                        setContractsSafe(p.n)
+                      }}
+                      className={clsx(
+                        "px-3 py-1.5 rounded-lg border text-sm transition",
+                        contracts===p.n ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]" : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]"
+                      )}
+                      aria-pressed={contracts===p.n}
+                    >
+                      {p.label}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -908,17 +914,55 @@ export default function Planos(){
                 </div>
               </div>
 
-              <div className="mt-3 text-xs text-[color:var(--c-muted)] flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-medium">Links úteis:</span>
-                <Link to="/taxas" className="underline">Taxas &amp; Cobrança</Link>
-                <span>•</span>
-                <Link to="/migracao" className="underline">Migração de Dados</Link>
-                <span>•</span>
-                <Link to="/app-associado" className="underline">App do Associado</Link>
-                <span>•</span>
-                <Link to="/site-premium" className="underline">Site Premium</Link>
-                <span>•</span>
-                <Link to="/gestao-web" className="underline">Gestão Web</Link>
+              {/* Links úteis com BADGES em todos */}
+              <div className="mt-3 text-xs text-[color:var(--c-muted)] flex flex-wrap items-center gap-2">
+                <span className="font-medium mr-1">Links úteis:</span>
+
+                <Link
+                  to="/taxas"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
+                >
+                  Taxas &amp; Cobrança
+                </Link>
+
+                <Link
+                  to="/migracao"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
+                >
+                  Migração de Dados
+                </Link>
+
+                <Link
+                  to="/app-associado"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
+                >
+                  App do Associado
+                </Link>
+
+                <Link
+                  to="/site-premium"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
+                >
+                  Site Premium
+                </Link>
+
+                <Link
+                  to="/gestao-web"
+                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
+                >
+                  Gestão Web
+                </Link>
+
+                <Link
+                  to="/zap"
+                  className={clsx(
+                    "inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border",
+                    "border-[var(--c-border)] bg-emerald-100/60 dark:bg-emerald-900/30",
+                    "text-emerald-700 dark:text-emerald-300 hover:opacity-90"
+                  )}
+                >
+                  <MessageCircle className="w-3.5 h-3.5" /> WhatsApp ilimitado
+                </Link>
               </div>
 
               <div className="mt-3">
@@ -939,7 +983,8 @@ export default function Planos(){
               },
               {
                 q: "O WhatsApp ilimitado tem alguma taxa por mensagem?",
-                a: "Não. É um add-on de custo fixo mensal (por faixa), via integração com plataforma parceira oficial."
+                a: <>Não. É um add-on de custo fixo mensal (por faixa), via integração com plataforma parceira oficial.
+                    Veja detalhes em <Link to="/zap" className="underline">WhatsApp ilimitado</Link>.</>
               },
               {
                 q: "Posso migrar meus dados atuais?",
