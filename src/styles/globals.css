@@ -185,3 +185,9 @@ a.btn[href^="/demo"] {
 
 /* Link sublinhado só no hover/focus */
 a:not(.btn):where(:hover, :focus-visible){ text-decoration: underline; }
+
+
+.only-light { display: block; }
+.only-dark  { display: none; }
+.dark .only-light { display: none; }
+.dark .only-dark  { display: block; }

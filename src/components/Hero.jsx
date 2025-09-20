@@ -45,8 +45,8 @@ export default function Hero(){
             O ecossistema Progem eleva sua operação ao próximo nível.
           </p>
 
-          {/* CTAs padronizados */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          {/* CTAs padronizados (agora lado a lado no mobile também) */}
+          <div className="mt-6 flex flex-row flex-wrap gap-3">
             <Link
               to="/demo"
               data-cta="demo"

@@ -1,11 +1,91 @@
-const STORAGE_KEY = 'progem.theme'
-export function getSystemPrefersDark(){ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches }
-export function getInitialTheme(){ const s = localStorage.getItem(STORAGE_KEY); return (s==='light'||s==='dark'||s==='system')?s:'system' }
-export function resolveIsDark(mode){ return mode==='dark' ? true : mode==='light' ? false : getSystemPrefersDark() }
-export function applyHtmlDarkClass(isDark){ const r=document.documentElement; isDark?r.classList.add('dark'):r.classList.remove('dark') }
-export function applyMetaThemeColor(isDark){
-  const color = isDark ? '#0b1220' : '#ffffff'
-  let m=document.querySelector('meta[name="theme-color"]'); if(!m){m=document.createElement('meta');m.setAttribute('name','theme-color');document.head.appendChild(m)}; m.setAttribute('content',color)
-}
-export function persistThemeMode(m){ localStorage.setItem(STORAGE_KEY,m) }
-export function listenSystemSchemeChange(cb){ const m=window.matchMedia('(prefers-color-scheme: dark)'); const h=()=>cb(m.matches); m.addEventListener?m.addEventListener('change',h):m.addListener(h); return ()=>{m.removeEventListener?m.removeEventListener('change',h):m.removeListener(h)} }
+// /src/lib/theme.js
+const KEY = "progem.theme"; // "light" | "dark" | "auto" | "system"
+
+let autoTimer = null;
+let systemUnsub = null;
+
+export const getStoredMode = () => localStorage.getItem(KEY) || "auto";
+export const persistMode   = (m) => localStorage.setItem(KEY, m);
+
+export const getSystemPrefersDark = () =>
+  window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+// “Auto por horário local”: noite = 18h–05h59
+export const computeAutoMode = (d = new Date()) => {
+  const h = d.getHours();
+  return (h >= 18 || h < 6) ? "dark" : "light";
+};
+
+export const resolveIsDark = (mode) => {
+  if (mode === "dark")  return true;
+  if (mode === "light") return false;
+  if (mode === "auto")  return computeAutoMode() === "dark";
+  // system
+  return getSystemPrefersDark();
+};
+
+export const applyHtmlDarkClass = (isDark) => {
+  const r = document.documentElement;
+  isDark ? r.classList.add("dark") : r.classList.remove("dark");
+};
+
+export const applyMetaThemeColor = (isDark) => {
+  const color = isDark ? "#0b1220" : "#ffffff";
+  let m = document.querySelector('meta[name="theme-color"]');
+  if (!m) { m = document.createElement("meta"); m.setAttribute("name","theme-color"); document.head.appendChild(m); }
+  m.setAttribute("content", color);
+};
+
+const applyNow = (mode) => {
+  const dark = resolveIsDark(mode);
+  applyHtmlDarkClass(dark);
+  applyMetaThemeColor(dark);
+};
+
+const stopAutoTimer = () => { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } };
+const stopSystemWatch = () => { if (systemUnsub) { systemUnsub(); systemUnsub = null; } };
+
+const startAutoTimer = () => {
+  stopAutoTimer();
+  // aplica já e rechec a cada minuto / quando volta aba
+  const tick = () => applyNow("auto");
+  tick();
+  autoTimer = setInterval(tick, 60 * 1000);
+  const onVis = () => { if (!document.hidden) tick(); };
+  document.addEventListener("visibilitychange", onVis, { passive: true });
+};
+
+const startSystemWatch = () => {
+  stopSystemWatch();
+  const m = window.matchMedia("(prefers-color-scheme: dark)");
+  const h = () => applyNow("system");
+  m.addEventListener ? m.addEventListener("change", h) : m.addListener(h);
+  systemUnsub = () => {
+    m.removeEventListener ? m.removeEventListener("change", h) : m.removeListener(h);
+  };
+  h(); // aplica já
+};
+
+const ensureWatchers = (mode) => {
+  stopAutoTimer();
+  stopSystemWatch();
+  if (mode === "auto")   startAutoTimer();
+  if (mode === "system") startSystemWatch();
+};
+
+export const setThemeMode = (mode) => {
+  persistMode(mode);
+  ensureWatchers(mode);
+  if (mode === "auto" || mode === "system") {
+    // já aplicados nos watchers; garante 1ª aplicação
+    applyNow(mode);
+  } else {
+    applyNow(mode);
+  }
+};
+
+export const initTheme = () => {
+  const mode = getStoredMode();
+  ensureWatchers(mode);
+  applyNow(mode);
+};

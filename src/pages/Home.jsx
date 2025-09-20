@@ -23,6 +23,7 @@ export default function Home(){
       <Solutions/>
       <LogosBar/>
       <FeatureGrid/>
+      
       <Footer/>
     </div>
   )

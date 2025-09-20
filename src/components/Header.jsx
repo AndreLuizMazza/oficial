@@ -7,6 +7,7 @@ import MegaMenu, { cols as megaCols } from "@/components/MegaMenu"
 import ThemeSwitch from "@/components/ThemeSwitch"
 import useFocusTrap from "@/hooks/useFocusTrap"
 import logo from "@/assets/img/logo.png"
+import logoDark from "@/assets/img/logo-branca.png"
 
 function useLockBodyScroll(locked) {
   useEffect(() => {
@@ -111,7 +112,9 @@ export default function Header() {
     <header className="sticky top-0 z-[70] border-b border-[var(--c-border)] bg-[var(--c-surface)]/90 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 h-[64px] flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <img src={logo} alt="Progem" className="h-6 w-auto" />
+          {/* alternância de logos por tema */}
+          <img src={logo} alt="Progem" className="only-light h-6 w-auto" />
+          <img src={logoDark} alt="Progem" className="only-dark h-6 w-auto" />
         </Link>
 
         {/* Desktop nav */}
@@ -162,7 +165,7 @@ export default function Header() {
           })}
 
           <div className="ml-2 hidden lg:block">
-            <ThemeSwitch />
+           <ThemeSwitch variant="iconMenu" />
           </div>
           {/* Login (desktop) */}
           <a href="https://app.progem.com.br/progem/Login.xhtml" className="ml-2 btn btn-ghost">Login</a>
@@ -304,7 +307,7 @@ export default function Header() {
 
                 {/* Tema */}
                 <div className="pt-3">
-                  <ThemeSwitch />
+                 <ThemeSwitch variant="iconMenu" />
                 </div>
               </nav>
             </motion.div>
