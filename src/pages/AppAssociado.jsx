@@ -1,7 +1,8 @@
 // src/pages/AppAssociado.jsx
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
-import placeholder from "@/assets/img/placeholder.png"
+import placeholder1 from "@/assets/img/placeholder.png"
+import placeholder from "@/assets/img/app/app-associado-home.jpg"
 import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"

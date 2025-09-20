@@ -7,7 +7,7 @@ import {
   BarChart3, Tag, Link2, Plug, CheckCircle2, BadgeDollarSign
 } from "lucide-react"
 import BottomDockCTA from "@/components/BottomDockCTA"
-
+import placeholder from "@/assets/img/app/whatsapp.png"
 /**
  * Página: Integração com WhatsApp (Progem)
  * Ajustes:
@@ -64,7 +64,7 @@ export default function IntegracaoWhatsapp(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src={HERO_IMG}
+              src={placeholder}
               alt="Smartphone com conversa/mensagens (WhatsApp)"
               className="w-full h-full object-cover"
               loading="lazy"

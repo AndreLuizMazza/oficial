@@ -5,7 +5,7 @@ import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import { motion } from "framer-motion"
-import placeholder from "@/assets/img/placeholder.png"
+import placeholder from "@/assets/img/app/app-vendedor-login.png"
 import {
   Smartphone, Download, ShieldCheck, MapPin, Share2,
   Clock3, Signal, Sparkles, CheckCircle2, MessageSquare,

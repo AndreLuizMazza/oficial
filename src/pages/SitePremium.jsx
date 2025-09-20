@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import placeholder from "@/assets/img/placeholder.png"
+
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
@@ -8,7 +8,7 @@ import {
   Globe, Sparkles, ShieldCheck, Palette, Fingerprint, Search,
   Layout, Smartphone, Link2, Rocket, Check
 } from "lucide-react"
-
+import placeholder from "@/assets/img/app/site.png"
 export default function SitePremium(){
   useEffect(()=>{
     setPageSEO({

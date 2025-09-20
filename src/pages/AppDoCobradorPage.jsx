@@ -5,7 +5,7 @@ import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import { motion } from "framer-motion"
-import placeholder from "@/assets/img/placeholder.png"
+import placeholder from "@/assets/img/app/app-cobrador-recebimetno.jpeg"
 import {
   Smartphone, Download, ShieldCheck, MapPin, QrCode, WifiOff,
   Wallet, Receipt, Users, Clock3, Signal, Sparkles, CheckCircle2,
