@@ -119,6 +119,109 @@ function Accordion({ items }) {
   );
 }
 
+// --- Variações responsivas para tabelas ---
+function TabelaPagamentos() {
+  return (
+    <>
+      {/* Mobile (cards) */}
+      <div className="sm:hidden grid gap-3">
+        {taxasPagamento.map((t, i) => (
+          <div key={i} className="card p-4">
+            <div className="flex items-center gap-3">
+              <span aria-hidden className="text-lg">{t.icon}</span>
+              <div className="min-w-0">
+                <div className="font-semibold">{t.tipo}</div>
+                <div className="text-sm">
+                  <span className="font-medium">{t.valor}</span>{" "}
+                  <span className="muted">{t.note}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ≥ sm (tabela) */}
+      <div className="hidden sm:block card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <caption className="sr-only">Tabela de taxas para Pix e Boleto liquidado</caption>
+            <thead className="bg-[var(--c-surface-2)]">
+              <tr>
+                <th scope="col" className="text-left px-4 py-3">Tipo</th>
+                <th scope="col" className="text-left px-4 py-3">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {taxasPagamento.map((t, i) => (
+                <tr key={i} className="border-t border-[var(--c-border)]">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span aria-hidden>{t.icon}</span>
+                      {t.tipo}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">{t.valor}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function TabelaCartoes() {
+  return (
+    <>
+      {/* Mobile (cards) */}
+      <div className="sm:hidden grid gap-3">
+        {taxasCartoes.map((c, i) => (
+          <div key={i} className="card p-4">
+            <div className="font-semibold">{c.bandeira}</div>
+            <div className="mt-1 text-sm grid grid-cols-2 gap-2">
+              <div>
+                <div className="muted">Gatilho</div>
+                <div className="font-medium">{c.gatilho}</div>
+              </div>
+              <div>
+                <div className="muted">Taxa</div>
+                <div className="font-medium">{c.taxa}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ≥ sm (tabela) */}
+      <div className="hidden sm:block card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <caption className="sr-only">Tabela de gatilho e percentuais por bandeira</caption>
+            <thead className="bg-[var(--c-surface-2)]">
+              <tr>
+                <th scope="col" className="text-left px-4 py-3">Bandeira</th>
+                <th scope="col" className="text-left px-4 py-3">Gatilho</th>
+                <th scope="col" className="text-left px-4 py-3">Taxa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {taxasCartoes.map((c, i) => (
+                <tr key={i} className="border-t border-[var(--c-border)]">
+                  <td className="px-4 py-3">{c.bandeira}</td>
+                  <td className="px-4 py-3">{c.gatilho}</td>
+                  <td className="px-4 py-3">{c.taxa}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function Taxas() {
   useEffect(() => {
     setPageSEO({
@@ -191,8 +294,6 @@ export default function Taxas() {
   // --------- UI ---------
   return (
     <div>
-  
-
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* HERO / INTRO */}
         <header className="text-center mb-10">
@@ -250,32 +351,10 @@ export default function Taxas() {
               <h2 id="tabela-pagamentos" className="text-xl font-semibold mb-4 text-center md:text-left">
                 Taxas de Pagamento
               </h2>
-              <div className="card overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <caption className="sr-only">Tabela de taxas para Pix e Boleto liquidado</caption>
-                    <thead className="bg-[var(--c-surface-2)]">
-                      <tr>
-                        <th scope="col" className="text-left px-4 py-3">Tipo</th>
-                        <th scope="col" className="text-left px-4 py-3">Valor</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {taxasPagamento.map((t, i) => (
-                        <tr key={i} className="border-t border-[var(--c-border)]">
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <span aria-hidden>{t.icon}</span>
-                              {t.tipo}
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">{t.valor}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+
+              {/* Mobile cards + tabela ≥ sm */}
+              <TabelaPagamentos />
+
               <p className="mt-3 text-xs text-center md:text-left muted">
                 * Boleto só gera tarifa quando houver <strong>liquidação</strong> (pagamento confirmado).
               </p>
@@ -286,29 +365,10 @@ export default function Taxas() {
               <h2 id="tabela-cartoes" className="text-xl font-semibold mb-4 text-center md:text-left">
                 Cartões por Bandeira
               </h2>
-              <div className="card overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm min-w-[640px]">
-                    <caption className="sr-only">Tabela de gatilho e percentuais por bandeira</caption>
-                    <thead className="bg-[var(--c-surface-2)]">
-                      <tr>
-                        <th scope="col" className="text-left px-4 py-3">Bandeira</th>
-                        <th scope="col" className="text-left px-4 py-3">Gatilho</th>
-                        <th scope="col" className="text-left px-4 py-3">Taxa</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {taxasCartoes.map((c, i) => (
-                        <tr key={i} className="border-t border-[var(--c-border)]">
-                          <td className="px-4 py-3">{c.bandeira}</td>
-                          <td className="px-4 py-3">{c.gatilho}</td>
-                          <td className="px-4 py-3">{c.taxa}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+
+              {/* Mobile cards + tabela ≥ sm */}
+              <TabelaCartoes />
+
               <div className="mt-3 text-xs muted flex items-start gap-2">
                 <Info className="w-4 h-4 mt-0.5" />
                 <p>As taxas são definidas pelo adquirente/gateway e podem variar por campanha/volume.</p>
@@ -322,13 +382,9 @@ export default function Taxas() {
                 onToggle={(e)=> { if (e.target.open) try{ track("fees_tecnospeed_open"); } catch{} }}
               >
                 <summary className="list-none cursor-pointer select-none p-4 flex items-center justify-between">
-                  <div>
-                    <h3 id="banco-tecnospeed" className="font-semibold">
-                      Posso emitir boletos pelo meu banco?
-                    </h3>
-                    <p className="muted text-sm">
-                      Opção alternativa via integração de boletos com bancos tradicionais.
-                    </p>
+                  <div className="min-w-0">
+                    <h3 id="banco-tecnospeed" className="font-semibold">Posso emitir boletos pelo meu banco?</h3>
+                    <p className="muted text-sm">Opção alternativa via integração de boletos com bancos tradicionais.</p>
                   </div>
                   <ChevronDown className="w-4 h-4 opacity-70 transition group-open:rotate-180" />
                 </summary>
@@ -435,10 +491,11 @@ export default function Taxas() {
                     type="number"
                     min={0}
                     step="0.01"
+                    inputMode="decimal"
                     value={valor}
                     onChange={(e)=> setValor(e.target.value)}
                     onBlur={()=> fire("fees_value_blur")}
-                    className="input w-40"
+                    className="input w-full max-w-[220px]"
                     aria-describedby="valor-ajuda"
                   />
                 </div>
@@ -488,7 +545,7 @@ export default function Taxas() {
                         setFlag(e.target.value);
                         fire("fees_flag_select", { flag: e.target.value });
                       }}
-                      className="input w-full sm:w-64 md:w-72"
+                      className="input w-full max-w-[300px]"
                       aria-describedby="ajuda-bandeira"
                     >
                       {taxasCartoes.map((c)=> (
@@ -600,7 +657,8 @@ export default function Taxas() {
           </div>
         </section>
       </main>
-     {/* CTA fixo (mobile) */}
+
+      {/* CTA fixo (mobile) */}
       <BottomDockCTA />
       <Footer />
     </div>
