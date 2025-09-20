@@ -1,7 +1,7 @@
 // src/router.jsx
 import { createBrowserRouter } from 'react-router-dom'
 import AppShell from '@/layouts/AppShell'              // ⟵ novo: Header persistente fora das transições
-import PageTransitionLayout from '@/layouts/PageTransitionLayout'
+import PageTransitionLayout from '@/layouts/PageFadeLayout'
 
 import Home from '@/pages/Home'
 import Developers from '@/pages/Developers'
@@ -32,6 +32,7 @@ export const router = createBrowserRouter([
       // ➜ Rotas SEM transição (evita flicker do vídeo)
       { path: '/', element: <Home/> },
       { path: '/funcionalidades', element: <Home/> },
+       { path: '/quem-somos', element: <QuemSomos/> },
 
       // ➜ Demais rotas COM transição (Header fica de fora)
       {
@@ -47,7 +48,7 @@ export const router = createBrowserRouter([
           { path: '/developers', element: <Developers/> },
           { path: '/taxas', element: <Taxas/> },
           { path: '/gestao-web', element: <GestaoWeb/> },
-          { path: '/quem-somos', element: <QuemSomos/> },
+
           { path: '/site-premium', element: <SitePremium/> },
           { path: '/app-cobrador', element: <AppDoCobradorPage/> },
           { path: '/app-vendedor', element: <AppDoVendedorPage/> },

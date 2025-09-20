@@ -8,11 +8,10 @@ import clsx from "clsx"
 
 import {
   Check, ShieldCheck, Globe, Handshake, Info, Cable, X, MessageCircle,
-  LineChart, Building2, PawPrint, Link2 as LinkIcon
+  LineChart, Building2, PawPrint, Link2 as LinkIcon, Users
 } from "lucide-react"
 import CardMotion from "@/components/CardMotion"
 import { track } from "@/lib/analytics"
-
 
 function formatBRL(n){
   if (n == null) return "Sob consulta"
@@ -70,6 +69,10 @@ const ENTERPRISE_BULLETS = [
   { range: "+3.000 contratos",        price: null },
 ]
 
+// 🚩 Política de usuários incluídos
+const INCLUDED_USERS = { start: 5, pro: 5, enterprise: 10 }
+const EXTRA_USER_PRICE = 10 // R$/mês por usuário adicional
+
 const COMMON_FEATURES = [
   "Gestão de contratos e assinaturas",
   "Cobrança recorrente (boletos/carnês)",
@@ -112,7 +115,7 @@ const FALLBACK = [
 
 const ICONS = { start: ShieldCheck, pro: Globe, enterprise: Handshake }
 
-const WHATSAPP_MENSAL = 150 // ✅ custo fixo por mês (mensagens ilimitadas)
+const WHATSAPP_MENSAL = 150 // custo fixo por mês (mensagens ilimitadas)
 
 /** Marcas do slider (visuais) */
 function TierMarks({ max=3500 }){
@@ -153,7 +156,7 @@ function FloatingCTA({ visible, onClose, period, contracts }){
           <div className="min-w-0">
             <div className="font-semibold leading-tight">Fale com vendas</div>
             <p className="text-sm muted mt-1">
-              Tire dúvidas sobre limites de contratos, add-ons e migração.
+              Tire dúvidas sobre limites de contratos, usuários e migração.
             </p>
             <div className="mt-3">
               <Link
@@ -196,13 +199,13 @@ export default function Planos(){
   const [ctaOpen, setCtaOpen] = useState(false)
   const comparativoRef = useRef(null)
 
-  // --- Slider fixo 0–3500 (não muda ao alternar o período)
+  // --- Slider fixo 0–3500
   const sliderMax = 3500
   const [contracts, setContracts] = useState(500)
   const selectedTier = useMemo(() => findTierByContracts(contracts), [contracts])
   const descontoAnual = 0.15
 
-  // ✅ Add-on WhatsApp
+  // Add-on WhatsApp
   const [whatsappAddon, setWhatsappAddon] = useState(false)
 
   // utils
@@ -218,7 +221,7 @@ export default function Planos(){
     })
   }
 
-  // 1) Ler query params na montagem
+  // 1) Ler query params
   useEffect(() => {
     const qContracts = searchParams.get("contracts")
     const qPeriodo = searchParams.get("periodo")
@@ -231,7 +234,7 @@ export default function Planos(){
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 2) Sync URL (replace)
+  // 2) Sync URL
   useEffect(() => {
     const currContracts = Number(searchParams.get("contracts"))
     const currPeriodo = searchParams.get("periodo")
@@ -249,7 +252,7 @@ export default function Planos(){
     }
   }, [contracts, periodo, sliderMax, whatsappAddon, searchParams, setSearchParams])
 
-  // 2.1) Reclampar quando sliderMax muda (aqui roda só na montagem pois sliderMax é fixo)
+  // Reclampar
   useEffect(() => {
     setContractsSafe(contracts, { emit:false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -324,14 +327,14 @@ export default function Planos(){
     return null
   },[selectedTier])
 
-  // Preço do simulador (base)
+  // Preço base simulado
   const simulatedPrice = useMemo(()=>{
     if (!selectedTier || selectedTier.price == null) return null
     const mensal = selectedTier.price
     return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
   },[selectedTier, periodo])
 
-  // Preço do add-on WhatsApp
+  // WhatsApp
   const whatsappPrice = useMemo(() => {
     if (!whatsappAddon) return 0
     const mensal = WHATSAPP_MENSAL
@@ -372,7 +375,7 @@ export default function Planos(){
   const nearNext = nextBreakpoint ? Math.max(0, nextBreakpoint - contracts) : null
   const showNearHint = nearNext != null && nearNext <= 100
 
-  // ---- dataLayer events ----
+  // events
   useEffect(() => { track("pricing_period_change", { period: periodo }) }, [periodo])
 
   const prevTierRef = useRef(selectedTier?.id)
@@ -430,7 +433,7 @@ export default function Planos(){
   const isSobConsulta = contracts > 3000
   const atMax = contracts >= sliderMax
 
-  // copy link da simulação
+  // copy link
   const [copied, setCopied] = useState(false)
   const copyLink = async () => {
     try{
@@ -441,9 +444,13 @@ export default function Planos(){
     }catch(e){ /* ignore */ }
   }
 
+  const usersIncludedFor = (planId) =>
+    planId === "start" ? INCLUDED_USERS.start
+    : planId === "pro" ? INCLUDED_USERS.pro
+    : INCLUDED_USERS.enterprise
+
   return (
     <div>
-
       <main className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-4">
           <div>
@@ -455,7 +462,7 @@ export default function Planos(){
           <TogglePeriodo />
         </div>
 
-        {/* ✅ PROVA SOCIAL */}
+        {/* PROVA SOCIAL */}
         <section aria-label="Prova social" className="mb-8">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div className="card p-4 flex items-center gap-3">
@@ -488,7 +495,7 @@ export default function Planos(){
           </div>
         </section>
 
-        {/* --- Simulador --- */}
+        {/* Simulador */}
         <section className="card p-4 md:p-5 mb-6">
           <div className="grid lg:grid-cols-[1fr,360px] gap-6">
             {/* controles */}
@@ -560,7 +567,7 @@ export default function Planos(){
                 </div>
               </div>
 
-              {/* ✅ Toggle WhatsApp ilimitado */}
+              {/* Toggle WhatsApp ilimitado */}
               <div className="mt-4 flex items-center gap-2">
                 <input
                   id="toggle-whatsapp"
@@ -573,16 +580,39 @@ export default function Planos(){
                   }}
                 />
                 <label htmlFor="toggle-whatsapp" className="text-sm">
-                  Incluir <strong>WhatsApp ilimitado</strong> (+{formatBRL(periodo === "mensal" ? WHATSAPP_MENSAL : WHATSAPP_MENSAL * 12 * (1 - descontoAnual))}{periodo === "mensal" ? "/mês" : "/ano"})
+                  Incluir <strong>WhatsApp ilimitado</strong> (+{formatBRL(periodo === "mensal" ? WHATSAPP_MENSAL : WHATSAPP_MENSAL * 12 * (1 - descontoAnual))}{periodo === "mensal" ? "/mês" : "/ano"}).
                 </label>
               </div>
 
-              {/* dica para próximo degrau */}
+              {/* dica próximo degrau */}
               {showNearHint && (
                 <div className="mt-3 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
                   Você está a <strong>{nearNext}</strong> contratos do próximo degrau de preço.
                 </div>
               )}
+
+              {/* ❗ Custos adicionais (claro e direto) */}
+              <div className="mt-4 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3 text-sm">
+                <div className="font-medium mb-1">Custos adicionais</div>
+                <ul className="space-y-1">
+                  <li className="flex gap-2 items-start">
+                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
+                    <span><strong>Setup inicial</strong>: a partir de {formatBRL(600)} — varia por integrações e nº de usuários.</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
+                    <span><strong>Manutenção App do Associado e Site Whitelabel</strong>: a partir de {formatBRL(199)}/mês, conforme base de usuários.</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Info className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
+                    <span><strong>Migração de dados</strong>: orçamento sob escopo (clientes, contratos, carnês/boletos e histórico).</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Users className="w-4 h-4 mt-0.5 text-[color:var(--c-muted)]"/> 
+                    <span><strong>Usuários adicionais</strong>: {formatBRL(EXTRA_USER_PRICE)}/mês por usuário. Start/Pro incluem 5 usuários; Enterprise inclui 10.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* Resumo sticky */}
@@ -646,6 +676,15 @@ export default function Planos(){
                       ≈ {formatBRL(perContract)} por contrato/mês
                     </div>
                   )}
+
+                  {/* lembrete de usuários incluídos */}
+                  {selectedTier && (
+                    <div className="mt-3 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2">
+                      Inclui <strong>{usersIncludedFor(
+                        selectedTier.id.startsWith("enterprise") ? "enterprise" : selectedTier.id
+                      )}</strong> usuários. Usuário adicional: <strong>{formatBRL(EXTRA_USER_PRICE)}/mês</strong>.
+                    </div>
+                  )}
                 </div>
 
                 {/* Ações */}
@@ -682,17 +721,16 @@ export default function Planos(){
           </div>
 
           <p className="mt-3 text-xs text-[color:var(--c-muted)]">
-            Os valores são estimativas com base na faixa de contratos ativos e no período selecionado.
-            Impostos e tarifas de meios de pagamento não estão incluídos.
-            O módulo de WhatsApp possui <strong>custo fixo de R$ 150,00/mês</strong> com <strong>mensagens ilimitadas</strong>
-            {periodo === "anual" ? " (o desconto anual de 15% é aplicado nesta simulação)" : ""}.
-            Oferecemos <strong>migração de banco de dados</strong> (importação de clientes, contratos, carnês/boletos e histórico).
-            Veja detalhes em <Link to="/migracao" className="underline">Migração de Dados</Link>.
+            Os valores acima referem-se à <strong>mensalidade do Progem</strong> (com opção de pagamento anual com 15% OFF).
+            Além da mensalidade e do add-on opcional de <strong>WhatsApp</strong> ({formatBRL(WHATSAPP_MENSAL)}/mês),
+            há <strong>setup inicial</strong> (a partir de {formatBRL(600)}), <strong>manutenção</strong> do
+            <strong> App do Associado</strong> e do <strong>Site Whitelabel</strong> (a partir de {formatBRL(199)}/mês, variável pelo nº de usuários)
+            e custos de <strong>migração de dados</strong> sob escopo. Usuários incluídos: Start/Pro (5), Enterprise (10). Usuário adicional: {formatBRL(EXTRA_USER_PRICE)}/mês.
             Consulte também a página <Link to="/taxas" className="underline">Taxas & Cobrança</Link>.
           </p>
         </section>
 
-        {/* --- Cards de planos --- */}
+        {/* Cards de planos */}
         <section className="grid gap-6 md:grid-cols-3">
           {(loadingPlans ? FALLBACK : planosComPreco).map(pl=>(
             <CardMotion
@@ -742,6 +780,12 @@ export default function Planos(){
                 ) : (
                   <div className="text-xl font-semibold">Tabelas por faixa</div>
                 )}
+              </div>
+
+              {/* Included users + extra price */}
+              <div className="mt-2 text-sm muted flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Inclui {usersIncludedFor(pl.id)} usuários. Usuário adicional: {formatBRL(EXTRA_USER_PRICE)}/mês.
               </div>
 
               {pl.id === "enterprise" && (
@@ -809,7 +853,7 @@ export default function Planos(){
           ))}
         </section>
 
-        {/* Destaque Planos Pet (subi antes do “Todos os planos incluem”) */}
+        {/* Destaque Planos Pet */}
         <section className="mt-10">
           <div className="card p-5">
             <div className="flex items-start gap-3">
@@ -874,7 +918,7 @@ export default function Planos(){
           <div className="card p-5 mt-6">
             <h4 className="font-semibold">APIs e integrações</h4>
             <p className="muted mt-1 text-sm">
-              Conecte seu ERP, site ou CRM às APIs do Progem e à NaLápide.
+              Automatize seus fluxos com a API do Progem e integrações.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
@@ -910,13 +954,13 @@ export default function Planos(){
               </Link>
             </div>
 
-            {/* Aviso sobre WhatsApp (custo fixo) */}
+            {/* Aviso WhatsApp */}
             <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
               <span className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-[var(--c-border)] bg-[var(--c-surface)] shrink-0">
                 <MessageCircle className="w-4 h-4 text-[color:var(--c-muted)]" />
               </span>
               <p className="text-xs leading-relaxed">
-                O módulo de <strong>WhatsApp</strong> é um <strong>add-on com custo fixo de R$ 150,00/mês</strong>, com
+                O módulo de <strong>WhatsApp</strong> é um <strong>add-on com custo fixo de {formatBRL(WHATSAPP_MENSAL)}/mês</strong>, com
                 <strong> mensagens ilimitadas</strong>. Solicite nossa tabela comercial para condições e requisitos de integração.
               </p>
             </div>
@@ -926,7 +970,7 @@ export default function Planos(){
         <section className="mt-12" ref={comparativoRef}>
           <h2 className="text-2xl font-semibold mb-4">Comparativo operacional</h2>
           <div className="overflow-x-auto border border-[var(--c-border)] rounded-xl">
-            <table className="min-w-[720px] w-full text-sm">
+            <table className="min-w-[760px] w-full text-sm">
               <thead className="bg-[var(--c-surface-2)]">
                 <tr>
                   <th className="text-left px-4 py-3">Item</th>
@@ -941,6 +985,18 @@ export default function Planos(){
                   <td className="px-4 py-3">até 500</td>
                   <td className="px-4 py-3">até 1.000</td>
                   <td className="px-4 py-3">a partir de 1.001</td>
+                </tr>
+                <tr className="border-t border-[var(--c-border)]">
+                  <td className="px-4 py-3 font-medium">Usuários incluídos</td>
+                  <td className="px-4 py-3">5</td>
+                  <td className="px-4 py-3">5</td>
+                  <td className="px-4 py-3">10</td>
+                </tr>
+                <tr className="border-t border-[var(--c-border)]">
+                  <td className="px-4 py-3 font-medium">Usuário adicional</td>
+                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
+                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
+                  <td className="px-4 py-3">{formatBRL(EXTRA_USER_PRICE)}/mês</td>
                 </tr>
                 <tr className="border-t border-[var(--c-border)]">
                   <td className="px-4 py-3 font-medium">SLA de suporte</td>
@@ -964,7 +1020,7 @@ export default function Planos(){
               },
               {
                 q: "O WhatsApp ilimitado tem alguma taxa por mensagem?",
-                a: "Não. É um add-on de custo fixo R$ 150/mês para envios ilimitados, via integração com plataforma parceira oficial."
+                a: "Não. É um add-on de custo fixo de R$ 150/mês para envios ilimitados, via integração com plataforma parceira oficial."
               },
               {
                 q: "Posso migrar meus dados atuais?",
@@ -973,6 +1029,14 @@ export default function Planos(){
               {
                 q: "Posso mudar de plano depois?",
                 a: "Pode. O ajuste acompanha sua faixa de contratos ativos, sem fricção no uso da plataforma."
+              },
+              {
+                q: "Quantos usuários o plano inclui?",
+                a: "Start e Pro incluem 5 usuários; Enterprise inclui 10. Usuário adicional custa R$ 10/mês por usuário."
+              },
+              {
+                q: "Há custo de setup e manutenção dos apps/site?",
+                a: "Sim. Setup a partir de R$ 600 (varia por integrações e nº de usuários) e manutenção do App do Associado e do Site Whitelabel a partir de R$ 199/mês, conforme base de usuários."
               },
             ].map((item, i) => (
               <details key={i} className="card p-4">
@@ -991,7 +1055,6 @@ export default function Planos(){
         />
       </main>
 
-     
       <Footer/>
     </div>
   )
