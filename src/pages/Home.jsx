@@ -6,6 +6,7 @@ import Hero from '@/components/Hero'
 import Solutions from '@/components/Solutions'
 import LogosBar from '@/components/LogosBar'
 import FeatureGrid from '@/components/FeatureGrid'
+import BottomDockCTA from '@/components/BottomDockCTA'
 
 
 
@@ -23,7 +24,7 @@ export default function Home(){
       <Solutions/>
       <LogosBar/>
       <FeatureGrid/>
-      
+       <BottomDockCTA />
       <Footer/>
     </div>
   )

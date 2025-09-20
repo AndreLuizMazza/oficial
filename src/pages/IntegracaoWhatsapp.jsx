@@ -1,3 +1,4 @@
+// src/pages/IntegracaoWhatsapp.jsx
 import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import Footer from "@/components/Footer"
@@ -8,20 +9,21 @@ import {
 } from "lucide-react"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import placeholder from "@/assets/img/app/whatsapp.png"
+
 /**
  * Página: Integração com WhatsApp (Progem)
- * Ajustes:
- * - CTAs padronizados em laranja: `btn btn-primary btn-demo`
- * - Substituição do placeholder por imagem que remete a WhatsApp/smartphone
+ * Ajustes finais:
+ *  – SEO genérico (“via API oficial do WhatsApp”).
+ *  – Integração citada discretamente apenas no card “Integração via API parceira”.
+ *  – CTA final aponta para a tela de planos.
  */
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1600&q=80"
 
 export default function IntegracaoWhatsapp(){
   useEffect(()=>{
     setPageSEO({
       title: "Progem • Integração WhatsApp",
-      description: "Modelos de mensagens, disparo em massa com filtros, automações e métricas — via integração com plataforma parceira oficial (única). Custo adicional de R$ 150/mês com envios ilimitados."
+      description:
+        "Modelos aprovados, disparo em massa por filtros, automações e métricas — integração via API oficial do WhatsApp. Plano R$ 150/mês com envios ilimitados."
     })
   },[])
 
@@ -35,26 +37,26 @@ export default function IntegracaoWhatsapp(){
 
   return (
     <div className={t.text}>
-
-
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
         <div className="mx-auto max-w-7xl px-4 py-10 md:py-14 grid md:grid-cols-[1fr,420px] gap-10 items-center">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] text-sm">
               <MessageCircle className="w-4 h-4 text-[color:var(--c-muted)]"/>
-              Integração com plataforma parceira oficial
+              Integração com WhatsApp Business
             </div>
+
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
               WhatsApp para <span className="text-[color:var(--c-primary)]">conversar e converter</span>
             </h1>
+
             <p className={`mt-3 md:text-lg ${t.muted}`}>
               Crie <strong>modelos de mensagens</strong>, dispare campanhas em massa por <strong>filtros</strong> (inadimplentes, adimplentes,
-              confirmação de pagamento, aniversário, etc.), programe <strong>mensagens automáticas</strong> e acompanhe resultados —
-              tudo integrado ao Progem e à nossa plataforma parceira oficial do WhatsApp (integração única).
+              confirmação de pagamento, aniversário, etc.), programe <strong>automações</strong> e acompanhe resultados —
+              tudo integrado ao Progem.
             </p>
+
             <div className="mt-6 flex flex-wrap gap-3">
-              {/* CTA principal padronizada (laranja) */}
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Falar com um especialista
               </Link>
@@ -88,8 +90,8 @@ export default function IntegracaoWhatsapp(){
               <h2 className="text-xl font-semibold">Modelos de mensagens</h2>
             </div>
             <p className={`mt-2 ${t.muted}`}>
-              Padronize textos para notificações, confirmações e campanhas. Utilize modelos aprovados pelo provedor oficial
-              e personalize variáveis (nome, valor, vencimento, link de 2ª via, etc.).
+              Padronize textos para notificações, confirmações e campanhas. Utilize modelos aprovados e personalize variáveis
+              (nome, valor, vencimento, link de 2ª via, etc.).
             </p>
           </article>
 
@@ -98,12 +100,12 @@ export default function IntegracaoWhatsapp(){
               <Filter className={`w-6 h-6 ${t.primary}`}/>
               <h2 className="text-xl font-semibold">Envio em massa por filtros</h2>
             </div>
-            <p className={`mt-2 ${t.muted}`}>
-              Selecione seu público com filtros do Progem:
-            </p>
+            <p className={`mt-2 ${t.muted}`}>Selecione seu público com filtros do Progem:</p>
             <ul className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
               {["Inadimplentes","Adimplentes","Confirmação de pagamento","Aniversário","Novos contratos","Renovações"].map(item => (
-                <li key={item} className="flex items-center gap-2"><Tag className={`w-4 h-4 ${t.primary}`}/><span className={`${t.muted}`}>{item}</span></li>
+                <li key={item} className="flex items-center gap-2">
+                  <Tag className={`w-4 h-4 ${t.primary}`}/><span className={`${t.muted}`}>{item}</span>
+                </li>
               ))}
             </ul>
           </article>
@@ -132,11 +134,11 @@ export default function IntegracaoWhatsapp(){
           <article className="card p-6">
             <div className="flex items-center gap-3">
               <Plug className={`w-6 h-6 ${t.primary}`}/>
-              <h2 className="text-xl font-semibold">Plataforma parceira (oficial)</h2>
+              <h2 className="text-xl font-semibold">Integração via API parceira</h2>
             </div>
             <p className={`mt-2 ${t.muted}`}>
-              Integração com plataforma parceira oficial do WhatsApp. O Progem envia via essa plataforma, garantindo
-              escalabilidade, confiabilidade e conformidade de canal.
+              O envio acontece por meio de integração com API de parceiro oficial do WhatsApp, garantindo escalabilidade,
+              confiabilidade e conformidade de canal.
             </p>
           </article>
 
@@ -147,7 +149,7 @@ export default function IntegracaoWhatsapp(){
             </div>
             <p className={`mt-2 ${t.muted}`}>
               Gestão de consentimento/opt-out, trilhas de auditoria e respeito às regras do WhatsApp (uso de modelos aprovados,
-              janelas de mensagens, política anti-spam). Boas práticas para reputação de número e qualidade.
+              janelas de mensagens, política anti-spam). Boas práticas para reputação do número e qualidade.
             </p>
           </article>
         </section>
@@ -155,11 +157,13 @@ export default function IntegracaoWhatsapp(){
         {/* COMO FUNCIONA */}
         <section className="mt-10 grid lg:grid-cols-2 gap-6 items-start">
           <ol className="card p-6 space-y-4">
-            {[{t:"Conecte à plataforma parceira oficial", d:"Conecte a conta de WhatsApp Business ao BSP/Cloud API de sua preferência."},
-              {t:"Cadastre modelos", d:"Crie/importe modelos, defina variáveis e solicite aprovação pelo provedor."},
-              {t:"Monte segmentos", d:"Use filtros do Progem para criar públicos (inadimplentes, aniversariantes etc.)."},
-              {t:"Programe ou dispare", d:"Envie na hora ou agende/automatize por gatilhos."},
-              {t:"Meça e otimize", d:"Analise métricas e itere modelos/horários."}].map((s, i)=> (
+            {[
+              { t:"Conecte sua conta", d:"Associe seu número de WhatsApp Business à integração disponível." },
+              { t:"Cadastre modelos", d:"Crie/importe modelos, defina variáveis e solicite aprovação." },
+              { t:"Monte segmentos", d:"Use filtros do Progem para criar públicos (inadimplentes, aniversariantes etc.)." },
+              { t:"Programe ou dispare", d:"Envie na hora ou agende/automatize por gatilhos." },
+              { t:"Meça e otimize", d:"Analise métricas e itere modelos/horários." }
+            ].map((s, i)=> (
               <li key={i} className="flex items-start gap-3">
                 <span className={`grid place-content-center size-8 rounded-full ${t.primaryBg} text-white font-bold`}>{i+1}</span>
                 <div>
@@ -173,10 +177,15 @@ export default function IntegracaoWhatsapp(){
           <div className="card p-6">
             <h3 className="text-lg font-semibold">Casos prontos</h3>
             <ul className="mt-3 space-y-2 text-sm">
-              {["Cobrança: boleto emitido, vencimento próximo, confirmação de pagamento",
+              {[
+                "Cobrança: boleto emitido, vencimento próximo, confirmação de pagamento",
                 "Relacionamento: boas-vindas, aniversário, pesquisa de satisfação",
-                "Comercial: reengajar proposta parada, lembrete de visita/consulta"].map(b => (
-                <li key={b} className="flex gap-2 items-start"><CheckCircle2 className={`w-4 h-4 ${t.primary}`}/><span className={`${t.muted}`}>{b}</span></li>
+                "Comercial: reengajar proposta parada, lembrete de visita/consulta"
+              ].map(b => (
+                <li key={b} className="flex gap-2 items-start">
+                  <CheckCircle2 className={`w-4 h-4 ${t.primary}`}/>
+                  <span className={`${t.muted}`}>{b}</span>
+                </li>
               ))}
             </ul>
           </div>
@@ -190,19 +199,22 @@ export default function IntegracaoWhatsapp(){
                 <Link2 className="w-4 h-4 text-[color:var(--c-muted)]"/> Integração assistida
               </div>
               <h3 className="text-2xl font-semibold mt-3">Ative o WhatsApp no seu Progem</h3>
-              <p className={`${t.muted}`}>Conectamos à plataforma parceira oficial, configuramos modelos e deixamos as automações rodando. Plano R$ 150/mês — envios ilimitados.</p>
+              <p className={`${t.muted}`}>
+                Configuramos os modelos e deixamos as automações rodando. Plano R$ 150/mês — envios ilimitados.
+              </p>
             </div>
             <div className="flex gap-3">
-              {/* CTA padronizada (laranja) */}
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Falar com um especialista
               </Link>
-              <Link to="/integracoes#whatsapp" className="btn btn-ghost">Baixar documentação</Link>
+              <Link to="/planos" className="btn btn-ghost">
+                Ver planos
+              </Link>
             </div>
           </div>
         </section>
       </main>
-     {/* CTA fixo (mobile) */}
+
       <BottomDockCTA />
       <Footer/>
     </div>
