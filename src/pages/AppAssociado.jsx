@@ -71,6 +71,8 @@ export default function AppAssociado(){
                 Solicitar demonstração
               </Link>
               <Link to="/demo" className="btn btn-ghost">O que verá na demo</Link>
+              {/* Novo link para planos/simulador */}
+              <Link to="/planos" className="btn btn-ghost">Ver planos e simular</Link>
             </div>
           </div>
 
@@ -157,7 +159,7 @@ export default function AppAssociado(){
           </div>
         </section>
 
-        {/* Custos & Setup (discreto) */}
+        {/* Custos & Setup (ajustado) */}
         <section className="mt-8">
           <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
             <div className="flex items-start gap-3">
@@ -165,17 +167,29 @@ export default function AppAssociado(){
                 <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
               </span>
               <div className="text-sm">
-                <p className="font-medium">Custos & Manutenção do Whitelabel</p>
+                <p className="font-medium">Custos, modelos de cobrança & setup</p>
                 <ul className="mt-1 space-y-1">
                   <li className="muted">
-                    App do Associado (whitelabel) possui <strong>manutenção mensal</strong> — estimativa inicial
-                    <em> a partir de R$ 199</em>, podendo variar conforme o número de usuários do app e do site whitelabel.
+                    O <strong>App do Associado</strong> é contratado como <strong>add-on</strong> do Progem. O valor mensal
+                    acompanha a sua <strong>faixa de contratos ativos</strong> (Start, Pro ou Enterprise).
                   </li>
                   <li className="muted">
-                    <strong>Setup único</strong> (sob escopo): depende das integrações a realizar e da
-                    quantidade de usuários para treinamentos setorizados.
+                    O preço pode ser definido como <strong>percentual sobre o preço base da faixa</strong> (ex.: 60%)
+                    ou como <strong>valor fixo por faixa</strong> — conforme a política vigente.
+                  </li>
+                  <li className="muted">
+                    Consulte o valor exato para sua faixa no simulador de <Link to="/planos" className="underline">Planos</Link>. No anual,
+                    há <strong>15% OFF</strong> sobre o total (base + add-ons).
+                  </li>
+                  <li className="muted">
+                    <strong>Setup único</strong> (sob escopo): varia conforme integrações e quantidade de usuários para treinamentos.
                   </li>
                 </ul>
+
+                {/* Ação secundária para planos */}
+                <div className="mt-3">
+                  <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
+                </div>
               </div>
             </div>
           </div>

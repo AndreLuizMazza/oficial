@@ -1,3 +1,4 @@
+// src/pages/SitePremium.jsx
 import { useEffect } from "react"
 
 import BottomDockCTA from "@/components/BottomDockCTA"
@@ -6,9 +7,10 @@ import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
   Globe, Sparkles, ShieldCheck, Palette, Fingerprint, Search,
-  Layout, Smartphone, Link2, Rocket, Check
+  Layout, Smartphone, Link2, Rocket, Check, Info
 } from "lucide-react"
 import placeholder from "@/assets/img/app/site.png"
+
 export default function SitePremium(){
   useEffect(()=>{
     setPageSEO({
@@ -28,8 +30,6 @@ export default function SitePremium(){
 
   return (
     <div>
-     
-
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
         <div className="mx-auto max-w-7xl px-4 py-10 md:py-14 grid md:grid-cols-[1fr,520px] gap-10 items-center">
@@ -50,6 +50,8 @@ export default function SitePremium(){
                 Solicitar demonstração
               </Link>
               <Link to="/blog" className="btn btn-ghost">Ver conteúdos</Link>
+              {/* Link para planos/simulador */}
+              <Link to="/planos" className="btn btn-ghost">Ver planos e simular</Link>
             </div>
           </div>
 
@@ -115,6 +117,42 @@ export default function SitePremium(){
           </div>
         </section>
 
+        {/* Custos & Setup (ajustado) */}
+        <section className="mt-8">
+          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
+                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
+              </span>
+              <div className="text-sm">
+                <p className="font-medium">Custos, modelos de cobrança & setup</p>
+                <ul className="mt-1 space-y-1">
+                  <li className="muted">
+                    O <strong>Site Premium</strong> é contratado como <strong>add-on</strong> do Progem. O valor mensal
+                    acompanha a sua <strong>faixa de contratos ativos</strong> (Start, Pro ou Enterprise).
+                  </li>
+                  <li className="muted">
+                    O preço pode ser definido como <strong>percentual sobre o preço base da faixa</strong> (ex.: 50%)
+                    ou como <strong>valor fixo por faixa</strong> — conforme a política vigente.
+                  </li>
+                  <li className="muted">
+                    Consulte o valor exato para sua faixa no simulador de <Link to="/planos" className="underline">Planos</Link>. No anual,
+                    há <strong>15% OFF</strong> sobre o total (base + add-ons).
+                  </li>
+                  <li className="muted">
+                    <strong>Setup único</strong> (sob escopo): varia conforme integrações e conteúdo inicial (páginas, blog, formulários).
+                  </li>
+                </ul>
+
+                {/* Ação secundária para planos */}
+                <div className="mt-3">
+                  <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="mt-10">
           <div className="card p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -132,6 +170,7 @@ export default function SitePremium(){
           </div>
         </section>
       </main>
+
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
       <Footer/>

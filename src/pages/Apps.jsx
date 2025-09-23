@@ -7,7 +7,6 @@ import CardMotion from "@/components/CardMotion"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import placeholder from "@/assets/img/placeholder.png"
 
-
 import {
   Sparkles, Smartphone, UserRound, BadgeDollarSign, Wallet2, ShieldCheck,
   Check, QrCode, FileText, BellRing, MapPin, CloudOff, Download, LineChart, Info,
@@ -24,7 +23,7 @@ export default function Apps(){
     setPageSEO({
       title: "Progem • Apps móveis (Associado, Vendedor e Cobrador)",
       description:
-        "App do Associado (iOS/Android) whitelabel; Apps do Vendedor e Cobrador (Android). Inclusos no pacote Progem, sem taxa por recebimento/venda. Setup único sob escopo."
+        "App do Associado (iOS/Android) whitelabel como add-on; Apps do Vendedor e Cobrador (Android) inclusos no Progem. Sem taxa por recebimento/venda. Setup único sob escopo."
     })
   },[])
 
@@ -120,8 +119,6 @@ export default function Apps(){
 
   return (
     <div>
-   
-
       {/* HERO */}
       <section className="border-b border-[var(--c-border)] bg-[var(--c-surface)]">
         <div className="mx-auto max-w-7xl px-4 py-12 md:py-16 grid md:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
@@ -322,7 +319,7 @@ export default function Apps(){
           </AnimatePresence>
         </section>
 
-        {/* Custos & Setup (discreto) */}
+        {/* Custos & Setup (ajustado) */}
         <section className="mt-8">
           <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
             <div className="flex items-start gap-3">
@@ -330,16 +327,32 @@ export default function Apps(){
                 <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
               </span>
               <div className="text-sm">
-                <p className="font-medium">Custos & Setup</p>
+                <p className="font-medium">Custos, modelos de cobrança & setup</p>
                 <ul className="mt-1 space-y-1">
-                  <li className="muted">Apps <strong>Vendedor</strong> e <strong>Cobrador</strong> inclusos no pacote Progem — sem licenciamento adicional.</li>
-                  <li className="muted">App do <strong>Associado</strong> (whitelabel) e <strong>Site whitelabel</strong>: manutenção mensal estimada em <strong>R$ 199,00</strong>, podendo variar conforme base de usuários.</li>
+                  <li className="muted">
+                    Apps <strong>Vendedor</strong> e <strong>Cobrador</strong> inclusos no pacote Progem — sem licenciamento adicional.
+                  </li>
+                  <li className="muted">
+                    <strong>App do Associado (whitelabel)</strong> e <strong>Site Premium</strong> são <strong>add-ons</strong>. O valor mensal
+                    acompanha sua <strong>faixa de contratos</strong> (Start, Pro ou Enterprise) e pode ser definido como
+                    <strong> percentual sobre o preço base</strong> da faixa (ex.: Site 50% • App 50%) ou como
+                    <strong> valor fixo por faixa</strong> — conforme a política vigente.
+                  </li>
+                  <li className="muted">
+                    Consulte o valor exato para sua faixa no simulador de <Link to="/planos" className="underline">Planos</Link>.
+                    No anual, há <strong>15% OFF</strong> sobre o total (base + add-ons).
+                  </li>
                   <li className="muted">App do Cobrador: <strong>sem taxa por recebimento</strong> ao Progem.</li>
                   <li className="muted">App do Vendedor: <strong>sem taxa por venda</strong> ao Progem.</li>
                   <li className="muted">
-                    Setup único (<em>sob escopo</em>): depende das integrações necessárias e da quantidade de usuários a treinar (setorizado).
+                    <strong>Setup único</strong> (<em>sob escopo</em>): depende das integrações necessárias e da quantidade de usuários a treinar (setorizado).
                   </li>
                 </ul>
+
+                {/* Ação para planos */}
+                <div className="mt-3">
+                  <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
+                </div>
               </div>
             </div>
           </div>
