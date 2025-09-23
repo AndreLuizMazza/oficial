@@ -16,11 +16,29 @@ import { track } from "@/lib/analytics"
    CONFIG — facilmente editável (pode usar .env Vite com as chaves VITE_PRICE_*)
    =======================================================================*/
 
+// MODO DE COBRANÇA (HARDCODE)
+// "pct" => percentual sobre o preço base
+// "fix" => valor fixo (R$/mês) das variáveis .env
+const ADDON_MODE = {
+  site: "pct", // mude para "fix" para cobrar valor fixo por faixa
+  app:  "pct", // mude para "fix" para cobrar valor fixo por faixa
+}
+
+
 const envNum = (key, fallback) => {
   const raw = import.meta.env?.[key]
   if (raw === "" || raw == null) return fallback
   const n = Number(raw)
   return Number.isFinite(n) ? n : fallback
+}
+
+// Percentual em DECIMAL (ex.: "0.2" => 0.2). Retorna null se vazio/inválido.
+const envPct = (key) => {
+  const raw = import.meta.env?.[key]
+  if (raw === "" || raw == null) return null
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return null
+  return n
 }
 
 // Degraus (faixas)
@@ -44,7 +62,7 @@ const BASE_MONTHLY_PRICES = {
   enterprisePlus: null,                                   // >5000: sob consulta
 }
 
-// Add-on WhatsApp por faixa (mensal)
+// Add-on WhatsApp por faixa (mensal) — valor fixo
 const ADDON_WHATSAPP_MONTHLY = {
   start:           envNum("VITE_PRICE_WHATSAPP_START", 150),
   pro:             envNum("VITE_PRICE_WHATSAPP_PRO", 150),
@@ -55,15 +73,49 @@ const ADDON_WHATSAPP_MONTHLY = {
   enterprisePlus:  envNum("VITE_PRICE_WHATSAPP_ENTPLUS", null), // null => Sob consulta
 }
 
-// Add-on Site + App por faixa (mensal)
-const ADDON_SITE_APP_MONTHLY = {
-  start:           envNum("VITE_PRICE_SITEAPP_START", 199),
-  pro:             envNum("VITE_PRICE_SITEAPP_PRO", 199),
-  enterprise1:     envNum("VITE_PRICE_SITEAPP_ENT1", 199),
-  enterprise2:     envNum("VITE_PRICE_SITEAPP_ENT2", 249),
-  enterprise3:     envNum("VITE_PRICE_SITEAPP_ENT3", 249),
-  enterprise4:     envNum("VITE_PRICE_SITEAPP_ENT4", 249),
-  enterprisePlus:  envNum("VITE_PRICE_SITEAPP_ENTPLUS", null),  // null => Sob consulta
+/* ========= Add-ons separados (Site e App) =========
+   Percentual DECIMAL OU valor fixo por faixa (ambos vindos do .env).
+   O que será aplicado é definido pelo ADDON_MODE acima (hardcode).
+*/
+
+// SITE PREMIUM
+const ADDON_SITE_PCT = {
+  start:          envPct("VITE_PRICE_SITE_PCT_START"),
+  pro:            envPct("VITE_PRICE_SITE_PCT_PRO"),
+  enterprise1:    envPct("VITE_PRICE_SITE_PCT_ENT1"),
+  enterprise2:    envPct("VITE_PRICE_SITE_PCT_ENT2"),
+  enterprise3:    envPct("VITE_PRICE_SITE_PCT_ENT3"),
+  enterprise4:    envPct("VITE_PRICE_SITE_PCT_ENT4"),
+  enterprisePlus: envPct("VITE_PRICE_SITE_PCT_ENTPLUS"),
+}
+const ADDON_SITE_FIX = {
+  start:          envNum("VITE_PRICE_SITE_FIX_START", null),
+  pro:            envNum("VITE_PRICE_SITE_FIX_PRO", null),
+  enterprise1:    envNum("VITE_PRICE_SITE_FIX_ENT1", null),
+  enterprise2:    envNum("VITE_PRICE_SITE_FIX_ENT2", null),
+  enterprise3:    envNum("VITE_PRICE_SITE_FIX_ENT3", null),
+  enterprise4:    envNum("VITE_PRICE_SITE_FIX_ENT4", null),
+  enterprisePlus: envNum("VITE_PRICE_SITE_FIX_ENTPLUS", null),
+}
+
+// APP DO ASSOCIADO
+const ADDON_APP_PCT = {
+  start:          envPct("VITE_PRICE_APP_PCT_START"),
+  pro:            envPct("VITE_PRICE_APP_PCT_PRO"),
+  enterprise1:    envPct("VITE_PRICE_APP_PCT_ENT1"),
+  enterprise2:    envPct("VITE_PRICE_APP_PCT_ENT2"),
+  enterprise3:    envPct("VITE_PRICE_APP_PCT_ENT3"),
+  enterprise4:    envPct("VITE_PRICE_APP_PCT_ENT4"),
+  enterprisePlus: envPct("VITE_PRICE_APP_PCT_ENTPLUS"),
+}
+const ADDON_APP_FIX = {
+  start:          envNum("VITE_PRICE_APP_FIX_START", null),
+  pro:            envNum("VITE_PRICE_APP_FIX_PRO", null),
+  enterprise1:    envNum("VITE_PRICE_APP_FIX_ENT1", null),
+  enterprise2:    envNum("VITE_PRICE_APP_FIX_ENT2", null),
+  enterprise3:    envNum("VITE_PRICE_APP_FIX_ENT3", null),
+  enterprise4:    envNum("VITE_PRICE_APP_FIX_ENT4", null),
+  enterprisePlus: envNum("VITE_PRICE_APP_FIX_ENTPLUS", null),
 }
 
 const INCLUDED_USERS = { start: 5, pro: 5, enterprise: 10 }
@@ -193,6 +245,32 @@ function TogglePeriodo({ periodo, setPeriodo }) {
   )
 }
 
+/* ===========================
+   Cálculo respeitando ADDON_MODE
+   =========================== */
+function computeAddonMonthlyForContracts(contracts, mode, pctTable, fixTable){
+  const key = tierKeyForContracts(contracts)
+  const base = priceFromTableForContracts(BASE_MONTHLY_PRICES, contracts)
+  if (mode === "pct") {
+    const pct = pctTable[key]
+    if (pct != null && base != null) return Math.round((base * pct) * 100) / 100
+    return null
+  }
+  if (mode === "fix") {
+    const fix = fixTable[key]
+    if (fix != null) return fix
+    return null
+  }
+  return null
+}
+
+// Texto para listagem de add-ons por faixa, respeitando o modo
+function addonListItemText(mode, pct, fix){
+  if (mode === "pct")  return pct != null ? `${(pct*100).toFixed(0)}% do preço base` : "Sob consulta"
+  if (mode === "fix")  return fix != null ? `${formatBRL(fix)}/mês` : "Sob consulta"
+  return "Sob consulta"
+}
+
 export default function Planos(){
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -206,7 +284,8 @@ export default function Planos(){
 
   const descontoAnual = 0.15
   const [whatsappAddon, setWhatsappAddon] = useState(false)
-  const [siteAppAddon, setSiteAppAddon] = useState(false)
+  const [siteAddon, setSiteAddon] = useState(false)
+  const [appAddon, setAppAddon] = useState(false)
   const [ticketMedio, setTicketMedio] = useState(60)
 
   const clampContracts = (n) => Math.max(0, Math.min(sliderMax, Math.floor(Number(n) || 0)))
@@ -221,11 +300,13 @@ export default function Planos(){
     const qContracts = searchParams.get("contracts")
     const qPeriodo = searchParams.get("periodo")
     const qWhats = searchParams.get("whatsapp")
-    const qSiteApp = searchParams.get("siteapp")
+    const qSite = searchParams.get("site")
+    const qApp = searchParams.get("app")
     const qTicket = searchParams.get("ticket")
     if (qPeriodo === "mensal" || qPeriodo === "anual") setPeriodo(qPeriodo)
     if (qWhats === "1" || qWhats === "true") setWhatsappAddon(true)
-    if (qSiteApp === "1" || qSiteApp === "true") setSiteAppAddon(true)
+    if (qSite === "1" || qSite === "true") setSiteAddon(true)
+    if (qApp === "1" || qApp === "true") setAppAddon(true)
     if (qTicket != null && !Number.isNaN(Number(qTicket))) setTicketMedio(Number(qTicket))
     setTimeout(() => { if (qContracts != null) setContractsSafe(qContracts, { emit:false }) }, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,24 +317,27 @@ export default function Planos(){
     const currContracts = Number(searchParams.get("contracts"))
     const currPeriodo = searchParams.get("periodo")
     const currWhats = searchParams.get("whatsapp")
-    const currSiteApp = searchParams.get("siteapp")
+    const currSite = searchParams.get("site")
+    const currApp = searchParams.get("app")
     const currTicket = searchParams.get("ticket")
     const nextContracts = Math.max(0, Math.min(sliderMax, Math.floor(Number(contracts) || 0)))
     const nextPeriodo = periodo
     const nextWhats = whatsappAddon ? "1" : "0"
-    const nextSiteApp = siteAppAddon ? "1" : "0"
+    const nextSite = siteAddon ? "1" : "0"
+    const nextApp = appAddon ? "1" : "0"
     const nextTicket = String(ticketMedio || 0)
-    const changed = currContracts!==nextContracts || currPeriodo!==nextPeriodo || currWhats!==nextWhats || currSiteApp!==nextSiteApp || currTicket!==nextTicket
+    const changed = currContracts!==nextContracts || currPeriodo!==nextPeriodo || currWhats!==nextWhats || currSite!==nextSite || currApp!==nextApp || currTicket!==nextTicket
     if (changed) {
       const next = new URLSearchParams(searchParams)
       next.set("contracts", String(nextContracts))
       next.set("periodo", nextPeriodo)
       next.set("whatsapp", nextWhats)
-      next.set("siteapp", nextSiteApp)
+      next.set("site", nextSite)
+      next.set("app", nextApp)
       next.set("ticket", nextTicket)
       setSearchParams(next, { replace: true })
     }
-  }, [contracts, periodo, sliderMax, whatsappAddon, siteAppAddon, ticketMedio, searchParams, setSearchParams])
+  }, [contracts, periodo, sliderMax, whatsappAddon, siteAddon, appAddon, ticketMedio, searchParams, setSearchParams])
 
   // SEO
   useEffect(()=>{ setPageSEO({ title:"Progem • Planos", description:"Simule o custo do Progem: escolha a faixa, informe o ticket médio e veja o investimento estimado." }) },[])
@@ -280,36 +364,47 @@ export default function Planos(){
     return periodo === "mensal" ? mensal : mensal * 12 * (1 - descontoAnual)
   },[selectedTier, periodo])
 
-  // Add-on values for current contracts & period
+  // Helpers de exibição de preços de add-on
   const addonPriceDisplay = (monthly) => {
     if (monthly == null) return "Sob consulta"
     return periodo === "mensal" ? formatBRL(monthly) + "/mês" : formatBRL(monthly*12*(1-descontoAnual)) + "/ano"
   }
 
+  // Valores mensais dos add-ons para a quantidade atual de contratos (respeitando ADDON_MODE)
   const whatsappMonthly = priceFromTableForContracts(ADDON_WHATSAPP_MONTHLY, contracts)
+  const siteMonthlyRaw = computeAddonMonthlyForContracts(contracts, ADDON_MODE.site, ADDON_SITE_PCT, ADDON_SITE_FIX)
+  const appMonthlyRaw  = computeAddonMonthlyForContracts(contracts, ADDON_MODE.app,  ADDON_APP_PCT,  ADDON_APP_FIX)
+
   const whatsappPrice = useMemo(() => {
     if (!whatsappAddon) return 0
     if (whatsappMonthly == null) return null
     return periodo === "mensal" ? whatsappMonthly : whatsappMonthly * 12 * (1 - descontoAnual)
   }, [whatsappAddon, whatsappMonthly, periodo])
 
-  const siteAppMonthly = priceFromTableForContracts(ADDON_SITE_APP_MONTHLY, contracts)
-  const siteAppPrice = useMemo(() => {
-    if (!siteAppAddon) return 0
-    if (siteAppMonthly == null) return null
-    return periodo === "mensal" ? siteAppMonthly : siteAppMonthly * 12 * (1 - descontoAnual)
-  }, [siteAppAddon, siteAppMonthly, periodo])
+  const sitePrice = useMemo(() => {
+    if (!siteAddon) return 0
+    if (siteMonthlyRaw == null) return null
+    return periodo === "mensal" ? siteMonthlyRaw : siteMonthlyRaw * 12 * (1 - descontoAnual)
+  }, [siteAddon, siteMonthlyRaw, periodo])
+
+  const appPrice = useMemo(() => {
+    if (!appAddon) return 0
+    if (appMonthlyRaw == null) return null
+    return periodo === "mensal" ? appMonthlyRaw : appMonthlyRaw * 12 * (1 - descontoAnual)
+  }, [appAddon, appMonthlyRaw, periodo])
 
   const simulatedTotal = useMemo(() => {
     if (simulatedPrice == null) return null
-    if ((siteAppAddon && siteAppPrice == null) || (whatsappAddon && whatsappPrice == null)) return null
-    return simulatedPrice + (whatsappPrice || 0) + (siteAppPrice || 0)
-  }, [simulatedPrice, whatsappPrice, siteAppPrice, siteAppAddon, whatsappAddon])
+    if ((siteAddon && sitePrice == null) || (appAddon && appPrice == null) || (whatsappAddon && whatsappPrice == null)) return null
+    return simulatedPrice + (whatsappPrice || 0) + (sitePrice || 0) + (appPrice || 0)
+  }, [simulatedPrice, whatsappPrice, sitePrice, appPrice, siteAddon, appAddon, whatsappAddon])
 
   const mensalBase = selectedTier?.price ?? null
   const mensalAddon =
     (whatsappAddon ? (whatsappMonthly || 0) : 0) +
-    (siteAppAddon ? (siteAppMonthly || 0) : 0)
+    (siteAddon ? (siteMonthlyRaw || 0) : 0) +
+    (appAddon ? (appMonthlyRaw || 0) : 0)
+
   const economiaAnual = useMemo(() => {
     if (periodo !== "anual" || mensalBase == null || simulatedTotal == null) return 0
     const semDesconto = (mensalBase + mensalAddon) * 12
@@ -356,7 +451,7 @@ export default function Planos(){
       await navigator.clipboard.writeText(window.location.href)
       setCopied(true)
       setTimeout(()=>setCopied(false), 1600)
-      track("pricing_share", { period: periodo, contracts, whatsappAddon, siteAppAddon, ticketMedio })
+      track("pricing_share", { period: periodo, contracts, whatsappAddon, siteAddon, appAddon, ticketMedio })
     }catch(e){ /* ignore */ }
   }
 
@@ -620,12 +715,23 @@ export default function Planos(){
 
                 <div className="flex items-center gap-2">
                   <input
-                    id="toggle-siteapp" type="checkbox" className="rounded-md border border-[var(--c-border)]"
-                    checked={siteAppAddon}
-                    onChange={(e)=>{setSiteAppAddon(e.target.checked); track("pricing_siteapp_toggle",{enabled:e.target.checked,period:periodo})}}
+                    id="toggle-site" type="checkbox" className="rounded-md border border-[var(--c-border)]"
+                    checked={siteAddon}
+                    onChange={(e)=>{setSiteAddon(e.target.checked); track("pricing_site_toggle",{enabled:e.target.checked,period:periodo})}}
                   />
-                  <label htmlFor="toggle-siteapp" className="text-sm">
-                    Incluir <strong>Site Premium + App do Associado</strong> ({addonPriceDisplay(siteAppMonthly)}).
+                  <label htmlFor="toggle-site" className="text-sm">
+                    Incluir <strong>Site Premium</strong> ({addonPriceDisplay(siteMonthlyRaw)}).
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    id="toggle-app" type="checkbox" className="rounded-md border border-[var(--c-border)]"
+                    checked={appAddon}
+                    onChange={(e)=>{setAppAddon(e.target.checked); track("pricing_app_toggle",{enabled:e.target.checked,period:periodo})}}
+                  />
+                  <label htmlFor="toggle-app" className="text-sm">
+                    Incluir <strong>App do Associado</strong> ({addonPriceDisplay(appMonthlyRaw)}).
                   </label>
                 </div>
 
@@ -700,9 +806,16 @@ export default function Planos(){
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="muted">Site + App do Associado</span>
+                      <span className="muted">Site Premium</span>
                       <span className="font-medium">
-                        {siteAppAddon ? (siteAppPrice!=null ? <>{formatBRL(siteAppPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
+                        {siteAddon ? (sitePrice!=null ? <>{formatBRL(sitePrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="muted">App do Associado</span>
+                      <span className="font-medium">
+                        {appAddon ? (appPrice!=null ? <>{formatBRL(appPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
                       </span>
                     </div>
 
@@ -732,7 +845,7 @@ export default function Planos(){
                       planId:selectedTier?.id||"unknown",
                       planName:selectedTier?.name||"unknown",
                       period:periodo, contracts,
-                      addons:{ whatsapp: whatsappAddon, siteapp: siteAppAddon },
+                      addons:{ whatsapp: whatsappAddon, site: siteAddon, app: appAddon },
                       ticketMedio
                     })}
                   >
@@ -854,7 +967,8 @@ export default function Planos(){
                 <Cable className="w-5 h-5 text-[color:var(--c-muted)]" />
                 <span className="font-medium">Add-ons</span>
               </div>
-              <div className="grid md:grid-cols-2 gap-3 text-sm">
+              <div className="grid md:grid-cols-3 gap-3 text-sm">
+                {/* WhatsApp */}
                 <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
                   <div className="font-medium mb-1">WhatsApp ilimitado</div>
                   <ul className="list-disc ml-4 space-y-1">
@@ -868,16 +982,31 @@ export default function Planos(){
                   </ul>
                 </div>
 
+                {/* Site Premium */}
                 <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
-                  <div className="font-medium mb-1">Site Premium + App do Associado</div>
+                  <div className="font-medium mb-1">Site Premium</div>
                   <ul className="list-disc ml-4 space-y-1">
-                    <li>Até 500: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.start)}/mês</strong></li>
-                    <li>501–1.000: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.pro)}/mês</strong></li>
-                    <li>1.001–2.000: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.enterprise1)}/mês</strong></li>
-                    <li>2.001–3.000: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.enterprise2)}/mês</strong></li>
-                    <li>3.001–4.000: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.enterprise3)}/mês</strong></li>
-                    <li>4.001–5.000: <strong>{formatBRL(ADDON_SITE_APP_MONTHLY.enterprise4)}/mês</strong></li>
-                    <li>Acima de 5.000: <strong>{ADDON_SITE_APP_MONTHLY.enterprisePlus==null ? "Sob consulta" : `${formatBRL(ADDON_SITE_APP_MONTHLY.enterprisePlus)}/mês`}</strong></li>
+                    <li>Até 500: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.start, ADDON_SITE_FIX.start)}</strong></li>
+                    <li>501–1.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.pro, ADDON_SITE_FIX.pro)}</strong></li>
+                    <li>1.001–2.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.enterprise1, ADDON_SITE_FIX.enterprise1)}</strong></li>
+                    <li>2.001–3.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.enterprise2, ADDON_SITE_FIX.enterprise2)}</strong></li>
+                    <li>3.001–4.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.enterprise3, ADDON_SITE_FIX.enterprise3)}</strong></li>
+                    <li>4.001–5.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.enterprise4, ADDON_SITE_FIX.enterprise4)}</strong></li>
+                    <li>Acima de 5.000: <strong>{addonListItemText(ADDON_MODE.site, ADDON_SITE_PCT.enterprisePlus, ADDON_SITE_FIX.enterprisePlus)}</strong></li>
+                  </ul>
+                </div>
+
+                {/* App do Associado */}
+                <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
+                  <div className="font-medium mb-1">App do Associado</div>
+                  <ul className="list-disc ml-4 space-y-1">
+                    <li>Até 500: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.start, ADDON_APP_FIX.start)}</strong></li>
+                    <li>501–1.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.pro, ADDON_APP_FIX.pro)}</strong></li>
+                    <li>1.001–2.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.enterprise1, ADDON_APP_FIX.enterprise1)}</strong></li>
+                    <li>2.001–3.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.enterprise2, ADDON_APP_FIX.enterprise2)}</strong></li>
+                    <li>3.001–4.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.enterprise3, ADDON_APP_FIX.enterprise3)}</strong></li>
+                    <li>4.001–5.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.enterprise4, ADDON_APP_FIX.enterprise4)}</strong></li>
+                    <li>Acima de 5.000: <strong>{addonListItemText(ADDON_MODE.app, ADDON_APP_PCT.enterprisePlus, ADDON_APP_FIX.enterprisePlus)}</strong></li>
                   </ul>
                 </div>
               </div>
@@ -914,44 +1043,15 @@ export default function Planos(){
                 </div>
               </div>
 
-              {/* Links úteis com BADGES em todos */}
+              {/* Links úteis */}
               <div className="mt-3 text-xs text-[color:var(--c-muted)] flex flex-wrap items-center gap-2">
                 <span className="font-medium mr-1">Links úteis:</span>
 
-                <Link
-                  to="/taxas"
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
-                >
-                  Taxas &amp; Cobrança
-                </Link>
-
-                <Link
-                  to="/migracao"
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
-                >
-                  Migração de Dados
-                </Link>
-
-                <Link
-                  to="/app-associado"
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
-                >
-                  App do Associado
-                </Link>
-
-                <Link
-                  to="/site-premium"
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
-                >
-                  Site Premium
-                </Link>
-
-                <Link
-                  to="/gestao-web"
-                  className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]"
-                >
-                  Gestão Web
-                </Link>
+                <Link to="/taxas" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">Taxas &amp; Cobrança</Link>
+                <Link to="/migracao" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">Migração de Dados</Link>
+                <Link to="/app-associado" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">App do Associado</Link>
+                <Link to="/site-premium" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">Site Premium</Link>
+                <Link to="/gestao-web" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">Gestão Web</Link>
 
                 <Link
                   to="/zap"
@@ -1003,8 +1103,8 @@ export default function Planos(){
                 a: <>As tarifas dependem do meio de pagamento. Consulte a página <Link to="/taxas" className="underline">Taxas &amp; Cobrança</Link>.</>
               },
               {
-                q: "Posso contratar o Site Premium + App do Associado depois?",
-                a: <>Sim. Em Start/Pro e Enterprise as faixas seguem esta página. Saiba mais em <Link to="/site-premium" className="underline">Site Premium</Link> e <Link to="/app-associado" className="underline">App do Associado</Link>.</>
+                q: "Posso contratar o Site Premium ou o App do Associado depois?",
+                a: <>Sim. Você pode contratar qualquer um separadamente. As faixas seguem esta página. Saiba mais em <Link to="/site-premium" className="underline">Site Premium</Link> e <Link to="/app-associado" className="underline">App do Associado</Link>.</>
               },
               {
                 q: "Vocês oferecem API?",
