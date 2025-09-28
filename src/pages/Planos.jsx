@@ -1116,7 +1116,7 @@ export default function Planos(){
               },
               {
                 q: "Existe fidelidade?",
-                a: "Não exigimos fidelidade. No anual há 15% de desconto por compromisso de período."
+                a: "Trabalhamos com fidelidade de 1 ano, assim você conta com suporte dedicado, melhorias constantes e toda a estrutura necessária para obter o melhor resultado com nosso sistema."
               },
               {
                 q: "Como funciona o suporte?",
