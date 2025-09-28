@@ -63,7 +63,7 @@ const faqs = [
   },
   {
     q: "Posso antecipar recebíveis de cartão?",
-    a: "Sim. A antecipação é opcional e possui custo do adquirente. Se desejar, ajudamos a habilitar e simular."
+    a: "Sim. A antecipação é um serviço opcional, condicionado à aprovação em análise de crédito, e possui custo do adquirente. Se desejar, oferecemos suporte para habilitação e simulação."
   }
 ];
 
