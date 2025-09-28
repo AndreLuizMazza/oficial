@@ -17,17 +17,13 @@ const taxasPagamento = [
   { tipo: "Boleto (Liquidado)", valor: "R$2,30", icon: "📄", note: "somente quando pago" },
 ];
 
+// --- Cartões (apenas as bandeiras informadas) ---
 const taxasCartoes = [
-  { bandeira: "Mastercard",        gatilho: "R$0,29", taxa: "3,59%" },
-  { bandeira: "Visa",              gatilho: "R$0,29", taxa: "3,59%" },
-  { bandeira: "Elo",               gatilho: "R$0,29", taxa: "4,09%" },
-  { bandeira: "American Express",  gatilho: "R$0,29", taxa: "4,79%" },
-  { bandeira: "Hipercard",         gatilho: "R$0,29", taxa: "3,79%" },
-  { bandeira: "Discover",          gatilho: "R$0,29", taxa: "4,09%" },
-  { bandeira: "Diners Club",       gatilho: "R$0,29", taxa: "4,09%" },
-  { bandeira: "JCB",               gatilho: "R$0,29", taxa: "4,09%" },
-  { bandeira: "EnRoute",           gatilho: "R$0,29", taxa: "4,09%" },
-  { bandeira: "Aura",              gatilho: "R$0,29", taxa: "4,09%" },
+  { bandeira: "Master",           gatilho: "R$ 0,30", taxa: "3,59%" },
+  { bandeira: "Visa",             gatilho: "R$ 0,30", taxa: "3,59%" },
+  { bandeira: "Elo",              gatilho: "R$ 0,30", taxa: "4,59%" },
+  { bandeira: "American Express", gatilho: "R$ 0,30", taxa: "4,09%" },
+  { bandeira: "Hipercard",        gatilho: "R$ 0,30", taxa: "4,09%" },
 ];
 
 // --- Alternativa: TecnoSpeed (boletos com bancos) ---
@@ -234,7 +230,7 @@ export default function Taxas() {
   // --- Simulador (integração principal) ---
   const [valor, setValor] = useState(100);
   const [metodo, setMetodo] = useState("pix"); // pix | boleto | cartao
-  const [flag, setFlag] = useState(taxasCartoes[0]?.bandeira || "Mastercard");
+  const [flag, setFlag] = useState(taxasCartoes[0]?.bandeira || "Master");
 
   const flagObj = useMemo(
     () => taxasCartoes.find(f => f.bandeira === flag) || taxasCartoes[0],
@@ -308,7 +304,7 @@ export default function Taxas() {
           </p>
           {/* ÚNICA menção discreta ao parceiro */}
           <p className="mt-2 text-[11px] muted">
-            * Integração operada por parceiro homologado (ex.: Cel&nbsp;Cash).
+            * Integração operada por parceiro homologado cel_cash.
           </p>
 
           {/* Resumo rápido (integração principal) */}
@@ -334,7 +330,7 @@ export default function Taxas() {
               <div className="text-left">
                 <div className="font-semibold leading-tight">Cartões</div>
                 <div className="text-sm">
-                  <span className="font-medium">gatilho R$0,29</span>{" "}
+                  <span className="font-medium">gatilho R$0,30</span>{" "}
                   <span className="muted">+ taxa (%) por bandeira</span>
                 </div>
               </div>
