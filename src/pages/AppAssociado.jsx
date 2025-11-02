@@ -3,7 +3,6 @@ import { useEffect } from "react"
 import { Link } from "react-router-dom"
 import placeholder1 from "@/assets/img/placeholder.png"
 import placeholder from "@/assets/img/app/app-associado-home.jpg"
-import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import {
@@ -216,7 +215,7 @@ export default function AppAssociado(){
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
 
-      <Footer/>
+
     </div>
   )
 }

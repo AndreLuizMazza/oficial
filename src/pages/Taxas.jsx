@@ -1,6 +1,6 @@
 // src/pages/Taxas.jsx
 
-import Footer from "@/components/Footer";
+
 import { setPageSEO } from "@/lib/seo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -656,7 +656,7 @@ export default function Taxas() {
 
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer />
+
     </div>
   );
 }

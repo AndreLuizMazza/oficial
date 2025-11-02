@@ -1,6 +1,6 @@
 // src/pages/Contato.jsx
 import { useEffect, useState } from "react"
-import Footer from "@/components/Footer"
+
 import { setPageSEO } from "@/lib/seo"
 import {
   Sparkles, Building2, FileText, Mail, Phone, Check, MessageSquareText, Info, MapPin, Clock
@@ -283,7 +283,6 @@ export default function Contato(){
         ))}
       </section>
 
-      <Footer/>
     </div>
   )
 }

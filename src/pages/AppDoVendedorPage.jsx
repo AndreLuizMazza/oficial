@@ -1,7 +1,6 @@
 // src/pages/AppVendedor.jsx
 import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import { motion } from "framer-motion"
@@ -281,7 +280,7 @@ export default function AppVendedor(){
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
 
-      <Footer/>
+
     </div>
   )
 }

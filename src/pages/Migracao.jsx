@@ -1,7 +1,6 @@
 // src/pages/Migracao.jsx
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Footer from "@/components/Footer";
 import { setPageSEO } from "@/lib/seo";
 import {
   Database, UploadCloud, FileSpreadsheet, ShieldCheck, Check, Sparkles,
@@ -258,7 +257,7 @@ export default function Migracao(){
       </section>
      {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer/>
+
     </div>
   );
 }

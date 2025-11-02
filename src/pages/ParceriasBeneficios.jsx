@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
+
 import { setPageSEO } from "@/lib/seo"
 import {
   Link2, Building2, Network, BadgePercent, ShieldCheck, Layers,
@@ -185,7 +185,7 @@ export default function ParceriasBeneficios(){
       </section>
      {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer/>
+
     </div>
   )
 }

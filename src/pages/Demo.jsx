@@ -1,6 +1,5 @@
 // src/pages/Demo.jsx
 import { useEffect } from "react"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
   Sparkles, Check, Clock, Users, ShieldCheck, CreditCard, Globe, Newspaper,
@@ -356,7 +355,7 @@ export default function Demo(){
       </main>
 
 
-      <Footer/>
+
     </div>
   )
 }

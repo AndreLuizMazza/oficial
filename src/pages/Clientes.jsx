@@ -1,6 +1,5 @@
 // src/pages/Clientes.jsx
 import { useEffect } from 'react'
-import Footer from '@/components/Footer'
 import { setPageSEO } from '@/lib/seo'
 import { HeartHandshake, Building2, MapPin, Quote, CheckCircle2, CalendarClock, ClipboardList, Wallet, Globe } from 'lucide-react'
 import BottomDockCTA from '@/components/BottomDockCTA'
@@ -207,8 +206,6 @@ export default function Clientes() {
 
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-
-      <Footer />
     </div>
   )
 }

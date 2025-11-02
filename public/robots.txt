@@ -1,4 +1,15 @@
+# robots.txt — controle de indexação
+# Última atualização: 2025-11-02
+# Este arquivo impede indexação de rotas internas e técnicas.
+
+
+
 User-agent: *
+Disallow: /planos/simulador
+Disallow: /api/
+Disallow: /gestao/
+Disallow: /admin/
 Allow: /
+
 
 Sitemap: https://oficial-self.vercel.app/sitemap.xml

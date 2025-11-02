@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import Footer from '@/components/Footer'
 import { setPageSEO } from '@/lib/seo'
 
 const Code = ({children}) => (
@@ -35,7 +34,7 @@ export default function Developers(){
           <p className="muted mt-2">Integre seus sistemas às APIs do Progem e da NaLápide para automatizar cadastros, planos, obituários e cobranças.</p>
         </section>
       </main>
-      <Footer/>
+
     </div>
   )
 }

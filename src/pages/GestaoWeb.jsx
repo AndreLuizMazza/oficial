@@ -1,6 +1,5 @@
 // src/pages/GestaoWeb.jsx
 import { useEffect } from "react";
-import Footer from "@/components/Footer";
 import Progemhome from "@/assets/img/gestaoweb.png";
 import { setPageSEO } from "@/lib/seo";
 import {
@@ -394,7 +393,7 @@ export default function GestaoWeb(){
 
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer/>
+
     </div>
   );
 }

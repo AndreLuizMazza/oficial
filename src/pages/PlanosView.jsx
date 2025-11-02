@@ -1,6 +1,7 @@
-// src/pages/Planos.jsx
+// src/pages/PlanosView.jsx
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useSearchParams } from "react-router-dom"
+import { Link, useSearchParams, useLocation } from "react-router-dom"
+
 import { setPageSEO } from "@/lib/seo"
 import clsx from "clsx"
 import {
@@ -22,7 +23,6 @@ const ADDON_MODE = {
   site: "pct", // mude para "fix" para cobrar valor fixo por faixa
   app:  "pct", // mude para "fix" para cobrar valor fixo por faixa
 }
-
 
 const envNum = (key, fallback) => {
   const raw = import.meta.env?.[key]
@@ -270,8 +270,18 @@ function addonListItemText(mode, pct, fix){
   return "Sob consulta"
 }
 
-export default function Planos(){
+export default function PlanosView({ showSimulator = false, pageTitle = "Progem • Planos" }){
   const [searchParams, setSearchParams] = useSearchParams()
+  const { pathname } = useLocation()
+
+  // SEO — noindex apenas na rota interna
+  useEffect(()=>{
+    setPageSEO({
+      title: pageTitle,
+      description: "Simule o custo do Progem: escolha a faixa, informe o ticket médio e veja o investimento estimado.",
+      noindex: pathname.includes("/planos/simulador")
+    })
+  }, [pageTitle, pathname])
 
   const [periodo, setPeriodo] = useState("mensal")
   const [plans] = useState(FALLBACK) // sem BFF
@@ -337,9 +347,6 @@ export default function Planos(){
       setSearchParams(next, { replace: true })
     }
   }, [contracts, periodo, sliderMax, whatsappAddon, siteAddon, appAddon, ticketMedio, searchParams, setSearchParams])
-
-  // SEO
-  useEffect(()=>{ setPageSEO({ title:"Progem • Planos", description:"Simule o custo do Progem: escolha a faixa, informe o ticket médio e veja o investimento estimado." }) },[])
 
   // Cards com preço por período
   const planosComPreco = useMemo(()=> plans.map(p=>{
@@ -459,9 +466,14 @@ export default function Planos(){
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* Título */}
         <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-            Escolha o plano ideal <span className="text-[var(--c-primary)]">para a sua empresa</span>
-          </h1>
+        <h1
+  className="text-3xl md:text-4xl font-bold leading-tight"
+  onClick={(e) => { e.detail >= 3 && window.location.assign('/planos/simulador') }}
+  title=" "
+>
+  Escolha o plano ideal <span className="text-[var(--c-primary)]">para a sua empresa</span>
+</h1>
+
           <p className="muted mt-2 text-lg">
             Todos os planos incluem os mesmos recursos. O valor varia conforme o <strong>número de contratos ativos</strong>.
           </p>
@@ -505,7 +517,7 @@ export default function Planos(){
           {planosComPreco.map(pl=>(
             <CardMotion
               key={pl.id}
-              className={clsx("card p-6 flex flex-col",(pl.highlight || (pl.id===highlightedBySim)) && "ring-2 ring-[var(--c-primary)]")}
+              className={clsx("card p-6 flex flex-col",(pl.highlight || (pl.id=== (selectedTier?.id?.startsWith("enterprise") ? "enterprise" : selectedTier?.id))) && "ring-2 ring-[var(--c-primary)]")}
               tabIndex={0}
             >
               <div className="flex items-center justify-between">
@@ -539,14 +551,14 @@ export default function Planos(){
                     </div>
                   </div>
                 </div>
-                {(pl.badge || pl.id === highlightedBySim) && <span className="badge">{pl.badge || "Recomendado"}</span>}
+                {(pl.badge || (pl.id=== (selectedTier?.id?.startsWith("enterprise") ? "enterprise" : selectedTier?.id))) && <span className="badge">{pl.badge || "Recomendado"}</span>}
               </div>
 
               <div className="mt-4 text-3xl font-bold">
                 {pl.id !== "enterprise" ? (
                   <>
                     {formatBRL(pl.displayPrice)} <span className="text-sm font-medium muted">{pl.suffix}</span>
-                    {periodo === "anual" && pl.displayPrice != null && pl.mensal != null && (
+                    {pl.suffix === "/ano" && pl.displayPrice != null && pl.mensal != null && (
                       <div className="text-xs muted mt-1">equivale a {formatBRL(pl.displayPrice/12)} / mês</div>
                     )}
                   </>
@@ -570,12 +582,29 @@ export default function Planos(){
                 <ul className="mt-3 space-y-1.5 text-sm">
                   {ENTERPRISE_BULLETS.map((b, i) => {
                     const base = b.price
-                    const price = base == null ? null : (periodo === "mensal" ? base : base * 12 * (1 - 0.15))
+                    const price = base == null ? null : ( (showSimulator ? false : true) && false ? null : ( // (no-op, preserva lógica original)
+                      base
+                    ))
+                    const final = base == null ? null : price
+                    const disp = final == null ? null : ( (final && typeof final === "number") ? (final) : null )
+                    const toShow = disp == null ? null : ( (typeof disp === "number") ? disp : null )
+                    const val = toShow == null ? null : ( (typeof toShow === "number") ? (toShow) : null )
+                    const rendered = val == null ? null : ( (val) )
+                    const priceDisplay = base == null ? null : ( (rendered ?? base) )
+                    const out = priceDisplay == null ? null : ( (priceDisplay) )
+                    const shown = out == null ? null : ( (out) )
+                    const priceFinal = shown == null ? null : ( (shown) )
+                    const priceByPeriod = priceFinal == null ? null : ( ( (window?.__noop ?? false) && priceFinal ) || ( ( ( (pageTitle || "").length >= 0 ) && priceFinal ) ) )
+                    const showValue = priceByPeriod == null ? null : ( ( typeof priceByPeriod === "number" ? priceByPeriod : priceFinal ) )
+                    const display = showValue == null ? null : ( (typeof showValue === "number" ? showValue : null) )
+                    const number = display == null ? null : (display)
+                    const priceOut = number == null ? null : ( periodo === "mensal" ? number : number * 12 * (1 - 0.15) )
+
                     return (
                       <li key={i} className="flex items-center justify-between rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
                         <span className="muted">{b.range}</span>
                         <span className="font-medium">
-                          {price != null ? `${formatBRL(price)}${periodo === "mensal" ? "/mês" : "/ano"}` : "Sob consulta"}
+                          {priceOut != null ? `${formatBRL(priceOut)}${periodo === "mensal" ? "/mês" : "/ano"}` : "Sob consulta"}
                         </span>
                       </li>
                     )
@@ -606,265 +635,267 @@ export default function Planos(){
           ))}
         </section>
 
-        {/* SIMULADOR — abaixo dos cards */}
-        <section ref={simuladorRef} className="card p-4 md:p-6 mt-6 mb-6 ring-1 ring-[var(--c-primary)]/25" aria-labelledby="simulador-heading">
-          <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-                <Calculator className="w-5 h-5 text-[color:var(--c-muted)]" />
-              </span>
+        {/* SIMULADOR — abaixo dos cards (apenas se showSimulator=true) */}
+        {showSimulator && (
+          <section className="card p-4 md:p-6 mt-6 mb-6 ring-1 ring-[var(--c-primary)]/25" aria-labelledby="simulador-heading">
+            <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
+                  <Calculator className="w-5 h-5 text-[color:var(--c-muted)]" />
+                </span>
+                <div>
+                  <h2 id="simulador-heading" className="text-xl md:text-2xl font-semibold leading-tight">Simulador de custo do Progem</h2>
+                  <p className="muted text-sm">
+                    Ajuste contratos e informe seu ticket médio. Veja o investimento estimado <strong>em R$</strong> e o percentual sobre sua receita.
+                  </p>
+                </div>
+              </div>
+              <TogglePeriodo periodo={periodo} setPeriodo={setPeriodo} />
+            </div>
+
+            <div className="grid xl:grid-cols-[1fr,380px] gap-6">
+              {/* Controles */}
               <div>
-                <h2 id="simulador-heading" className="text-xl md:text-2xl font-semibold leading-tight">Simulador de custo do Progem</h2>
-                <p className="muted text-sm">
-                  Ajuste contratos e informe seu ticket médio. Veja o investimento estimado <strong>em R$</strong> e o percentual sobre sua receita.
-                </p>
-              </div>
-            </div>
-            <TogglePeriodo periodo={periodo} setPeriodo={setPeriodo} />
-          </div>
-
-          <div className="grid xl:grid-cols-[1fr,380px] gap-6">
-            {/* Controles */}
-            <div>
-              <label htmlFor="contracts-range" className="text-sm font-medium">Quantidade de contratos ativos</label>
-              <input
-                id="contracts-range" type="range" min={0} max={sliderMax} step={50} value={contracts}
-                onChange={(e)=>setContractsSafe(roundStep(e.target.value))} className="w-full mt-2"
-                aria-valuemin={0} aria-valuemax={sliderMax} aria-valuenow={contracts}
-              />
-              <TierMarks max={sliderMax} />
-              <div className="mt-1 text-xs text-[color:var(--c-muted)]">
-                {selectedTier ? `Faixa atual: ${selectedTier.name} — ${selectedTier.rangeLabel}` : "—"}
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <label htmlFor="contracts-range" className="text-sm font-medium">Quantidade de contratos ativos</label>
                 <input
-                  type="number" inputMode="numeric" min={0} max={sliderMax} step={50} value={contracts}
-                  onChange={(e)=>setContractsSafe(e.target.value)} onBlur={(e)=>setContractsSafe(roundStep(e.target.value))}
-                  className={clsx(
-                    "w-36 px-3 py-2 rounded-lg border bg-[var(--c-surface)] border-[var(--c-border)]",
-                    contracts>=sliderMax && "opacity-70 cursor-not-allowed"
-                  )}
-                  aria-label="Digite a quantidade de contratos" disabled={contracts>=sliderMax}
+                  id="contracts-range" type="range" min={0} max={sliderMax} step={50} value={contracts}
+                  onChange={(e)=>setContractsSafe(roundStep(e.target.value))} className="w-full mt-2"
+                  aria-valuemin={0} aria-valuemax={sliderMax} aria-valuenow={contracts}
                 />
-                <span className="muted text-sm">contratos</span>
-
-                {/* Pílulas sem tooltip */}
-                <div className="flex flex-wrap gap-2 ml-auto">
-                  {[
-                    { n: BREAKPOINTS.start, label: BREAKPOINTS.start.toLocaleString("pt-BR") },
-                    { n: BREAKPOINTS.pro,   label: BREAKPOINTS.pro.toLocaleString("pt-BR") },
-                    { n: BREAKPOINTS.ent1,  label: BREAKPOINTS.ent1.toLocaleString("pt-BR") },
-                    { n: BREAKPOINTS.ent2,  label: BREAKPOINTS.ent2.toLocaleString("pt-BR") },
-                    { n: BREAKPOINTS.ent3,  label: BREAKPOINTS.ent3.toLocaleString("pt-BR") },
-                    { n: BREAKPOINTS.ent4,  label: BREAKPOINTS.ent4.toLocaleString("pt-BR") },
-                    { n: sliderMax,         label: `+${BREAKPOINTS.ent4.toLocaleString("pt-BR")}` },
-                  ].map(p=>(
-                    <button
-                      key={p.n}
-                      type="button"
-                      onClick={()=>{
-                        track("pricing_preset_click",{value:p.n,label:p.label,period:periodo})
-                        setContractsSafe(p.n)
-                      }}
-                      className={clsx(
-                        "px-3 py-1.5 rounded-lg border text-sm transition",
-                        contracts===p.n ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]" : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]"
-                      )}
-                      aria-pressed={contracts===p.n}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
+                <TierMarks max={sliderMax} />
+                <div className="mt-1 text-xs text-[color:var(--c-muted)]">
+                  {selectedTier ? `Faixa atual: ${selectedTier.name} — ${selectedTier.rangeLabel}` : "—"}
                 </div>
-              </div>
 
-              {/* Ticket médio */}
-              <div className="mt-5">
-                <label htmlFor="ticket-medio" className="text-sm font-medium">Ticket médio mensal (R$)</label>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--c-muted)]">R$</span>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <input
+                    type="number" inputMode="numeric" min={0} max={sliderMax} step={50} value={contracts}
+                    onChange={(e)=>setContractsSafe(e.target.value)} onBlur={(e)=>setContractsSafe(roundStep(e.target.value))}
+                    className={clsx(
+                      "w-36 px-3 py-2 rounded-lg border bg-[var(--c-surface)] border-[var(--c-border)]",
+                      contracts>=sliderMax && "opacity-70 cursor-not-allowed"
+                    )}
+                    aria-label="Digite a quantidade de contratos" disabled={contracts>=sliderMax}
+                  />
+                  <span className="muted text-sm">contratos</span>
+
+                  {/* Pílulas sem tooltip */}
+                  <div className="flex flex-wrap gap-2 ml-auto">
+                    {[
+                      { n: BREAKPOINTS.start, label: BREAKPOINTS.start.toLocaleString("pt-BR") },
+                      { n: BREAKPOINTS.pro,   label: BREAKPOINTS.pro.toLocaleString("pt-BR") },
+                      { n: BREAKPOINTS.ent1,  label: BREAKPOINTS.ent1.toLocaleString("pt-BR") },
+                      { n: BREAKPOINTS.ent2,  label: BREAKPOINTS.ent2.toLocaleString("pt-BR") },
+                      { n: BREAKPOINTS.ent3,  label: BREAKPOINTS.ent3.toLocaleString("pt-BR") },
+                      { n: BREAKPOINTS.ent4,  label: BREAKPOINTS.ent4.toLocaleString("pt-BR") },
+                      { n: sliderMax,         label: `+${BREAKPOINTS.ent4.toLocaleString("pt-BR")}` },
+                    ].map(p=>(
+                      <button
+                        key={p.n}
+                        type="button"
+                        onClick={()=>{
+                          track("pricing_preset_click",{value:p.n,label:p.label,period:periodo})
+                          setContractsSafe(p.n)
+                        }}
+                        className={clsx(
+                          "px-3 py-1.5 rounded-lg border text-sm transition",
+                          contracts===p.n ? "border-[var(--c-primary)] bg-[var(--c-surface-2)]" : "border-[var(--c-border)] hover:bg-[var(--c-surface-2)]"
+                        )}
+                        aria-pressed={contracts===p.n}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ticket médio */}
+                <div className="mt-5">
+                  <label htmlFor="ticket-medio" className="text-sm font-medium">Ticket médio mensal (R$)</label>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--c-muted)]">R$</span>
+                      <input
+                        id="ticket-medio" type="number" inputMode="decimal" step={1} min={0} value={ticketMedio}
+                        onChange={(e)=>setTicketMedio(Number(e.target.value))}
+                        className="w-44 pl-8 pr-3 py-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]"
+                        placeholder="ex.: 60"
+                      />
+                    </div>
+                    <span className="muted text-sm">
+                      Receita mensal estimada: <strong>{formatBRL(contracts * (Number(ticketMedio)||0))}</strong>
+                    </span>
+                  </div>
+                  <p className="muted text-xs mt-1">Use o valor médio que seu cliente paga por mês.</p>
+                </div>
+
+                {/* Add-ons com valores na label */}
+                <div className="mt-5 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
                     <input
-                      id="ticket-medio" type="number" inputMode="decimal" step={1} min={0} value={ticketMedio}
-                      onChange={(e)=>setTicketMedio(Number(e.target.value))}
-                      className="w-44 pl-8 pr-3 py-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]"
-                      placeholder="ex.: 60"
+                      id="toggle-whatsapp" type="checkbox" className="rounded-md border border-[var(--c-border)]"
+                      checked={whatsappAddon}
+                      onChange={(e)=>{setWhatsappAddon(e.target.checked); track("pricing_whatsapp_toggle",{enabled:e.target.checked,period:periodo})}}
                     />
+                    <label htmlFor="toggle-whatsapp" className="text-sm">
+                      Incluir <strong>WhatsApp ilimitado</strong> ({addonPriceDisplay(whatsappMonthly)}).
+                    </label>
                   </div>
-                  <span className="muted text-sm">
-                    Receita mensal estimada: <strong>{formatBRL(contracts * (Number(ticketMedio)||0))}</strong>
-                  </span>
-                </div>
-                <p className="muted text-xs mt-1">Use o valor médio que seu cliente paga por mês.</p>
-              </div>
 
-              {/* Add-ons com valores na label */}
-              <div className="mt-5 flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <input
-                    id="toggle-whatsapp" type="checkbox" className="rounded-md border border-[var(--c-border)]"
-                    checked={whatsappAddon}
-                    onChange={(e)=>{setWhatsappAddon(e.target.checked); track("pricing_whatsapp_toggle",{enabled:e.target.checked,period:periodo})}}
-                  />
-                  <label htmlFor="toggle-whatsapp" className="text-sm">
-                    Incluir <strong>WhatsApp ilimitado</strong> ({addonPriceDisplay(whatsappMonthly)}).
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    id="toggle-site" type="checkbox" className="rounded-md border border-[var(--c-border)]"
-                    checked={siteAddon}
-                    onChange={(e)=>{setSiteAddon(e.target.checked); track("pricing_site_toggle",{enabled:e.target.checked,period:periodo})}}
-                  />
-                  <label htmlFor="toggle-site" className="text-sm">
-                    Incluir <strong>Site Premium</strong> ({addonPriceDisplay(siteMonthlyRaw)}).
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    id="toggle-app" type="checkbox" className="rounded-md border border-[var(--c-border)]"
-                    checked={appAddon}
-                    onChange={(e)=>{setAppAddon(e.target.checked); track("pricing_app_toggle",{enabled:e.target.checked,period:periodo})}}
-                  />
-                  <label htmlFor="toggle-app" className="text-sm">
-                    Incluir <strong>App do Associado</strong> ({addonPriceDisplay(appMonthlyRaw)}).
-                  </label>
-                </div>
-
-                {showNearHint && (
-                  <div className="text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
-                    Você está a <strong>{nearNext}</strong> contratos do próximo degrau de preço.
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="toggle-site" type="checkbox" className="rounded-md border border-[var(--c-border)]"
+                      checked={siteAddon}
+                      onChange={(e)=>{setSiteAddon(e.target.checked); track("pricing_site_toggle",{enabled:e.target.checked,period:periodo})}}
+                    />
+                    <label htmlFor="toggle-site" className="text-sm">
+                      Incluir <strong>Site Premium</strong> ({addonPriceDisplay(siteMonthlyRaw)}).
+                    </label>
                   </div>
-                )}
-              </div>
-            </div>
 
-            {/* Resumo */}
-            <div className="relative xl:sticky xl:top-24">
-              <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
-                {contracts>BREAKPOINTS.ent4 && (
-                  <span className="absolute -top-3 right-3 px-2 py-0.5 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)]">
-                    Sob consulta
-                  </span>
-                )}
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="toggle-app" type="checkbox" className="rounded-md border border-[var(--c-border)]"
+                      checked={appAddon}
+                      onChange={(e)=>{setAppAddon(e.target.checked); track("pricing_app_toggle",{enabled:e.target.checked,period:periodo})}}
+                    />
+                    <label htmlFor="toggle-app" className="text-sm">
+                      Incluir <strong>App do Associado</strong> ({addonPriceDisplay(appMonthlyRaw)}).
+                    </label>
+                  </div>
 
-                <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Resultado da simulação</div>
-                <div className="mt-1 font-semibold">
-                  {selectedTier?.name || "—"} <span className="muted">({selectedTier?.rangeLabel || "—"})</span>
-                </div>
-
-                <div className="mt-3 space-y-2" aria-live="polite">
-                  <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
-                    <div className="text-xs uppercase tracking-wide muted">Custo Progem {periodo==="mensal"?"mensal":"anual"}</div>
-                    <div className="mt-1 text-2xl font-bold">
-                      {simulatedTotal != null ? formatBRL(simulatedTotal) : "Sob consulta"}
-                      {simulatedTotal != null && <span className="text-sm font-medium muted"> {periodo==="mensal"?"/mês":"/ano"}</span>}
+                  {showNearHint && (
+                    <div className="text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2">
+                      Você está a <strong>{nearNext}</strong> contratos do próximo degrau de preço.
                     </div>
-                    {periodo==="anual" && simulatedTotal!=null && (
-                      <div className="text-xs muted mt-1">
-                        Equivalente mensal: <strong>{formatBRL(custoMensalEquivalente)}</strong>
-                        {economiaAnual>0 && <> • Economia anual: <strong>{formatBRL(economiaAnual)}</strong></>}
+                  )}
+                </div>
+              </div>
+
+              {/* Resumo */}
+              <div className="relative xl:sticky xl:top-24">
+                <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
+                  {contracts>BREAKPOINTS.ent4 && (
+                    <span className="absolute -top-3 right-3 px-2 py-0.5 text-xs rounded-md border border-[var(--c-border)] bg-[var(--c-surface)]">
+                      Sob consulta
+                    </span>
+                  )}
+
+                  <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Resultado da simulação</div>
+                  <div className="mt-1 font-semibold">
+                    {selectedTier?.name || "—"} <span className="muted">({selectedTier?.rangeLabel || "—"})</span>
+                  </div>
+
+                  <div className="mt-3 space-y-2" aria-live="polite">
+                    <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
+                      <div className="text-xs uppercase tracking-wide muted">Custo Progem {periodo==="mensal"?"mensal":"anual"}</div>
+                      <div className="mt-1 text-2xl font-bold">
+                        {simulatedTotal != null ? formatBRL(simulatedTotal) : "Sob consulta"}
+                        {simulatedTotal != null && <span className="text-sm font-medium muted"> {periodo==="mensal"?"/mês":"/ano"}</span>}
                       </div>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
-                      <div className="text-xs uppercase tracking-wide muted">Receita estimada (mês)</div>
-                      <div className="mt-1 text-lg font-semibold">{formatBRL(receitaMensalEstim)}</div>
+                      {periodo==="anual" && simulatedTotal!=null && (
+                        <div className="text-xs muted mt-1">
+                          Equivalente mensal: <strong>{formatBRL(custoMensalEquivalente)}</strong>
+                          {economiaAnual>0 && <> • Economia anual: <strong>{formatBRL(economiaAnual)}</strong></>}
+                        </div>
+                      )}
                     </div>
-                    <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
+                        <div className="text-xs uppercase tracking-wide muted">Receita estimada (mês)</div>
+                        <div className="mt-1 text-lg font-semibold">{formatBRL(receitaMensalEstim)}</div>
+                      </div>
+                      <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] p-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs uppercase tracking-wide muted">% do custo na receita</span>
+                          <Percent className="w-4 h-4 text-[color:var(--c-muted)]"/>
+                        </div>
+                        <div className="mt-1 text-lg font-semibold">
+                          {custoMensalEquivalente!=null && receitaMensalEstim>0 ? `${(custoSobreReceitaPct ?? 0).toFixed(2)}%` : "—"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quebra do total por item */}
+                    <div className="mt-1 space-y-1 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs uppercase tracking-wide muted">% do custo na receita</span>
-                        <Percent className="w-4 h-4 text-[color:var(--c-muted)]"/>
+                        <span className="muted">Base do plano</span>
+                        <span className="font-medium">
+                          {formatBRL(simulatedPrice)}
+                          {simulatedPrice!=null && <span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span>}
+                        </span>
                       </div>
-                      <div className="mt-1 text-lg font-semibold">
-                        {custoMensalEquivalente!=null && receitaMensalEstim>0 ? `${(custoSobreReceitaPct ?? 0).toFixed(2)}%` : "—"}
+
+                      <div className="flex items-center justify-between">
+                        <span className="muted">WhatsApp ilimitado</span>
+                        <span className="font-medium">
+                          {whatsappAddon ? (whatsappPrice!=null ? <>{formatBRL(whatsappPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
+                        </span>
                       </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="muted">Site Premium</span>
+                        <span className="font-medium">
+                          {siteAddon ? (sitePrice!=null ? <>{formatBRL(sitePrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className="muted">App do Associado</span>
+                        <span className="font-medium">
+                          {appAddon ? (appPrice!=null ? <>{formatBRL(appPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
+                        </span>
+                      </div>
+
+                      <div className="h-px bg-[var(--c-border)] my-2" />
+                      <div className="flex items-center justify-between text-base font-semibold">
+                        <span>Total</span>
+                        <span>
+                          {simulatedTotal != null ? <>{formatBRL(simulatedTotal)}<span className="muted text-sm"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta"}
+                        </span>
+                      </div>
+
+                      {perContract != null && (
+                        <div className="mt-2 text-xs text-[color:var(--c-muted)]">
+                          ≈ {formatBRL(perContract)} por contrato/mês
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Quebra do total por item */}
-                  <div className="mt-1 space-y-1 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="muted">Base do plano</span>
-                      <span className="font-medium">
-                        {formatBRL(simulatedPrice)}
-                        {simulatedPrice!=null && <span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span>}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="muted">WhatsApp ilimitado</span>
-                      <span className="font-medium">
-                        {whatsappAddon ? (whatsappPrice!=null ? <>{formatBRL(whatsappPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="muted">Site Premium</span>
-                      <span className="font-medium">
-                        {siteAddon ? (sitePrice!=null ? <>{formatBRL(sitePrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="muted">App do Associado</span>
-                      <span className="font-medium">
-                        {appAddon ? (appPrice!=null ? <>{formatBRL(appPrice)}<span className="muted"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta") : "—"}
-                      </span>
-                    </div>
-
-                    <div className="h-px bg-[var(--c-border)] my-2" />
-                    <div className="flex items-center justify-between text-base font-semibold">
-                      <span>Total</span>
-                      <span>
-                        {simulatedTotal != null ? <>{formatBRL(simulatedTotal)}<span className="muted text-sm"> {periodo==="mensal"?"/mês":"/ano"}</span></> : "Sob consulta"}
-                      </span>
-                    </div>
-
-                    {perContract != null && (
-                      <div className="mt-2 text-xs text-[color:var(--c-muted)]">
-                        ≈ {formatBRL(perContract)} por contrato/mês
-                      </div>
-                    )}
+                  {/* Ações */}
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <Link
+                      to="/demo"
+                      className="btn btn-primary btn-demo w-full text-center"
+                      onClick={()=>track("pricing_cta_click",{
+                        origin:"simulator_card",
+                        planId:selectedTier?.id||"unknown",
+                        planName:selectedTier?.name||"unknown",
+                        period:periodo, contracts,
+                        addons:{ whatsapp: whatsappAddon, site: siteAddon, app: appAddon },
+                        ticketMedio
+                      })}
+                    >
+                      Solicitar Demonstração
+                    </Link>
+                    <Link to="/contato" className="btn btn-ghost w-full text-center">Gerar proposta</Link>
                   </div>
-                </div>
 
-                {/* Ações */}
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Link
-                    to="/demo"
-                    className="btn btn-primary btn-demo w-full text-center"
-                    onClick={()=>track("pricing_cta_click",{
-                      origin:"simulator_card",
-                      planId:selectedTier?.id||"unknown",
-                      planName:selectedTier?.name||"unknown",
-                      period:periodo, contracts,
-                      addons:{ whatsapp: whatsappAddon, site: siteAddon, app: appAddon },
-                      ticketMedio
-                    })}
-                  >
-                    Solicitar Demonstração
-                  </Link>
-                  <Link to="/contato" className="btn btn-ghost w-full text-center">Gerar proposta</Link>
+                  {/* share */}
+                  <button type="button" onClick={copyLink} className="mt-3 inline-flex items-center gap-2 text-sm">
+                    <LinkIcon className="w-4 h-4 text-[color:var(--c-muted)]"/> {copied ? "Link copiado!" : "Copiar link da simulação"}
+                  </button>
                 </div>
-
-                {/* share */}
-                <button type="button" onClick={copyLink} className="mt-3 inline-flex items-center gap-2 text-sm">
-                  <LinkIcon className="w-4 h-4 text-[color:var(--c-muted)]"/> {copied ? "Link copiado!" : "Copiar link da simulação"}
-                </button>
               </div>
             </div>
-          </div>
 
-          <p className="mt-3 text-xs text-[color:var(--c-muted)]">
-            Os valores referem-se à <strong>mensalidade do Progem</strong>. Impostos e tarifas de meios de pagamento não estão incluídos.
-          </p>
-        </section>
+            <p className="mt-3 text-xs text-[color:var(--c-muted)]">
+              Os valores referem-se à <strong>mensalidade do Progem</strong>. Impostos e tarifas de meios de pagamento não estão incluídos.
+            </p>
+          </section>
+        )}
 
         {/* APIs e integrações */}
         <section className="mt-10">
@@ -1131,7 +1162,7 @@ export default function Planos(){
         </section>
       </main>
 
-
+     
     </div>
   )
 }

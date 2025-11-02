@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import pet from "@/assets/img/pet.png"
 import {
@@ -189,7 +188,6 @@ export default function PlanosPet(){
       </main>
      {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer/>
     </div>
   )
 }

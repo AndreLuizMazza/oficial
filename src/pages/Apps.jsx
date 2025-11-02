@@ -1,11 +1,11 @@
 // src/pages/Apps.jsx
 import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import CardMotion from "@/components/CardMotion"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import placeholder from "@/assets/img/placeholder.png"
+import appsGeral from "@/assets/img/app/apps-geral.png"
 
 import {
   Sparkles, Smartphone, UserRound, BadgeDollarSign, Wallet2, ShieldCheck,
@@ -13,6 +13,17 @@ import {
   ArrowRight, Apple
 } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+
+// === IMPORTS DAS TELAS (coloque os 9 PNGs em src/assets/img/app/) ===
+import a1 from "@/assets/img/app/associado-1.png"
+import a2 from "@/assets/img/app/associado-2.png"
+import a3 from "@/assets/img/app/associado-3.png"
+import v1 from "@/assets/img/app/vendedor-1.png"
+import v2 from "@/assets/img/app/vendedor-2.png"
+import v3 from "@/assets/img/app/vendedor-3.png"
+import c1 from "@/assets/img/app/cobrador-1.png"
+import c2 from "@/assets/img/app/cobrador-2.png"
+import c3 from "@/assets/img/app/cobrador-3.png"
 
 export default function Apps(){
   const [search, setSearch] = useSearchParams()
@@ -50,6 +61,13 @@ export default function Apps(){
     cobrador:  { ios:false, android:true },
   }
 
+  // Imagens reais
+  const SCREENS = {
+    associado: [a1, a2, a3],
+    vendedor:  [v1, v2, v3],
+    cobrador:  [c1, c2, c3],
+  }
+
   const FEATURES = {
     associado: [
       { icon: FileText,  t:"2ª via e pagamentos", d:"Boleto/Pix, histórico e comprovantes." },
@@ -57,7 +75,7 @@ export default function Apps(){
       { icon: BellRing,  t:"Notificações úteis",  d:"Lembretes de vencimento e avisos." },
       { icon: UserRound, t:"Autoatendimento",     d:"Atualização cadastral e solicitações." },
       { icon: Sparkles,  t:"Memorial & homenagens", d:"Integração com memorial digital." },
-      { icon: ShieldCheck, t:"Whitelabel (Associado)", d:"Cores, ícones e domínio da sua marca — apenas no App do Associado." },
+      { icon: ShieldCheck, t:"App com sua marca", d:"Cores, ícones e domínio da sua empresa." },
     ],
     vendedor: [
       { icon: BadgeDollarSign, t:"Propostas e cadastros", d:"Fluxo guiado e assinatura no app." },
@@ -127,14 +145,14 @@ export default function Apps(){
               <Smartphone className="w-4 h-4 text-[color:var(--c-muted)]"/> Apps móveis — Associado Whitelabel
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
-              Apps para <span className="text-[var(--c-primary)]">associados, vendedores e cobradores</span>
+              Três apps, <span className="text-[var(--c-primary)]">uma experiência única</span>
             </h1>
             <p className="muted mt-3 text-lg">
-              Experiências móveis que reduzem fricção, aceleram cadastros e melhoram a cobrança. App do Associado com sua marca (whitelabel).
+              Soluções que reduzem fricção, aceleram cadastros e reforçam a cobrança — com o App do Associado na sua marca (whitelabel).
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">Solicitar demonstração</Link>
-              <Link to="/planos" className="btn btn-ghost">Ver planos</Link>
+              <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo" title="Solicitar demonstração" aria-label="Solicitar demonstração">Solicitar demonstração</Link>
+              <Link to="/planos" className="btn btn-ghost" title="Ver planos" aria-label="Ver planos">Ver planos</Link>
             </div>
 
             {/* Prova social */}
@@ -158,7 +176,7 @@ export default function Apps(){
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
-            <img src={placeholder} alt="Mockup dos apps Progem" className="w-full h-full object-cover" />
+            <img src={appsGeral} alt="Mockup dos apps Progem" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
@@ -173,7 +191,7 @@ export default function Apps(){
                 type="button"
                 onClick={()=>setTab(id)}
                 aria-pressed={tab===id}
-                className={`px-3 py-1.5 rounded-lg text-sm inline-flex items-center gap-2 transition ${
+                className={`px-3 py-1.5 rounded-lg text-sm inline-flex items-center gap-2 transition focus:outline-none focus:ring-2 focus:ring-[var(--c-primary)] ${
                   tab===id ? "bg-[var(--c-primary)] text-[var(--c-primary-contrast)] shadow-sm" : "hover:bg-[var(--c-surface-2)]"
                 }`}
               >
@@ -183,7 +201,7 @@ export default function Apps(){
           </div>
         </div>
 
-        {/* CONTEÚDO POR ABA (com transições) */}
+        {/* CONTEÚDO POR ABA */}
         <section
           className="mt-8 grid lg:grid-cols-[1fr,0.9fr] gap-8 items-start"
           aria-live="polite" aria-busy="false"
@@ -222,10 +240,11 @@ export default function Apps(){
                     to={detailsPath(tab)}
                     className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)] px-3 py-2 text-sm hover:bg-[var(--c-surface-2)] transition"
                     aria-label="Ver detalhes do app"
+                    title="Ver detalhes do app"
                   >
                     Ver detalhes do app <ArrowRight className="w-4 h-4"/>
                   </Link>
-                  <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo text-sm">
+                  <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo text-sm" aria-label="Solicitar demonstração" title="Solicitar demonstração">
                     Solicitar demonstração
                   </Link>
                 </div>
@@ -242,7 +261,7 @@ export default function Apps(){
                     animate="animate"
                     exit="exit"
                   >
-                    <CardMotion className="card p-4 flex items-start gap-3" tabIndex={0}>
+                    <CardMotion className="card p-4 flex items-start gap-3 min-h-[96px]" tabIndex={0}>
                       <span className="inline-flex w-9 h-9 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                         <Icon className="w-4 h-4 text-[color:var(--c-muted)]"/>
                       </span>
@@ -283,7 +302,7 @@ export default function Apps(){
               <div className="text-sm uppercase tracking-wide text-[color:var(--c-muted)]">Algumas telas</div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {Array.from({length:3}).map((_,i)=>(
+                {SCREENS[tab].map((src,i)=>(
                   <motion.div
                     key={`${tab}-screen-${i}`}
                     custom={i}
@@ -295,10 +314,13 @@ export default function Apps(){
                     <Link to={detailsPath(tab)} className="group focus:outline-none">
                       <CardMotion className="rounded-xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)] ring-0 group-focus:ring-2 ring-[var(--c-primary)]" tabIndex={0}>
                         <img
-                          src={placeholder}
-                          alt="Tela do app"
-                          className="w-full h-56 object-cover group-hover:opacity-95 transition"
+                          src={src}
+                          alt={`Tela do ${tab} ${i+1}`}
+                          className="w-full h-56 object-contain bg-transparent group-hover:opacity-95 transition"
                           loading="lazy"
+                          width="360"
+                          height="224"
+                          onError={(e)=>{ e.currentTarget.src = placeholder; e.currentTarget.alt = "Prévia indisponível"; }}
                         />
                       </CardMotion>
                     </Link>
@@ -319,7 +341,7 @@ export default function Apps(){
           </AnimatePresence>
         </section>
 
-        {/* Custos & Setup (ajustado) */}
+        {/* Custos & Setup */}
         <section className="mt-8">
           <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
             <div className="flex items-start gap-3">
@@ -349,7 +371,6 @@ export default function Apps(){
                   </li>
                 </ul>
 
-                {/* Ação para planos */}
                 <div className="mt-3">
                   <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
                 </div>
@@ -383,9 +404,9 @@ export default function Apps(){
                 ].map((row)=>(
                   <tr key={row.k} className="border-t border-[var(--c-border)]">
                     <td className="px-4 py-3 font-medium">{row.k}</td>
-                    <td className="px-4 py-3">{row.a ? <Check className="w-4 h-4"/> : "—"}</td>
-                    <td className="px-4 py-3">{row.v ? <Check className="w-4 h-4"/> : "—"}</td>
-                    <td className="px-4 py-3">{row.c ? <Check className="w-4 h-4"/> : "—"}</td>
+                    <td className="px-4 py-3">{row.a ? <Check className="w-4 h-4" aria-label="Disponível"/> : "—"}</td>
+                    <td className="px-4 py-3">{row.v ? <Check className="w-4 h-4" aria-label="Disponível"/> : "—"}</td>
+                    <td className="px-4 py-3">{row.c ? <Check className="w-4 h-4" aria-label="Disponível"/> : "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -417,7 +438,7 @@ export default function Apps(){
       {/* CTA flutuante (mobile) */}
       <BottomDockCTA/>
 
-      <Footer/>
+      
     </div>
   )
 }

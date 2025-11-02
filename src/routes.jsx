@@ -1,44 +1,54 @@
 // src/router.jsx
 import { createBrowserRouter } from 'react-router-dom'
-import AppShell from '@/layouts/AppShell'              // ⟵ novo: Header persistente fora das transições
+import AppShell from '@/layouts/AppShell'
 import PageTransitionLayout from '@/layouts/PageFadeLayout'
 
 import Home from '@/pages/Home'
 import Developers from '@/pages/Developers'
 import Clientes from '@/pages/Clientes'
-import Planos from './pages/Planos'
-import Contato from './pages/Contato'
-import Demo from './pages/Demo'
+
+import PlanosPublic from '@/pages/PlanosPublic'
+import PlanosVendas from '@/pages/PlanosVendas'
+import Vendas from '@/pages/Vendas'
+
+import Contato from '@/pages/Contato'
+import Demo from '@/pages/Demo'
 import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
-import Migracao from './pages/Migracao'
-import AppAssociado from './pages/AppAssociado'
-import SitePremium from './pages/SitePremium'
-import Taxas from './pages/Taxas'
-import QuemSomos from './pages/QuemSomos'
-import GestaoWeb from './pages/GestaoWeb'
-import AppDoCobradorPage from './pages/AppDoCobradorPage'
-import AppDoVendedorPage from './pages/AppDoVendedorPage'
-import ClubeBeneficios from './pages/ParceriasBeneficios'
-import PlanosPet from './pages/PlanosPet'
-import IntegracaoWhatsapp from './pages/IntegracaoWhatsapp'
-import Apps from './pages/Apps'
+import Migracao from '@/pages/Migracao'
+import AppAssociado from '@/pages/AppAssociado'
+import SitePremium from '@/pages/SitePremium'
+import Taxas from '@/pages/Taxas'
+import QuemSomos from '@/pages/QuemSomos'
+import GestaoWeb from '@/pages/GestaoWeb'
+import AppDoCobradorPage from '@/pages/AppDoCobradorPage'
+import AppDoVendedorPage from '@/pages/AppDoVendedorPage'
+import ClubeBeneficios from '@/pages/ParceriasBeneficios'
+import PlanosPet from '@/pages/PlanosPet'
+import IntegracaoWhatsapp from '@/pages/IntegracaoWhatsapp'
+import Apps from '@/pages/Apps'
 
 export const router = createBrowserRouter([
   {
-    // Header fixo aqui dentro
     element: <AppShell />,
     children: [
-      // ➜ Rotas SEM transição (evita flicker do vídeo)
+      // SEM transição (evita flicker do vídeo)
       { path: '/', element: <Home/> },
       { path: '/funcionalidades', element: <Home/> },
-       { path: '/quem-somos', element: <QuemSomos/> },
+      { path: '/quem-somos', element: <QuemSomos/> },
 
-      // ➜ Demais rotas COM transição (Header fica de fora)
       {
         element: <PageTransitionLayout />,
         children: [
-          { path: '/planos', element: <Planos/> },
+          // Público
+          { path: '/planos', element: <PlanosPublic/> },
+
+          // Interno (simulador) — protegido via PrivateGate + noindex (+ robots)
+          { path: '/planos/simulador', element: <PlanosVendas/> },
+
+          // Hub interno opcional
+          { path: '/vendas', element: <Vendas/> },
+
           { path: '/clientes', element: <Clientes/> },
           { path: '/blog', element: <Blog/> },
           { path: '/contato', element: <Contato/> },
@@ -48,7 +58,6 @@ export const router = createBrowserRouter([
           { path: '/developers', element: <Developers/> },
           { path: '/taxas', element: <Taxas/> },
           { path: '/gestao-web', element: <GestaoWeb/> },
-
           { path: '/site-premium', element: <SitePremium/> },
           { path: '/app-cobrador', element: <AppDoCobradorPage/> },
           { path: '/app-vendedor', element: <AppDoVendedorPage/> },

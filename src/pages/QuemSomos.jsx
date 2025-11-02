@@ -1,7 +1,6 @@
 // src/pages/QuemSomos.jsx
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import Footer from "@/components/Footer";
 import BottomDockCTA from "@/components/BottomDockCTA";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import placeholder from "@/assets/img/placeholder.png";
@@ -278,7 +277,6 @@ export default function QuemSomos(){
       {/* Dock de CTA (mobile) */}
       <BottomDockCTA />
 
-      <Footer/>
     </div>
   );
 }

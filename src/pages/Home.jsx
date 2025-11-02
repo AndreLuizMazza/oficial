@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BFF } from '@/lib/bff'
 import { setPageSEO } from '@/lib/seo'
-import Footer from '@/components/Footer'
 import Hero from '@/components/Hero'
 import Solutions from '@/components/Solutions'
 import LogosBar from '@/components/LogosBar'
@@ -25,7 +24,7 @@ export default function Home(){
       <LogosBar/>
       <FeatureGrid/>
        <BottomDockCTA />
-      <Footer/>
+   
     </div>
   )
 }

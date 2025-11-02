@@ -1,7 +1,6 @@
 // src/pages/Blog.jsx
 import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
 import { Search, Tag, Calendar, Clock, ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
@@ -215,7 +214,6 @@ export default function Blog(){
         )}
       </main>
 
-      <Footer/>
     </div>
   )
 }

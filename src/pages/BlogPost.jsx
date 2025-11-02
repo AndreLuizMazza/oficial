@@ -1,7 +1,6 @@
 // src/pages/BlogPost.jsx
 import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import { BFF } from "@/lib/bff"
 import { Calendar, Clock, ArrowLeft, Mail, Phone, Check, Info, Sparkles } from "lucide-react"
@@ -186,8 +185,6 @@ export default function BlogPost(){
 
         <SubscribeBanner postTitle={post.title} />
       </main>
-
-      <Footer/>
     </div>
   )
 }

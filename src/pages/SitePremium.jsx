@@ -3,7 +3,6 @@ import { useEffect } from "react"
 
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
   Globe, Sparkles, ShieldCheck, Palette, Fingerprint, Search,
@@ -173,7 +172,7 @@ export default function SitePremium(){
 
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-      <Footer/>
+
     </div>
   )
 }

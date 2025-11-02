@@ -1,7 +1,6 @@
 // src/pages/IntegracaoWhatsapp.jsx
 import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import Footer from "@/components/Footer"
 import { setPageSEO } from "@/lib/seo"
 import {
   MessageCircle, Filter, CalendarCheck2, ShieldCheck, ClipboardList,
@@ -216,7 +215,7 @@ export default function IntegracaoWhatsapp(){
       </main>
 
       <BottomDockCTA />
-      <Footer/>
+
     </div>
   )
 }
