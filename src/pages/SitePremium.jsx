@@ -9,6 +9,7 @@ import {
   Layout, Smartphone, Link2, Rocket, Check, Info
 } from "lucide-react"
 import placeholder from "@/assets/img/app/site.png"
+import site2 from "@/assets/img/app/site2.png"
 
 export default function SitePremium(){
   useEffect(()=>{
@@ -48,7 +49,15 @@ export default function SitePremium(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-              <Link to="/blog" className="btn btn-ghost">Ver conteúdos</Link>
+             <a
+  href="https://demo.progem.com.br/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="btn btn-ghost"
+>
+  Ver Site Exemplo
+</a>
+
               {/* Link para planos/simulador */}
               <Link to="/planos" className="btn btn-ghost">Ver planos e simular</Link>
             </div>
@@ -56,7 +65,7 @@ export default function SitePremium(){
 
           <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] bg-[var(--c-surface-2)]">
             <img
-              src={placeholder}
+              src={site2}
               alt="Mockup de website premium"
               className="w-full h-full object-cover"
               loading="lazy"
