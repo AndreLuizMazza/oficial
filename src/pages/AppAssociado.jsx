@@ -2,7 +2,7 @@
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
 import placeholder1 from "@/assets/img/placeholder.png"
-import placeholder from "@/assets/img/app/associado-1.png"
+import placeholder from "@/assets/img/app/associado-2.png"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { setPageSEO } from "@/lib/seo"
 import {
