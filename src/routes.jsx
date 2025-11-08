@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
         element: <PageTransitionLayout />,
         children: [
           // Público
-          { path: '/planos', element: <PlanosPublic/> },
+          { path: '/planos-antigos', element: <PlanosPublic/> },
 
           // Interno (simulador) — protegido via PrivateGate + noindex (+ robots)
           { path: '/planos/simulador', element: <PlanosVendas/> },
@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
           { path: '/pet', element: <PlanosPet/> },
           { path: '/apps', element: <Apps/> },
           { path: '/zap', element: <IntegracaoWhatsapp/> },
-          { path: "/planos-novos", element: <PlanosNovos /> },
+          { path: "/planos", element: <PlanosNovos /> },
           { path: '/app-associado', element: <AppAssociado/> },
         ],
       },
