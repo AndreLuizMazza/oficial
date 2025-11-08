@@ -5,7 +5,7 @@ import CardMotion from "@/components/CardMotion";
 import {
   CheckCircle2, XCircle, PlusCircle, ShieldCheck, Globe, Building2, Users,
   HardDrive, Cable, Workflow, Banknote, Receipt, Store, Smartphone, Globe2, Info,
-  LineChart, Handshake, BadgeDollarSign, Percent, MessageCircle, Star, Award, Rocket, Clock
+  Handshake, BadgeDollarSign, MessageCircle, Star, Award, Rocket, Clock
 } from "lucide-react";
 import { setPageSEO } from "@/lib/seo";
 import { useEffect, useMemo, useState, useId, useRef, useLayoutEffect } from "react";
@@ -28,12 +28,12 @@ const priceForPeriod = (mensal, periodo) =>
 
 const economiaAnual = (mensal) => mensal * 12 * DESCONTO_ANUAL;
 
-/** A11y */
+/** A11y: conteúdo apenas para leitores de tela */
 function VisuallyHidden({ as: Tag = "span", children }) {
   return <Tag className="sr-only">{children}</Tag>;
 }
 
-/** Tooltip acessível */
+/** Tooltip acessível com animação (desativa em touch) */
 function Tooltip({ label, children, disableOnTouch = true }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -56,7 +56,9 @@ function Tooltip({ label, children, disableOnTouch = true }) {
     }
   }, [open, tooltipEnabled]);
 
-  if (!tooltipEnabled) return <span className="inline-flex">{children}</span>;
+  if (!tooltipEnabled) {
+    return <span className="inline-flex">{children}</span>;
+  }
 
   return (
     <span
@@ -140,7 +142,7 @@ function TogglePeriodo({ periodo, setPeriodo }) {
   );
 }
 
-/** Modal */
+/** Modal desktop: portal, scroll lock e animação */
 function Modal({ open, onClose, title, children }) {
   const dialogRef = useRef(null);
   const [mounted, setMounted] = useState(open);
@@ -217,7 +219,7 @@ function Modal({ open, onClose, title, children }) {
   );
 }
 
-/** Popover */
+/** Popover mobile com animação + auto-flip */
 function PopoverFaixas({ anchorRect, open, onClose, children }) {
   const cardRef = useRef(null);
   const [pos, setPos] = useState({ top: 0, left: 0, place: "bottom" });
@@ -299,9 +301,10 @@ function PopoverFaixas({ anchorRect, open, onClose, children }) {
   );
 }
 
-/** Link “Saiba mais” */
+/** Link “Saiba mais” (popover no touch / modal no desktop) */
 function SaibaMaisLink({ onDesktop, onMobile }) {
   const btnRef = useRef(null);
+
   function handleClick(e) {
     e.preventDefault();
     if (isTouchDevice()) {
@@ -311,6 +314,7 @@ function SaibaMaisLink({ onDesktop, onMobile }) {
       onDesktop?.();
     }
   }
+
   return (
     <Tooltip label="Faixas progressivas após 500 contratos. Clique para ver a explicação." disableOnTouch>
       <button
@@ -375,7 +379,7 @@ const PLANS_RAW = [
       { icon: Store,      label: "Gestão de Planos",              status: { type: "sim", text: "Sim" } },
       { icon: Smartphone, label: "APP Cobrador & Vendedor",       status: { type: "sim", text: "Sim" } },
       { icon: Users,      label: "APP Associado",                 status: { type: "nao", text: "Não" } },
-      { icon: Globe,      label: "Site",                          status: { type: "adicional", text: "Add-on" } }, // PRO como add-on
+      { icon: Globe,      label: "Site",                          status: { type: "adicional", text: "Add-on" } }, // add-on no PRO
       { icon: HardDrive,  label: "Armazenamento",                 status: { type: "sim", text: "500 MB" } },
     ],
     cta: { label: "Solicitar Demonstração", to: "/demo" },
@@ -399,7 +403,7 @@ const PLANS_RAW = [
       { icon: Globe2,     label: "Memorial Digital",              status: { type: "sim", text: "Sim" } },
       { icon: Store,      label: "Gestão de Planos",              status: { type: "sim", text: "Sim" } },
       { icon: Smartphone, label: "APP Cobrador & Vendedor",       status: { type: "sim", text: "Sim" } },
-      { icon: Users,      label: "APP Associado",                 status: { type: "adicional", text: "Add-on" } },
+      { icon: Users,      label: "APP Associado",                 status: { type: "adicional", text: "Add-on" } }, // add-on aqui
       { icon: Globe,      label: "Site",                          status: { type: "sim", text: "Sim" } },
       { icon: HardDrive,  label: "Armazenamento",                 status: { type: "sim", text: "1 GB" } },
     ],
@@ -411,7 +415,7 @@ const PLANS_RAW = [
 const INCLUDED_USERS = { start: 5, pro: 5, enterprise: 10 };
 const EXTRA_USER_PRICE = 10;
 
-/* ====== Seções persuasivas ====== */
+/* ====== Blocos persuasivos ====== */
 function Subnav() {
   const items = [
     { href: "#comparativo", label: "Comparativo" },
@@ -462,33 +466,53 @@ function ProofStrip() {
   );
 }
 
-/** CTA flutuante inteligente (não cobre rodapé) */
+/** CTA flutuante com deslocamento dinâmico pela altura visível do rodapé */
 function StickyCTA() {
   const [show, setShow] = useState(false);
-  const [footerVisible, setFooterVisible] = useState(false);
+  const [bottom, setBottom] = useState(12);
 
-  // Exibe CTA após rolar a página
-  useEffect(()=>{
+  // Mostra o CTA após rolar a página
+  useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 600);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  },[]);
-
-  // Observa o rodapé para não sobrepor
-  useEffect(() => {
-    const footer = document.querySelector("footer, #site-footer");
-    if (!footer || !("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setFooterVisible(entry.isIntersecting),
-      { rootMargin: "0px", threshold: 0.01 }
-    );
-    io.observe(footer);
-    return () => io.disconnect();
   }, []);
 
-  // Quando o rodapé aparece, o CTA “sobe” 96px
-  const bottomPx = footerVisible ? 96 : 12;
+  // Calcula o deslocamento exato conforme a parte do rodapé que entrou na viewport
+  useEffect(() => {
+    const footer =
+      document.querySelector("#site-footer") ||
+      document.querySelector("footer");
+
+    if (!footer) return;
+
+    const recalc = () => {
+      const r = footer.getBoundingClientRect();
+      // quanto o footer invade a viewport a partir da borda inferior
+      const overlap = Math.max(0, window.innerHeight - Math.max(r.top, 0));
+      // margem base (12px) + overlap (para “subir” o CTA) + 8px de respiro
+      setBottom(12 + overlap + (overlap > 0 ? 8 : 0));
+    };
+
+    const ro = new ResizeObserver(recalc);
+    ro.observe(footer);
+
+    const io = new IntersectionObserver(() => recalc(), { threshold: [0, 0.01, 1] });
+    io.observe(footer);
+
+    window.addEventListener("scroll", recalc, { passive: true });
+    window.addEventListener("resize", recalc);
+
+    recalc();
+
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+      window.removeEventListener("scroll", recalc);
+      window.removeEventListener("resize", recalc);
+    };
+  }, []);
 
   return (
     <div
@@ -496,7 +520,7 @@ function StickyCTA() {
         "fixed left-1/2 z-40 transition-all select-none",
         show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
       )}
-      style={{ bottom: bottomPx, transform: "translateX(-50%)" }}
+      style={{ bottom, transform: "translateX(-50%)" }}
       role="region"
       aria-label="Chamada para demonstração"
     >
@@ -512,8 +536,8 @@ function StickyCTA() {
 /* ==================== Página ==================== */
 export default function PlanosNovos() {
   const [periodo, setPeriodo] = useState("mensal");
-  const [openModal, setOpenModal] = useState(false);
-  const [popover, setPopover] = useState({ open: false, anchorRect: null });
+  const [openModal, setOpenModal] = useState(false); // desktop
+  const [popover, setPopover] = useState({ open: false, anchorRect: null }); // mobile
 
   useEffect(() => {
     setPageSEO({
@@ -585,6 +609,7 @@ export default function PlanosNovos() {
               tabIndex={0}
               aria-labelledby={`title-${p.id}`}
             >
+              {/* Ribbon destaque */}
               {p.destaque && (
                 <div className="pointer-events-none absolute -right-12 top-6 rotate-45 bg-[var(--c-primary)] text-[var(--c-primary-contrast)] text-xs font-semibold px-16 py-1 shadow-lg">
                   Mais vendido
@@ -596,6 +621,7 @@ export default function PlanosNovos() {
                 </div>
               )}
 
+              {/* Cabeçalho do card */}
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] shadow-sm">
@@ -606,6 +632,7 @@ export default function PlanosNovos() {
                     <div className="flex flex-wrap items-center gap-2 mt-1">
                       <StatusBadge type="segment">{p.segment}</StatusBadge>
                       <StatusBadge type="sim">{p.armazenamento}</StatusBadge>
+                      {/* CNPJ badge com tooltip */}
                       <Tooltip label="Para mais CNPJs, sob negociação.">
                         <StatusBadge type="note">{p.cnpj}</StatusBadge>
                       </Tooltip>
@@ -629,8 +656,13 @@ export default function PlanosNovos() {
                 </div>
               </div>
 
+              {/* Notas de precificação */}
               <div className="mt-3 text-xs text-[color:var(--c-muted)]">
-                {showStartNote && <span>Preço <strong>fixo</strong> até <strong>500 registros</strong>.</span>}
+                {showStartNote && (
+                  <span>
+                    Preço <strong>fixo</strong> até <strong>500 registros</strong>.
+                  </span>
+                )}
                 {showTierNoteProEnt && (
                   <span>
                     Mantém este valor <strong>até 500 contratos ativos</strong>.{" "}
@@ -642,12 +674,14 @@ export default function PlanosNovos() {
                 )}
               </div>
 
+              {/* Economia no anual */}
               {periodo === "anual" && (
                 <div className="mt-3 rounded-md border border-[var(--c-border)] bg-gradient-to-br from-emerald-50 to-transparent dark:from-emerald-900/20 px-3 py-2 text-xs">
                   Você economiza <strong>{fmtBRL(economia)}</strong> por ano.
                 </div>
               )}
 
+              {/* Recursos */}
               <div className="mt-4">
                 <h4 className="font-medium mb-2">Recursos</h4>
                 <ul className="divide-y divide-[var(--c-border)]">
@@ -657,11 +691,15 @@ export default function PlanosNovos() {
                 </ul>
               </div>
 
+              {/* Nota para extras */}
               <div className="mt-4 text-xs text-[color:var(--c-muted)]">
                 Extras e integrações são iguais para todos os planos.{" "}
-                <a className="underline underline-offset-2 hover:opacity-90" href="#extras">Ver opções</a>
+                <a className="underline underline-offset-2 hover:opacity-90" href="#extras">
+                  Ver opções
+                </a>
               </div>
 
+              {/* CTA */}
               <div className="mt-6">
                 <Link
                   to={p.cta.to}
@@ -680,19 +718,22 @@ export default function PlanosNovos() {
         })}
       </section>
 
-      {/* Selo CNPJs */}
+      {/* Selo/nota global CNPJs por plano */}
       <div className="mt-3">
         <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] px-4 py-3 text-xs text-[color:var(--c-muted)]">
           <strong>CNPJs atendidos por plano:</strong> Start <strong>(1)</strong> • Pro <strong>(2)</strong> • Enterprise <strong>(3)</strong>. Para mais CNPJs, <strong>sob negociação</strong>.
         </div>
       </div>
 
-      {/* Extras */}
+      {/* Extras & integrações — seção única */}
       <section id="extras" className="mt-10 card p-5">
         <h4 className="font-semibold">Extras e integrações (para qualquer plano)</h4>
         <div className="grid gap-2 mt-2">
           {EXTRAS_COMUNS.map((e, i) => (
-            <div key={i} className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2 text-sm flex items-center justify-between">
+            <div
+              key={i}
+              className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2 text-sm flex items-center justify-between"
+            >
               <span>{e.label}</span>
               <span className="font-medium">{e.value}</span>
             </div>
@@ -703,7 +744,7 @@ export default function PlanosNovos() {
         </p>
       </section>
 
-      {/* APIs */}
+      {/* APIs e integrações (card rápido) */}
       <section id="apis" className="mt-10">
         <div className="card p-5">
           <h4 className="font-semibold">APIs e integrações</h4>
@@ -723,7 +764,7 @@ export default function PlanosNovos() {
         </div>
       </section>
 
-      {/* Comparativo */}
+      {/* Comparativo operacional */}
       <section id="comparativo" className="mt-10">
         <h2 className="text-2xl font-semibold mb-4">Comparativo operacional</h2>
         <div className="overflow-x-auto border border-[var(--c-border)] rounded-xl">
@@ -826,6 +867,7 @@ export default function PlanosNovos() {
               </div>
             </div>
 
+            {/* Links úteis */}
             <div className="mt-3 text-xs text-[color:var(--c-muted)] flex flex-wrap items-center gap-2">
               <span className="font-medium mr-1">Links úteis:</span>
               <Link to="/taxas" className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 no-underline border border-[var(--c-border)] bg-[var(--c-surface-2)] hover:bg-[var(--c-surface)]">Taxas &amp; Cobrança</Link>
@@ -852,19 +894,34 @@ export default function PlanosNovos() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ (compacto) */}
       <section id="faq" className="mt-12">
         <h2 className="text-2xl font-semibold mb-3">Perguntas frequentes</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {[
-            { q: "Como vocês contam contratos ativos?", a: "Consideramos contratos com status 'ativo' no mês de faturamento. Cancelados/pausados não entram no cálculo." },
-            { q: "O WhatsApp ilimitado tem alguma taxa por mensagem?", a: <>Não. É um add-on de custo fixo mensal (por faixa), via integração com plataforma parceira oficial.</> },
-            { q: "Posso migrar meus dados atuais?", a: <>Sim. Ajudamos na importação de clientes, contratos, carnês/boletos e histórico básico.</> },
+            {
+              q: "Como vocês contam contratos ativos?",
+              a: "Consideramos contratos com status 'ativo' no mês de faturamento. Cancelados/pausados não entram no cálculo."
+            },
+            {
+              q: "O WhatsApp ilimitado tem alguma taxa por mensagem?",
+              a: <>Não. É um add-on de custo fixo mensal (por faixa), via integração com plataforma parceira oficial.</>
+            },
+            {
+              q: "Posso migrar meus dados atuais?",
+              a: <>Sim. Ajudamos na importação de clientes, contratos, carnês/boletos e histórico básico.</>
+            },
             { q: "Posso mudar de plano depois?", a: "Pode. O ajuste acompanha sua faixa de contratos ativos." },
             { q: "A baixa manual tem algum custo?", a: "Não. Só há cobrança quando o pagamento acontece pelo banco." },
             { q: "Quais são as taxas quando o cliente paga pelo banco?", a: <>As tarifas dependem do meio de pagamento. Consulte a página <Link to="/taxas" className="underline">Taxas &amp; Cobrança</Link>.</> },
-            { q: "Posso contratar o Site Premium ou o App do Associado depois?", a: <>Sim. Você pode contratar qualquer um separadamente conforme necessidade.</> },
-            { q: "Vocês oferecem API?", a: <>Sim. Disponibilizamos API para integrações (veja a <a href="https://sandbox-api.progem.com.br/docs/index.html" target="_blank" rel="noreferrer" className="underline">documentação da sandbox</a>).</> },
+            {
+              q: "Posso contratar o Site Premium ou o App do Associado depois?",
+              a: <>Sim. Você pode contratar qualquer um separadamente conforme necessidade.</>
+            },
+            {
+              q: "Vocês oferecem API?",
+              a: <>Sim. Disponibilizamos API para integrações (veja a <a href="https://sandbox-api.progem.com.br/docs/index.html" target="_blank" rel="noreferrer" className="underline">documentação da sandbox</a>).</>
+            },
             { q: "Existe fidelidade?", a: "Trabalhamos com fidelidade de 1 ano." },
             { q: "Como funciona o suporte?", a: "SLA conforme plano: Start até 24h úteis, Pro até 8h úteis, Enterprise até 4h úteis." },
           ].map((item, i) => (
@@ -876,7 +933,7 @@ export default function PlanosNovos() {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* Modal (desktop) */}
       <Modal
         open={openModal}
         onClose={()=>setOpenModal(false)}
