@@ -160,7 +160,7 @@ const PLANS_RAW = [
       { icon: Workflow,   label: "Ordem de Serviço",              status: { type: "sim", text: "Sim" } },
       { icon: Banknote,   label: "Gestão Financeira",             status: { type: "sim", text: "Sim" } },
       { icon: Cable,      label: "Integração Meios de Pagamento", status: { type: "sim", text: "Sim" } },
-      { icon: Globe2,     label: "Integração NaLapide",           status: { type: "nao", text: "Não" } },
+      { icon: Globe2,     label: "Integração NaLapide",           status: { type: "sim", text: "Sim" } },
       { icon: Store,      label: "Gestão de Planos",              status: { type: "nao", text: "Não" } },
       { icon: Smartphone, label: "APP Cobrador & Vendedor",       status: { type: "nao", text: "Não" } },
       { icon: Users,      label: "APP Associado",                 status: { type: "nao", text: "Não" } },
