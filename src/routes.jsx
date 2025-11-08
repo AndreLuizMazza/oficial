@@ -27,6 +27,7 @@ import ClubeBeneficios from '@/pages/ParceriasBeneficios'
 import PlanosPet from '@/pages/PlanosPet'
 import IntegracaoWhatsapp from '@/pages/IntegracaoWhatsapp'
 import Apps from '@/pages/Apps'
+import PlanosNovos from "@/pages/PlanosNovos";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
           { path: '/pet', element: <PlanosPet/> },
           { path: '/apps', element: <Apps/> },
           { path: '/zap', element: <IntegracaoWhatsapp/> },
+          { path: "/planos-novos", element: <PlanosNovos /> },
           { path: '/app-associado', element: <AppAssociado/> },
         ],
       },
