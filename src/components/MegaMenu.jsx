@@ -17,10 +17,7 @@ export const cols = [
     title: 'Produtos',
     items: [
       { icon: ShieldCheck,      label: 'Software de Gestão',        desc: 'Contratos, assinaturas, carnês/boletos e cobranças.', to: '/gestao-web' },
-      { icon: Smartphone,       label: 'Apps (visão geral)',        desc: 'Associado, Vendedor e Cobrador — iOS/Android whitelabel.', to: '/apps' },
-      { icon: Users,            label: 'App do Associado',          desc: '2ª via, pagamentos, extratos e Carteirinha Digital.',  to: '/app-associado' },
-      { icon: Users,            label: 'App do Vendedor',           desc: 'Leads, propostas e fechamento de contratos.',          to: '/app-vendedor' },
-      { icon: BadgeDollarSign,  label: 'App do Cobrador',           desc: 'Rota, baixa de pagamentos e recibos digitais.',        to: '/app-cobrador' },
+      { icon: Smartphone,       label: 'Apps',        desc: 'Associado, Vendedor e Cobrador — iOS/Android whitelabel.', to: '/apps' },
       { icon: PawPrint,         label: 'Planos Pet',                desc: 'Planos híbridos (família + pet) e exclusivos, com benefícios.', to: '/pet' },
       { icon: Globe,            label: 'Site Premium (Whitelabel)', desc: 'SEO, domínio próprio e identidade visual da sua marca.', to: '/site-premium' },
     ],
@@ -30,7 +27,6 @@ export const cols = [
     items: [
       { icon: MessageCircle,  label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/zap' },
       { icon: CreditCard,     label: 'Pagamentos - Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
-      { icon: Globe,          label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
       { icon: Handshake,      label: 'Clubes de Benefícios', desc: 'Monte sua rede local de parceiros e descontos.',            to: '/clube' },
       { icon: Newspaper,      label: 'Obituário Digital',    desc: 'Memorial com homenagens e captação de leads.',              href: 'https://nalapide.com/' },
     ],
@@ -40,6 +36,7 @@ export const cols = [
     items: [
       { icon: BarChart3,  label: 'Analytics',         desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
       { icon: Database,   label: 'Migração de Dados', desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
+      { icon: Globe,          label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
       { icon: Building2,  label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
   },
