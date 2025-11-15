@@ -49,17 +49,10 @@ export default function SitePremium(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-             <a
-  href="https://demo.progem.com.br/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="btn btn-ghost"
->
-  Ver Site Exemplo
-</a>
+
 
               {/* Link para planos/simulador */}
-              <Link to="/planos" className="btn btn-ghost">Ver planos e simular</Link>
+              <Link to="/planos" className="btn btn-ghost">Ver planos</Link>
             </div>
           </div>
 
