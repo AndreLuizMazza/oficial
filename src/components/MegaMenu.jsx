@@ -37,7 +37,6 @@ export const cols = [
       { icon: BarChart3,  label: 'Analytics',         desc: 'KPIs, inadimplência e relatórios executivos.', to: '/funcionalidades#analytics' },
       { icon: Database,   label: 'Migração de Dados', desc: 'Importação de clientes, contratos, carnês/boletos e histórico.', to: '/migracao' },
       { icon: Globe,          label: 'Docs & APIs',          desc: 'API Oficial Progem + NaLápide + Clubes de Descontos.',      href: 'https://sandbox-api.progem.com.br/docs/index.html' },
-      { icon: Building2,  label: 'Quem somos',        desc: 'Nossa história, missão e valores.', to: '/quem-somos' },
     ],
   },
 ]
