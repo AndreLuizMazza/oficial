@@ -20,9 +20,11 @@ export default function Footer(){
           <h4 className="font-semibold mb-2">AWIS Desenvolvimento de Software LTDA</h4>
           <ul className="space-y-1 text-[color:var(--c-muted)]">
             <li>CNPJ: 45.839.937/0001-93</li>
-            <li>Rua Aldo Antonio Cadorin, nº 201</li>
-            <li>Bairro Cadorin – Pato Branco/PR</li>
-            <li>CEP 85.504-592</li>
+
+            {/* NOVO ENDEREÇO */}
+            <li>Rua Luiz Favretto, 10 – Edif. Rio Madeira, 2º Andar</li>
+            <li>Bairro La Salle – Pato Branco – PR</li>
+            <li>CEP 85.505-150</li>
           </ul>
         </div>
 
@@ -32,11 +34,15 @@ export default function Footer(){
           <ul className="space-y-2 text-[color:var(--c-muted)]">
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4"/>
-              <a href="mailto:contato@progem.com.br" className="hover:underline">contato@progem.com.br</a>
+              <a href="mailto:contato@progem.com.br" className="hover:underline">
+                contato@progem.com.br
+              </a>
             </li>
             <li className="flex items-center gap-2">
               <Phone className="w-4 h-4"/>
-              <a href="tel:+554626040880" className="hover:underline">(46) 2604-0880</a>
+              <a href="tel:+554626040880" className="hover:underline">
+                (46) 2604-0880
+              </a>
             </li>
             <li className="flex items-center gap-2">
               <Globe className="w-4 h-4"/>

@@ -333,7 +333,10 @@ function SaibaMaisLink({ onDesktop, onMobile }) {
 
 /* ==================== Dados ==================== */
 const EXTRAS_COMUNS = [
-  { label: "WhatsApp ilimitado", value: "R$ 150/mês" },
+  {
+    label: "Integração com WhatsApp ilimitado",
+    description: "Envios em escala para cobranças, lembretes e relacionamento com clientes, via provedores oficiais.",
+  },
 ];
 
 const PLANS_RAW = [
@@ -344,7 +347,6 @@ const PLANS_RAW = [
     icon: ShieldCheck,
     armazenamento: "500 MB",
     precoBase: 249,
-    cnpj: "1 CNPJ",
     headline: "Operação funerária ágil e simples.",
     features: [
       { icon: Receipt,    label: "Gestão de Óbitos",              status: { type: "sim", text: "Sim" } },
@@ -368,7 +370,6 @@ const PLANS_RAW = [
     icon: Globe,
     armazenamento: "500 MB",
     precoBase: 269,
-    cnpj: "2 CNPJs",
     headline: "Venda, recorrência e relacionamento em escala.",
     features: [
       { icon: Receipt,    label: "Gestão de Óbitos",              status: { type: "nao", text: "Não" } },
@@ -378,8 +379,8 @@ const PLANS_RAW = [
       { icon: Globe2,     label: "Memorial Digital",              status: { type: "nao", text: "Não" } },
       { icon: Store,      label: "Gestão de Planos",              status: { type: "sim", text: "Sim" } },
       { icon: Smartphone, label: "APP Cobrador & Vendedor",       status: { type: "sim", text: "Sim" } },
-      { icon: Users,      label: "APP Associado",                 status: { type: "nao", text: "Não" } },
-      { icon: Globe,      label: "Site",                          status: { type: "adicional", text: "Add-on" } }, // add-on no PRO
+      { icon: Users,      label: "APP Associado",                 status: { type: "adicional", text: "Add-on" } },
+      { icon: Globe,      label: "Site",                          status: { type: "adicional", text: "Add-on" } }, 
       { icon: HardDrive,  label: "Armazenamento",                 status: { type: "sim", text: "500 MB" } },
     ],
     cta: { label: "Solicitar Demonstração", to: "/demo" },
@@ -392,7 +393,6 @@ const PLANS_RAW = [
     icon: Building2,
     armazenamento: "1 GB",
     precoBase: 499,             // ajustado
-    cnpj: "3 CNPJs",
     destaque: true,
     headline: "Tudo em um: operação completa e escalável.",
     features: [
@@ -403,7 +403,7 @@ const PLANS_RAW = [
       { icon: Globe2,     label: "Memorial Digital",              status: { type: "sim", text: "Sim" } },
       { icon: Store,      label: "Gestão de Planos",              status: { type: "sim", text: "Sim" } },
       { icon: Smartphone, label: "APP Cobrador & Vendedor",       status: { type: "sim", text: "Sim" } },
-      { icon: Users,      label: "APP Associado",                 status: { type: "adicional", text: "Add-on" } }, // add-on aqui
+      { icon: Users,      label: "APP Associado",                 status: { type: "adicional", text: "Add-on" } }, // add-on aqui (Pro + Enterprise)
       { icon: Globe,      label: "Site",                          status: { type: "sim", text: "Sim" } },
       { icon: HardDrive,  label: "Armazenamento",                 status: { type: "sim", text: "1 GB" } },
     ],
@@ -489,9 +489,7 @@ function StickyCTA() {
 
     const recalc = () => {
       const r = footer.getBoundingClientRect();
-      // quanto o footer invade a viewport a partir da borda inferior
       const overlap = Math.max(0, window.innerHeight - Math.max(r.top, 0));
-      // margem base (12px) + overlap (para “subir” o CTA) + 8px de respiro
       setBottom(12 + overlap + (overlap > 0 ? 8 : 0));
     };
 
@@ -632,10 +630,6 @@ export default function PlanosNovos() {
                     <div className="flex flex-wrap items-center gap-2 mt-1">
                       <StatusBadge type="segment">{p.segment}</StatusBadge>
                       <StatusBadge type="sim">{p.armazenamento}</StatusBadge>
-                      {/* CNPJ badge com tooltip */}
-                      <Tooltip label="Para mais CNPJs, sob negociação.">
-                        <StatusBadge type="note">{p.cnpj}</StatusBadge>
-                      </Tooltip>
                     </div>
                     {p.headline && (
                       <p className="mt-1 text-sm text-[color:var(--c-muted)]">{p.headline}</p>
@@ -660,7 +654,7 @@ export default function PlanosNovos() {
               <div className="mt-3 text-xs text-[color:var(--c-muted)]">
                 {showStartNote && (
                   <span>
-                    Preço <strong>fixo</strong> até <strong>500 registros</strong>.
+                    Preço <strong>fixo</strong> até <strong>500 contratos ativos</strong>.
                   </span>
                 )}
                 {showTierNoteProEnt && (
@@ -709,60 +703,48 @@ export default function PlanosNovos() {
                   {p.cta.label}
                 </Link>
               </div>
-
-              <p className="mt-3 text-[11px] text-[color:var(--c-muted)]">
-                Precisa atender mais CNPJs? <strong>Sob negociação.</strong>
-              </p>
             </CardMotion>
           );
         })}
       </section>
 
-      {/* Selo/nota global CNPJs por plano */}
-      <div className="mt-3">
-        <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] px-4 py-3 text-xs text-[color:var(--c-muted)]">
-          <strong>CNPJs atendidos por plano:</strong> Start <strong>(1)</strong> • Pro <strong>(2)</strong> • Enterprise <strong>(3)</strong>. Para mais CNPJs, <strong>sob negociação</strong>.
-        </div>
-      </div>
-
       {/* Extras & integrações — seção única */}
       <section id="extras" className="mt-10 card p-5">
         <h4 className="font-semibold">Extras e integrações (para qualquer plano)</h4>
-        <div className="grid gap-2 mt-2">
+        <p className="muted text-sm mt-1">
+          Destaque para a <strong>integração com WhatsApp ilimitado</strong>, ideal para lembretes de pagamento,
+          avisos e relacionamento em escala.
+        </p>
+        <div className="grid gap-2 mt-3">
           {EXTRAS_COMUNS.map((e, i) => (
             <div
               key={i}
-              className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] px-3 py-2 text-sm flex items-center justify-between"
+              className={clsx(
+                "rounded-lg border border-[var(--c-primary)]/60 bg-[color:color-mix(in_srgb,var(--c-primary)_6%,var(--c-surface-2)_94%)]",
+                "px-3 py-3 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+              )}
             >
-              <span>{e.label}</span>
-              <span className="font-medium">{e.value}</span>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--c-border)] bg-[var(--c-surface)]">
+                  <MessageCircle className="w-4 h-4 text-[var(--c-primary)]" aria-hidden="true" />
+                </span>
+                <div>
+                  <div className="font-medium">{e.label}</div>
+                  <div className="text-xs muted">{e.description}</div>
+                </div>
+              </div>
+              <span className="inline-flex items-center self-start sm:self-auto px-2 py-0.5 text-[11px] rounded-md bg-emerald-100/70 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
+                Condições sob consulta
+              </span>
             </div>
           ))}
         </div>
         <p className="text-xs text-[color:var(--c-muted)] mt-2">
-          Contratados à parte e ativados sob demanda. O <strong>App do Associado</strong> está disponível como <strong>add-on no plano Enterprise</strong>.
+          Contratados à parte e ativados sob demanda. O <strong>App do Associado</strong> está disponível como{" "}
+          <strong>add-on nos planos Pro e Enterprise</strong>.
         </p>
       </section>
 
-      {/* APIs e integrações (card rápido) */}
-      <section id="apis" className="mt-10">
-        <div className="card p-5">
-          <h4 className="font-semibold">APIs e integrações</h4>
-          <p className="muted mt-1 text-sm">Automatize seus fluxos com a API do Progem e integrações.</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <a
-              href="https://sandbox-api.progem.com.br/docs/index.html"
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-ghost text-sm inline-flex items-center gap-2"
-            >
-              <Cable className="w-4 h-4"/> Ver documentação
-            </a>
-            <Link to="/gestao-web" className="btn btn-ghost text-sm">Gestão Web</Link>
-            <Link to="/demo" className="btn btn-primary btn-demo text-sm">Falar com especialista</Link>
-          </div>
-        </div>
-      </section>
 
       {/* Comparativo operacional */}
       <section id="comparativo" className="mt-10">
@@ -780,9 +762,9 @@ export default function PlanosNovos() {
             <tbody>
               <tr className="border-t border-[var(--c-border)]">
                 <td className="px-4 py-3 font-medium">Limite de contratos ativos</td>
-                <td className="px-4 py-3">até 500</td>
-                <td className="px-4 py-3">até 1.000</td>
-                <td className="px-4 py-3">a partir de 1.001</td>
+                <td className="px-4 py-3">inicial até 500</td>
+                <td className="px-4 py-3">inicial até 500</td>
+                <td className="px-4 py-3">inicial até 500</td>
               </tr>
               <tr className="border-t border-[var(--c-border)]">
                 <td className="px-4 py-3 font-medium">Usuários incluídos</td>
@@ -791,16 +773,10 @@ export default function PlanosNovos() {
                 <td className="px-4 py-3">{INCLUDED_USERS.enterprise}</td>
               </tr>
               <tr className="border-t border-[var(--c-border)]">
-                <td className="px-4 py-3 font-medium">CNPJs atendidos</td>
-                <td className="px-4 py-3">1</td>
-                <td className="px-4 py-3">2</td>
-                <td className="px-4 py-3">3 <span className="muted">(para mais, sob negociação)</span></td>
-              </tr>
-              <tr className="border-t border-[var(--c-border)]">
                 <td className="px-4 py-3 font-medium">SLA de suporte</td>
-                <td className="px-4 py-3">Até 24h úteis</td>
-                <td className="px-4 py-3">Até 8h úteis</td>
-                <td className="px-4 py-3">Até 4h úteis (prioritário)</td>
+                <td className="px-4 py-3">Até 4h úteis</td>
+                <td className="px-4 py-3">Até 4h úteis</td>
+                <td className="px-4 py-3">Até 4h úteis</td>
               </tr>
             </tbody>
           </table>
@@ -824,7 +800,10 @@ export default function PlanosNovos() {
               </div>
               <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
                 <dt className="muted">Usuários incluídos</dt>
-                <dd className="mt-1">Start/Pro: <strong>5</strong> • Enterprise: <strong>10</strong><br/>Usuário adicional: <strong>{fmtBRL(EXTRA_USER_PRICE)}/mês</strong>.</dd>
+                <dd className="mt-1">
+                  Start/Pro: <strong>5</strong> • Enterprise: <strong>10</strong><br/>
+                  Usuário adicional: <strong>{fmtBRL(EXTRA_USER_PRICE)}/mês</strong>.
+                </dd>
               </div>
               <div className="rounded-2xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
                 <dt className="muted">Setup inicial</dt>
@@ -923,7 +902,7 @@ export default function PlanosNovos() {
               a: <>Sim. Disponibilizamos API para integrações (veja a <a href="https://sandbox-api.progem.com.br/docs/index.html" target="_blank" rel="noreferrer" className="underline">documentação da sandbox</a>).</>
             },
             { q: "Existe fidelidade?", a: "Trabalhamos com fidelidade de 1 ano." },
-            { q: "Como funciona o suporte?", a: "SLA conforme plano: Start até 24h úteis, Pro até 8h úteis, Enterprise até 4h úteis." },
+            { q: "Como funciona o suporte?", a: "Atendemos com SLA de até 4h úteis, independentemente do plano contratado." },
           ].map((item, i) => (
             <details key={i} className="card p-4">
               <summary className="cursor-pointer font-medium">{item.q}</summary>

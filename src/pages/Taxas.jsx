@@ -1,6 +1,5 @@
 // src/pages/Taxas.jsx
 
-
 import { setPageSEO } from "@/lib/seo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -11,7 +10,7 @@ import { Link } from "react-router-dom";
 import { track } from "@/lib/analytics";
 import BottomDockCTA from "@/components/BottomDockCTA";
 
-// --- Dados de referência (integração principal em destaque, sem citar marca nos títulos) ---
+// --- Dados de referência (integração principal em destaque) ---
 const taxasPagamento = [
   { tipo: "Pix", valor: "R$0,99", icon: "💠", note: "por transação" },
   { tipo: "Boleto (Liquidado)", valor: "R$2,30", icon: "📄", note: "somente quando pago" },
@@ -26,16 +25,15 @@ const taxasCartoes = [
   { bandeira: "Hipercard",        gatilho: "R$ 0,30", taxa: "4,09%" },
 ];
 
-// --- Alternativa: TecnoSpeed (boletos com bancos) ---
+// --- Alternativa: boletos com bancos ---
 const tecnospeed = {
   custoRegistro: "R$0,45", // pago à Progem no registro (pode reduzir por volume)
-  bancos: ["Banco do Brasil", "Sicredi", "Sicoob", "Bradesco", "BTG Pactual"],
   bullets: [
     "Somente boletos (emissão pelo Progem Gestão).",
     "Não integrado ao checkout online do Progem.",
     "Além do valor de registro, há a tarifa do seu banco.",
     "Créditos pré-pagos no Progem para registrar boletos.",
-    "Velocidade de integração depende do banco/gerente.",
+    "Velocidade de integração depende da instituição financeira/gerência.",
   ],
 };
 
@@ -56,10 +54,6 @@ const faqs = [
   {
     q: "O que significa 'gatilho' nos cartões?",
     a: "É um valor fixo por transação cobrado pelo adquirente/gateway, somado ao percentual da taxa da bandeira."
-  },
-  {
-    q: "Ultrapassei minha faixa de contratos. O que acontece?",
-    a: "Você pode migrar para a faixa seguinte (ex.: Pro → Enterprise) ou contratar um add-on conforme o volume. Nosso time orienta o melhor cenário."
   },
   {
     q: "Posso antecipar recebíveis de cartão?",
@@ -302,10 +296,6 @@ export default function Taxas() {
             Abaixo estão as modalidades e custos da integração principal. Se preferir usar seu próprio banco,
             há uma opção mais abaixo.
           </p>
-          {/* ÚNICA menção discreta ao parceiro */}
-          <p className="mt-2 text-[11px] muted">
-            * Integração operada por parceiro homologado cel_cash.
-          </p>
 
           {/* Resumo rápido (integração principal) */}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -371,7 +361,7 @@ export default function Taxas() {
               </div>
             </section>
 
-            {/* Opção discreta: emitir boletos pelo meu banco? (TecnoSpeed) */}
+            {/* Opção discreta: emitir boletos pelo meu banco? */}
             <section aria-labelledby="banco-tecnospeed" className="mt-2">
               <details
                 className="group rounded-xl border border-[var(--c-border)] bg-[var(--c-surface)]"
@@ -380,7 +370,7 @@ export default function Taxas() {
                 <summary className="list-none cursor-pointer select-none p-4 flex items-center justify-between">
                   <div className="min-w-0">
                     <h3 id="banco-tecnospeed" className="font-semibold">Posso emitir boletos pelo meu banco?</h3>
-                    <p className="muted text-sm">Opção alternativa via integração de boletos com bancos tradicionais.</p>
+                    <p className="muted text-sm">Opção alternativa via integração de boletos com instituições financeiras.</p>
                   </div>
                   <ChevronDown className="w-4 h-4 opacity-70 transition group-open:rotate-180" />
                 </summary>
@@ -397,9 +387,7 @@ export default function Taxas() {
                         {tecnospeed.bullets.map((t) => (
                           <li key={t} className="muted">• {t}</li>
                         ))}
-                        <li className="muted">• Bancos: {tecnospeed.bancos.join(", ")}.</li>
                       </ul>
-                      <div className="text-[11px] muted mt-3">parceria: TecnoSpeed</div>
                     </article>
 
                     {/* Custos */}
@@ -411,13 +399,13 @@ export default function Taxas() {
                       <div className="mt-3 text-sm">
                         <div className="rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)] p-3">
                           <p><strong>Custo Progem por registro:</strong> {tecnospeed.custoRegistro} (pode reduzir por volume)</p>
-                          <p className="mt-1">+ <strong>Tarifa do banco</strong> (conforme convênio).</p>
+                          <p className="mt-1">+ <strong>Tarifa da instituição financeira</strong> (conforme convênio).</p>
                           <p className="mt-1">Emissão exige <strong>créditos pré-pagos</strong> no Progem.</p>
                         </div>
                         <div className="mt-3 flex items-start gap-2 text-xs muted">
                           <Info className="w-4 h-4 mt-0.5" />
                           <span>
-                            A velocidade de integração depende do banco e do gerente responsável.
+                            A velocidade de integração depende da instituição financeira e da gerência responsável.
                           </span>
                         </div>
                       </div>
@@ -445,9 +433,9 @@ export default function Taxas() {
                         <h4 className="font-semibold">Quando faz sentido usar seu banco</h4>
                       </div>
                       <ul className="mt-3 space-y-2 text-sm">
-                        <li className="muted">• Política interna exige <strong>convênio direto</strong> com o banco.</li>
+                        <li className="muted">• Política interna exige <strong>convênio direto</strong> com a instituição financeira.</li>
                         <li className="muted">• Operação focada exclusivamente em <strong>boletos</strong>.</li>
-                        <li className="muted">• Você já possui tarifas bancárias negociadas.</li>
+                        <li className="muted">• Você já possui tarifas negociadas diretamente.</li>
                       </ul>
                     </article>
                   </div>
@@ -656,7 +644,6 @@ export default function Taxas() {
 
       {/* CTA fixo (mobile) */}
       <BottomDockCTA />
-
     </div>
   );
 }
