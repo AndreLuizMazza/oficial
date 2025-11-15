@@ -7,7 +7,8 @@ let autoTimer = null;
 let visUnsub = null;
 let systemUnsub = null;
 
-export const getStoredMode = () => localStorage.getItem(KEY) || "auto";
+// 🔥 Padrão agora é "dark" (tema escuro)
+export const getStoredMode = () => localStorage.getItem(KEY) || "dark";
 export const persistMode   = (m) => localStorage.setItem(KEY, m);
 
 export const getSystemPrefersDark = () =>
