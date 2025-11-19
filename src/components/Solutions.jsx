@@ -25,7 +25,7 @@ const items = [
     id:'app-associado', icon: Smartphone,
     title: "Aplicativo do Associado",
     subtitle: "Whitelabel (iOS/Android)",
-    desc: "2ª via, pagamentos, extratos, notificações e carteirinha digital — com sua identidade.",
+    desc: "2ª via, pagamentos, extratos, notificações e carteirinha digital • com sua identidade.",
     tag: "Whitelabel"
   },
   {

@@ -12,7 +12,7 @@ import BottomDockCTA from '@/components/BottomDockCTA'
 export default function Home(){
   const [planos, setPlanos] = useState([])
   useEffect(()=>{
-    setPageSEO({ title:'Progem — Plataforma líder para funerárias e clubes', description:'Gestão de contratos, assinaturas e pagamentos recorrentes; whitelabel para site e apps.' })
+    setPageSEO({ title:'Progem • Plataforma líder para funerárias e clubes', description:'Gestão de contratos, assinaturas e pagamentos recorrentes; whitelabel para site e apps.' })
     ;(async()=>{ try{ const p = await BFF.planos(); setPlanos(p||[]) }catch(e){ console.warn('BFF error', e) } })()
   },[])
 
