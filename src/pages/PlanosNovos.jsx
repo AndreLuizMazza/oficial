@@ -1111,7 +1111,7 @@ export default function PlanosNovos() {
             </div>
 
             <div className="mt-3">
-              <Link to="/contato" className="btn btn-ghost btn-sm">
+              <Link to="/contato" className="btn btn-primary btn-demo btn-sm">
                 Tirar dúvidas com o time
               </Link>
             </div>

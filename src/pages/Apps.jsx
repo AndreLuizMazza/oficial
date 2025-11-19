@@ -9,7 +9,7 @@ import appsGeral from "@/assets/img/app/apps-geral.png"
 
 import {
   Sparkles, Smartphone, UserRound, BadgeDollarSign, Wallet2, ShieldCheck,
-  Check, QrCode, FileText, BellRing, MapPin, CloudOff, Download, LineChart, Info,
+  Check, QrCode, FileText, BellRing, MapPin, CloudOff, Download, LineChart,
   ArrowRight, Apple
 } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
@@ -341,48 +341,10 @@ export default function Apps(){
           </AnimatePresence>
         </section>
 
-        {/* Custos & Setup */}
-        <section className="mt-8">
-          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
-                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
-              </span>
-              <div className="text-sm">
-                <p className="font-medium">Custos, modelos de cobrança & setup</p>
-                <ul className="mt-1 space-y-1">
-                  <li className="muted">
-                    Apps <strong>Vendedor</strong> e <strong>Cobrador</strong> inclusos no pacote Progem — sem licenciamento adicional.
-                  </li>
-                  <li className="muted">
-                    <strong>App do Associado (whitelabel)</strong> e <strong>Site Premium</strong> são <strong>add-ons</strong>. O valor mensal
-                    acompanha sua <strong>faixa de contratos</strong> (Start, Pro ou Enterprise) e pode ser definido como
-                    <strong> percentual sobre o preço base</strong> da faixa (ex.: Site 50% • App 50%) ou como
-                    <strong> valor fixo por faixa</strong> — conforme a política vigente.
-                  </li>
-                  <li className="muted">
-                    Consulte o valor exato para sua faixa no simulador de <Link to="/planos" className="underline">Planos</Link>.
-                    No anual, há <strong>15% OFF</strong> sobre o total (base + add-ons).
-                  </li>
-                  <li className="muted">App do Cobrador: <strong>sem taxa por recebimento</strong> ao Progem.</li>
-                  <li className="muted">App do Vendedor: <strong>sem taxa por venda</strong> ao Progem.</li>
-                  <li className="muted">
-                    <strong>Setup único</strong> (<em>sob escopo</em>): depende das integrações necessárias e da quantidade de usuários a treinar (setorizado).
-                  </li>
-                </ul>
-
-                <div className="mt-3">
-                  <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* COMPARATIVO */}
         <section className="mt-12">
           <h3 className="text-xl font-semibold mb-2">Comparativo rápido</h3>
-          <div className="overflow-x-auto border border-[var(--c-border)] rounded-xl">
+          <div className="block w-full max-w-full overflow-x-auto border border-[var(--c-border)] rounded-xl">
             <table className="min-w-[760px] w-full text-sm">
               <thead className="bg-[var(--c-surface-2)]">
                 <tr>
@@ -437,8 +399,6 @@ export default function Apps(){
 
       {/* CTA flutuante (mobile) */}
       <BottomDockCTA/>
-
-      
     </div>
   )
 }

@@ -25,7 +25,7 @@ export const cols = [
   {
     title: 'Integrações & Automação',
     items: [
-      { icon: MessageCircle,  label: 'WhatsApp (Automação)', desc: 'Ilimitado por R$ 150/mês. Campanhas e fluxos via API/SDK.', to: '/zap' },
+      { icon: MessageCircle,  label: 'WhatsApp', desc: 'Ilimitado. Fluxos automáticos para redução de inadimplência.', to: '/zap' },
       { icon: CreditCard,     label: 'Pagamentos - Taxas & Cobrança',  desc: 'Pix, boletos e cartões — valores claros e atualizados.', to: '/taxas' },
       { icon: Handshake,      label: 'Clubes de Benefícios', desc: 'Monte sua rede local de parceiros e descontos.',            to: '/clube' },
       { icon: Newspaper,      label: 'Obituário Digital',    desc: 'Memorial com homenagens e captação de leads.',              href: 'https://nalapide.com/' },

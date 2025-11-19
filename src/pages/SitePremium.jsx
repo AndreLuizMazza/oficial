@@ -118,41 +118,7 @@ export default function SitePremium(){
           </div>
         </section>
 
-        {/* Custos & Setup (ajustado) */}
-        <section className="mt-8">
-          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
-                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
-              </span>
-              <div className="text-sm">
-                <p className="font-medium">Custos, modelos de cobrança & setup</p>
-                <ul className="mt-1 space-y-1">
-                  <li className="muted">
-                    O <strong>Site Premium</strong> é contratado como <strong>add-on</strong> do Progem. O valor mensal
-                    acompanha a sua <strong>faixa de contratos ativos</strong> (Start, Pro ou Enterprise).
-                  </li>
-                  <li className="muted">
-                    O preço pode ser definido como <strong>percentual sobre o preço base da faixa</strong> (ex.: 50%)
-                    ou como <strong>valor fixo por faixa</strong> — conforme a política vigente.
-                  </li>
-                  <li className="muted">
-                    Consulte o valor exato para sua faixa no simulador de <Link to="/planos" className="underline">Planos</Link>. No anual,
-                    há <strong>15% OFF</strong> sobre o total (base + add-ons).
-                  </li>
-                  <li className="muted">
-                    <strong>Setup único</strong> (sob escopo): varia conforme integrações e conteúdo inicial (páginas, blog, formulários).
-                  </li>
-                </ul>
-
-                {/* Ação secundária para planos */}
-                <div className="mt-3">
-                  <Link to="/planos" className="btn btn-ghost btn-sm">Ver planos e simular</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+       
 
         {/* CTA */}
         <section className="mt-10">

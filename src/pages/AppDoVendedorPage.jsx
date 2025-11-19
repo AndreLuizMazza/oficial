@@ -206,24 +206,6 @@ export default function AppVendedor(){
           </div>
         </section>
 
-        {/* Custos & Setup (discreto) */}
-        <section className="mx-auto max-w-7xl px-4">
-          <div className="rounded-xl border border-[var(--c-border)] bg-[var(--c-surface-2)] p-4">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--c-border)] bg-[var(--c-surface)]">
-                <Info className="w-5 h-5 text-[color:var(--c-muted)]"/>
-              </span>
-              <div className="text-sm">
-                <p className="font-medium">Custos</p>
-                <ul className="mt-1 space-y-1">
-                  <li className="muted">App do Vendedor incluso no pacote Progem — <strong>sem custo adicional de licenciamento</strong>.</li>
-                  <li className="muted"><strong>Sem taxa por venda</strong> ao Progem ao utilizar o app.</li>
-                  <li className="muted">Setup único (<em>sob escopo</em>) pode ser aplicado conforme integrações e treinamentos setorizados necessários.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* CHAMADA / CTA */}
         <section id="contato" className="relative">
