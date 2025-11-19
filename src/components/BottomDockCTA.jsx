@@ -62,11 +62,10 @@ export default function BottomDockCTA({
       <div className="mx-auto max-w-7xl px-4 pb-[env(safe-area-inset-bottom)] pointer-events-auto">
         <div className="rounded-t-2xl border border-b-0 border-[var(--c-border)] bg-[var(--c-surface)] shadow-2xl p-3 flex gap-2">
           {/* Primário: Falar com especialista (agora primeiro) */}
-         {/* Primário: Falar com especialista */}
           <Link
             to={to}
             data-cta="bottom-demo"
-            className="btn btn-primary btn-demo flex-1 justify-center whitespace-nowrap text-[0.78rem]"
+            className="btn btn-primary btn-demo flex-1 justify-center whitespace-nowrap"
             onClick={handlePrimaryClick}
             aria-label="Falar com um especialista"
           >
@@ -77,7 +76,7 @@ export default function BottomDockCTA({
           {/* Secundário: Ver planos */}
           <Link
             to={secondaryTo}
-            className="btn btn-ghost flex-1 justify-center whitespace-nowrap text-[0.78rem]"
+            className="btn btn-ghost flex-1 justify-center whitespace-nowrap"
             data-cta="bottom-plans"
             onClick={handleSecondaryClick}
             aria-label={secondaryLabel}
@@ -85,7 +84,6 @@ export default function BottomDockCTA({
             <LayoutGrid className="w-4 h-4" />
             {secondaryLabel}
           </Link>
-
         </div>
       </div>
     </div>,
