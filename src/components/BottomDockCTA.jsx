@@ -67,7 +67,7 @@ export default function BottomDockCTA({
             data-cta="bottom-demo"
             className="btn btn-primary btn-demo flex-1 justify-center whitespace-nowrap"
             onClick={handlePrimaryClick}
-            aria-label="Falar com um especialista"
+            aria-label="Falar com especialista"
           >
             <Smartphone className="w-4 h-4" />
             {label}
