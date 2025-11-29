@@ -23,7 +23,7 @@ export default function Home(){
       <Solutions/>
       <LogosBar/>
       <FeatureGrid/>
-       <BottomDockCTA />
+
    
     </div>
   )
