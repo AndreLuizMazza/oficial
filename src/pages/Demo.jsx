@@ -10,7 +10,7 @@ import CardMotion from "@/components/CardMotion"
 import BottomDockCTA from "@/components/BottomDockCTA"
 import { track } from "@/lib/analytics"
 
-const WHATSAPP_E164 = "554699011022" // usado apenas no link, não exibido
+const WHATSAPP_E164 = "5546999010924" // usado apenas no link, não exibido
 
 export default function Demo(){
   useEffect(()=>{

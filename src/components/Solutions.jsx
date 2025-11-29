@@ -124,7 +124,7 @@ export default function Solutions(){
               <div className="mt-5">
                 <Link
                   to={getCtaLink(id)}
-                  className="btn btn-ghost"
+                 className="btn btn-primary"
                   aria-label={`Abrir detalhes de ${title}`}
                 >
                   Quero saber mais

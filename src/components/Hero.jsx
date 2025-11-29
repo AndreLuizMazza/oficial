@@ -54,7 +54,7 @@ export default function Hero(){
             >
               Agendar Demonstração
             </Link>
-            <Link to="/planos" className="btn btn-ghost">
+            <Link to="/planos" className="btn btn-primary">
               Conhecer Planos
             </Link>
           </div>

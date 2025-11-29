@@ -7,7 +7,7 @@ import {
 } from "lucide-react"
 import useFacebookPixel from "@/hooks/useFacebookPixel"
 
-const WHATSAPP_E164 = "554699011022" // número usado apenas no link (não exibido)
+const WHATSAPP_E164 = "5546999010924" // número usado apenas no link (não exibido)
 
 export default function Contato(){
   const [form, setForm] = useState({
