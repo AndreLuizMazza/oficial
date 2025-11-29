@@ -129,7 +129,7 @@ export default function Hero() {
               </span>
               <div>
                 <div className="font-semibold leading-tight">
-                  R$ 5 mi+ processados/mês
+                  R$ 6 mi+ processados/mês
                 </div>
                 <div className="muted text-[13px]">
                   Pagamentos recorrentes com escala
