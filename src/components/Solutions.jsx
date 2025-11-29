@@ -42,13 +42,7 @@ const items = [
     desc: "KPIs em tempo real, inadimplência, vendas e relatórios para decisões rápidas.",
     tag: "Gestão"
   },
-  {
-    id:'custom', icon: Wand2,
-    title: "Personalizações",
-    subtitle: "Tiles, temas e integrações",
-    desc: "Telas e integrações sob medida. SDK e componentes para acelerar seu go-to-market.",
-    tag: "Sob medida"
-  },
+
   // ✅ Novos
   {
     id:'zap', icon: MessageCircle,
