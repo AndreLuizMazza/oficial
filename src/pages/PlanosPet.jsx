@@ -46,7 +46,7 @@ export default function PlanosPet(){
               Planos Pet • Gestão completa
             </div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mt-4">
-              Seu pet <span className="text-[color:var(--c-primary)]">no centro do cuidado</span>
+              Saia na frente, <span className="text-[color:var(--c-primary)]">o Pet no centro do cuidado</span>
             </h1>
             <p className={`mt-3 md:text-lg ${t.muted}`}>
               Crie ofertas flexíveis: inclua o amiguinho no plano da família (híbrido) ou ofereça
@@ -57,7 +57,7 @@ export default function PlanosPet(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-              <a href="#modelos" className="btn btn-ghost">Modelos de plano</a>
+              <a href="#modelos" className="btn btn-primary">Modelos de plano</a>
             </div>
           </div>
 

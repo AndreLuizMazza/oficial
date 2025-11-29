@@ -68,7 +68,7 @@ export default function Migracao(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-              <Link to="/developers#migracao" className="btn btn-ghost">
+              <Link to="/developers#migracao" className="btn btn-primary">
                 Ver guias técnicos
               </Link>
             </div>
@@ -221,10 +221,10 @@ export default function Migracao(){
 
           {/* Materiais de apoio */}
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link to="/developers#migracao" className="btn btn-ghost text-sm inline-flex items-center gap-2">
+            <Link to="/developers#migracao" className="btn btn-primary text-sm inline-flex items-center gap-2">
               <Download className="w-4 h-4"/> Modelos de planilha (CSV/XLSX)
             </Link>
-            <Link to="/developers#migracao" className="btn btn-ghost text-sm inline-flex items-center gap-2">
+            <Link to="/developers#migracao" className="btn btn-primary text-sm inline-flex items-center gap-2">
               <Download className="w-4 h-4"/> Checklist de migração (PDF)
             </Link>
           </div>
@@ -249,7 +249,7 @@ export default function Migracao(){
             <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
               Falar com um especialista
             </Link>
-            <Link to="/developers#migracao" className="btn btn-ghost">
+            <Link to="/developers#migracao" className="btn btn-primary">
               Ver guias técnicos
             </Link>
           </div>

@@ -56,7 +56,7 @@ export default function Demo(){
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-ghost"
+                className="btn btn-primary"
                 data-cta="whatsapp"
                 onClick={()=>track("demo_whatsapp_click", { origin: "hero" })}
                 aria-label="Abrir conversa no WhatsApp"
@@ -342,7 +342,7 @@ export default function Demo(){
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-ghost"
+                className="btn btn-primary"
                 data-cta="whatsapp"
                 onClick={()=>track("demo_whatsapp_click", { origin: "footer" })}
                 aria-label="Conversar no WhatsApp"

@@ -445,7 +445,7 @@ export default function Taxas() {
                     <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                       Escolher a melhor integração
                     </Link>
-                    <Link to="/contato" className="btn btn-ghost">
+                    <Link to="/contato" className="btn btn-primary">
                       Falar com um especialista
                     </Link>
                   </div>
@@ -586,7 +586,7 @@ export default function Taxas() {
                   </Link>
                   <Link
                     to="/planos"
-                    className="btn btn-ghost w-full"
+                    className="btn btn-primary w-full"
                     onClick={()=> fire("fees_cta_planos")}
                   >
                     Ver Planos

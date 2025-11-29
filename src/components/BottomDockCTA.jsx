@@ -76,7 +76,7 @@ export default function BottomDockCTA({
           {/* Secundário: Ver planos */}
           <Link
             to={secondaryTo}
-            className="btn btn-ghost flex-1 justify-center whitespace-nowrap"
+            className="btn btn-primary flex-1 justify-center whitespace-nowrap"
             data-cta="bottom-plans"
             onClick={handleSecondaryClick}
             aria-label={secondaryLabel}

@@ -369,7 +369,7 @@ function PopoverFaixas({ anchorRect, open, onClose, children }) {
         >
           {children}
           <div className="mt-4 flex items-center justify-end">
-            <button className="btn btn-ghost" onClick={onClose}>
+            <button className="btn btn-primary" onClick={onClose}>
               Fechar
             </button>
           </div>
@@ -1225,7 +1225,7 @@ export default function PlanosNovos() {
           medida, solicite uma demonstração.
         </p>
         <div className="mt-4 flex items-center justify-end gap-2">
-          <button className="btn btn-ghost" onClick={() => setOpenModal(false)}>
+          <button className="btn btn-primary" onClick={() => setOpenModal(false)}>
             Entendi
           </button>
           <Link to="/demo" className="btn btn-primary">

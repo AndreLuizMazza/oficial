@@ -69,9 +69,9 @@ export default function AppAssociado(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-              <Link to="/demo" className="btn btn-ghost">O que verá na demo</Link>
+              <Link to="/demo" className="btn btn-primary">O que verá na demo</Link>
               {/* Novo link para planos/simulador */}
-              <Link to="/planos" className="btn btn-ghost">Ver planos e simular</Link>
+              <Link to="/planos" className="btn btn-primary">Ver planos</Link>
             </div>
           </div>
 

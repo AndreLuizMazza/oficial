@@ -152,7 +152,7 @@ export default function Apps(){
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo" title="Solicitar demonstração" aria-label="Solicitar demonstração">Solicitar demonstração</Link>
-              <Link to="/planos" className="btn btn-ghost" title="Ver planos" aria-label="Ver planos">Ver planos</Link>
+              <Link to="/planos" className="btn btn-primary" title="Ver planos" aria-label="Ver planos">Ver planos</Link>
             </div>
 
             {/* Prova social */}
@@ -285,7 +285,7 @@ export default function Apps(){
                 <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">
                   Ver demonstração do {tab === "associado" ? "App do Associado" : tab === "vendedor" ? "App do Vendedor" : "App do Cobrador"}
                 </Link>
-                <Link to="/planos" className="btn btn-ghost">Planos & valores</Link>
+                <Link to="/planos" className="btn btn-primary">Planos & valores</Link>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -391,7 +391,7 @@ export default function Apps(){
               <Link to="/contato" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar demonstração
               </Link>
-              <Link to="/planos" className="btn btn-ghost">Ver planos</Link>
+              <Link to="/planos" className="btn btn-primary">Ver planos</Link>
             </div>
           </div>
         </section>

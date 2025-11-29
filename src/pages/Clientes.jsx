@@ -198,7 +198,7 @@ export default function Clientes() {
               <a href="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Solicitar Demonstração
               </a>
-              <a href="/planos" className="btn btn-ghost">Ver planos</a>
+              <a href="/planos" className="btn btn-primary">Ver planos</a>
             </div>
           </div>
         </section>

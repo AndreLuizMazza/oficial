@@ -61,7 +61,7 @@ export default function IntegracaoWhatsapp(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Falar com um especialista
               </Link>
-              <a href="#recursos" className="btn btn-ghost">Ver recursos</a>
+              <a href="#recursos" className="btn btn-primary">Ver recursos</a>
             </div>
           </div>
 
@@ -209,7 +209,7 @@ export default function IntegracaoWhatsapp(){
               <Link to="/demo" data-cta="demo" className="btn btn-primary btn-demo">
                 Falar com um especialista
               </Link>
-              <Link to="/planos" className="btn btn-ghost">
+              <Link to="/planos" className="btn btn-primary">
                 Ver planos
               </Link>
             </div>

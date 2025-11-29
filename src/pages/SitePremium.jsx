@@ -52,7 +52,7 @@ export default function SitePremium(){
 
 
               {/* Link para planos/simulador */}
-              <Link to="/planos" className="btn btn-ghost">Ver planos</Link>
+              <Link to="/planos" className="btn btn-primary">Ver planos</Link>
             </div>
           </div>
 

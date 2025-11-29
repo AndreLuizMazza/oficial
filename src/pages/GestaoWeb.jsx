@@ -76,7 +76,7 @@ export default function GestaoWeb(){
 
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="/demo" className="btn btn-primary">Solicitar Demonstração</a>
-              <a href="/planos" className="btn btn-ghost">Ver planos</a>
+              <a href="/planos" className="btn btn-primary">Ver planos</a>
             </div>
           </div>
 
@@ -290,7 +290,7 @@ export default function GestaoWeb(){
 
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="/demo" className="btn btn-primary">Ver fluxo na demonstração</a>
-            <a href="https://nalapide.com/" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+            <a href="https://nalapide.com/" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               Conhecer o Obituário Digital
             </a>
           </div>
@@ -384,8 +384,8 @@ export default function GestaoWeb(){
             </div>
             <div className="flex gap-2">
               <a href="/demo" className="btn btn-primary">Solicitar Demonstração</a>
-              <a href="/planos" className="btn btn-ghost">Ver Planos</a>
-              <a href="/taxas" className="btn btn-ghost">Taxas & Cobrança</a>
+              <a href="/planos" className="btn btn-primary">Ver Planos</a>
+              <a href="/taxas" className="btn btn-primary">Taxas & Cobrança</a>
             </div>
           </div>
         </section>
