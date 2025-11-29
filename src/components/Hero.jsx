@@ -6,17 +6,72 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LineChart, Building2, ShieldCheck, Sparkles } from 'lucide-react'
 
-export default function Hero(){
+function MediaCard({ allowMotion }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true, amount: 0.3 }}
+      className="relative rounded-2xl border border-[var(--c-border)] overflow-hidden bg-[var(--c-surface-2)] aspect-video"
+    >
+      {/* Scrim sutil para legibilidade da borda */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(80% 60% at 50% 10%, transparent 0%, transparent 60%, color-mix(in oklab, var(--c-border) 40%, transparent) 100%)',
+        }}
+      />
+
+      {/* Vídeo com poster, múltiplas sources e fallback de imagem */}
+      {allowMotion ? (
+        <video
+          className="w-full h-full object-cover"
+          poster={poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        >
+          {/* Fonte principal em MP4 (ampla compatibilidade) */}
+          <source src={videoSrc} type="video/mp4" />
+          {/* Se o navegador não suportar <video> ou o codec, esta imagem será exibida */}
+          <img
+            src={poster}
+            alt="Painéis e módulos do Progem em uso"
+            loading="lazy"
+            decoding="async"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </video>
+      ) : (
+        // Fallback explícito quando o usuário pede menos animações
+        <img
+          src={poster}
+          alt="Painéis e módulos do Progem em uso"
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+    </motion.div>
+  )
+}
+
+export default function Hero() {
   const [allowMotion, setAllowMotion] = useState(true)
 
   // Respeita "reduzir animações" do sistema
-  useEffect(()=>{
+  useEffect(() => {
     const mql = window.matchMedia?.('(prefers-reduced-motion: reduce)')
     const update = () => setAllowMotion(!mql?.matches)
     update()
     mql?.addEventListener?.('change', update)
     return () => mql?.removeEventListener?.('change', update)
-  },[])
+  }, [])
 
   return (
     <section className="relative overflow-hidden hero-grid">
@@ -37,12 +92,14 @@ export default function Hero(){
           </div>
 
           <h1 className="mt-3 text-4xl md:text-5xl font-bold leading-tight">
-            Gestão completa  <span className="text-[var(--c-primary)]">para Funerárias</span>
+            Gestão completa{' '}
+            <span className="text-[var(--c-primary)]">para Funerárias</span>
           </h1>
 
           <p className="mt-4 text-lg muted">
-            Reduza inadimplência, acelere vendas e ofereça experiências digitais integradas.
-            O ecossistema Progem eleva sua operação ao próximo nível.
+            Reduza inadimplência, acelere vendas e ofereça experiências digitais
+            integradas. O ecossistema Progem eleva sua operação ao próximo
+            nível.
           </p>
 
           {/* CTAs padronizados */}
@@ -59,15 +116,24 @@ export default function Hero(){
             </Link>
           </div>
 
-          {/* ✅ Prova social (responsiva) */}
+          {/* Vídeo antes da prova social no mobile */}
+          <div className="mt-6 md:hidden">
+            <MediaCard allowMotion={allowMotion} />
+          </div>
+
+          {/* Prova social (responsiva) */}
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div className="card p-4 flex items-center gap-3">
               <span className="inline-flex w-10 h-10 items-center justify-center rounded-lg border border-[var(--c-border)] bg-[var(--c-surface-2)]">
                 <LineChart className="w-5 h-5 text-[color:var(--c-muted)]" />
               </span>
               <div>
-                <div className="font-semibold leading-tight">R$ 5 mi+ processados/mês</div>
-                <div className="muted text-[13px]">Pagamentos recorrentes com escala</div>
+                <div className="font-semibold leading-tight">
+                  R$ 5 mi+ processados/mês
+                </div>
+                <div className="muted text-[13px]">
+                  Pagamentos recorrentes com escala
+                </div>
               </div>
             </div>
 
@@ -76,8 +142,12 @@ export default function Hero(){
                 <Building2 className="w-5 h-5 text-[color:var(--c-muted)]" />
               </span>
               <div>
-                <div className="font-semibold leading-tight">Foco no setor funerário</div>
-                <div className="muted text-[13px]">Desde 2019 atendendo o segmento</div>
+                <div className="font-semibold leading-tight">
+                  Foco no setor funerário
+                </div>
+                <div className="muted text-[13px]">
+                  Desde 2019 atendendo o segmento
+                </div>
               </div>
             </div>
 
@@ -86,46 +156,21 @@ export default function Hero(){
                 <ShieldCheck className="w-5 h-5 text-[color:var(--c-muted)]" />
               </span>
               <div>
-                <div className="font-semibold leading-tight">SLA médio 99,9%</div>
-                <div className="muted text-[13px]">Disponibilidade para operações críticas</div>
+                <div className="font-semibold leading-tight">
+                  SLA médio 99,9%
+                </div>
+                <div className="muted text-[13px]">
+                  Disponibilidade para operações críticas
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Coluna de mídia */}
-        <motion.div
-          initial={{opacity:0, y:20}}
-          whileInView={{opacity:1, y:0}}
-          transition={{duration:.6}}
-          viewport={{once:true, amount: 0.3}}
-          className="relative rounded-2xl border border-[var(--c-border)] overflow-hidden bg-[var(--c-surface-2)] aspect-video"
-        >
-          {/* Scrim sutil para legibilidade da borda */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(80% 60% at 50% 10%, transparent 0%, transparent 60%, color-mix(in oklab, var(--c-border) 40%, transparent) 100%)"
-            }}
-          />
-          {/* Vídeo com poster e fallback automático */}
-          {allowMotion ? (
-            <video
-              src={videoSrc}
-              poster={poster}
-              className="w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-            />
-          ) : (
-            <img src={poster} alt="Painéis e módulos do Progem em uso" className="w-full h-full object-cover" loading="lazy" />
-          )}
-        </motion.div>
+        {/* Coluna de mídia: apenas desktop/tablet */}
+        <div className="hidden md:block">
+          <MediaCard allowMotion={allowMotion} />
+        </div>
       </div>
     </section>
   )
