@@ -18,7 +18,7 @@ const items = [
     id:'site', icon: Globe,
     title: "Site Premium",
     subtitle: "Whitelabel",
-    desc: "Website institucional premium com SEO, domínio próprio e identidade da sua marca.",
+    desc: "Website institucional premium com SEO, área do associado com carteira digital, pagamentos, domínio próprio e identidade da sua marca.",
     tag: "Whitelabel"
   },
   {
