@@ -42,7 +42,6 @@ const items = [
     desc: "KPIs em tempo real, inadimplência, vendas e relatórios para decisões rápidas.",
     tag: "Gestão"
   },
-
   // ✅ Novos
   {
     id:'zap', icon: MessageCircle,

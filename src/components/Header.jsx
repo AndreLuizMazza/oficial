@@ -218,10 +218,13 @@ export default function Header() {
                 </motion.button>
 
                 {mobileSectionsOpen["Soluções"] && (
-                  <div className="pl-2 py-1">
+                  /* ===== Scroll SOMENTE no conteúdo do MegaMenu ===== */
+                  <div className="pl-2 py-1 max-h-[60vh] overflow-y-auto pr-1 -mr-1">
                     {megaCols.map((col) => (
                       <div key={col.title} className="mb-2">
-                        <div className="text-[11px] uppercase tracking-wide text-[color:var(--c-muted)] px-3 mt-2">{col.title}</div>
+                        <div className="text-[11px] uppercase tracking-wide text-[color:var(--c-muted)] px-3 mt-2">
+                          {col.title}
+                        </div>
                         <ul className="mt-1">
                           {col.items.map((it) => {
                             const Icon = it.icon
