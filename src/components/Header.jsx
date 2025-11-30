@@ -107,10 +107,19 @@ export default function Header() {
     transition: { type: 'spring', stiffness: 520, damping: 32, mass: 0.55 }
   })
 
+  // ⬇️ rolar para o topo ao clicar na logo
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   return (
     <header className="sticky top-0 z-[70] border-b border-[var(--c-border)] bg-[var(--c-surface)]/90 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 h-[64px] flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <Link
+          to="/"
+          className="flex items-center gap-2 shrink-0"
+          onClick={handleLogoClick}
+        >
           {/* alternância de logos por tema */}
           <img src={logo} alt="Progem" className="only-light h-6 w-auto" />
           <img src={logoDark} alt="Progem" className="only-dark h-6 w-auto" />
@@ -219,7 +228,7 @@ export default function Header() {
 
                 {mobileSectionsOpen["Soluções"] && (
                   /* ===== Scroll SOMENTE no conteúdo do MegaMenu ===== */
-                  <div className="pl-2 py-1 max-h-[60vh] overflow-y-auto pr-1 -mr-1">
+                  <div className="pl-2 py-1 max-h-[45vh] overflow-y-auto pr-1 -mr-1">
                     {megaCols.map((col) => (
                       <div key={col.title} className="mb-2">
                         <div className="text-[11px] uppercase tracking-wide text-[color:var(--c-muted)] px-3 mt-2">
